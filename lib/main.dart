@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'services/api_service.dart';
 
 void main() {
+  ApiService.testConnection();
+
   runApp(const SkillLinkApp());
 }
 
@@ -497,19 +500,91 @@ class _WelcomeStatDivider extends StatelessWidget {
 
 //==================== Login Screen ====================
 
-class LoginScreen extends StatelessWidget {
+class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
+
+  @override
+  State<LoginScreen> createState() => _LoginScreenState();
+}
+
+class _LoginScreenState extends State<LoginScreen> {
+  final emailController = TextEditingController();
+  final passwordController = TextEditingController();
+
+  bool isLoading = false;
+
+  Future<void> login() async {
+    print('LOGIN BUTTON CLICKED');
+
+    if (emailController.text.trim().isEmpty ||
+        passwordController.text.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Please enter email and password.'),
+        ),
+      );
+      return;
+    }
+
+    setState(() {
+      isLoading = true;
+    });
+
+    final loginData = await ApiService.loginUser(
+      email: emailController.text.trim(),
+      password: passwordController.text,
+    );
+
+    if (!mounted) return;
+
+    setState(() {
+      isLoading = false;
+    });
+
+    if (loginData != null) {
+      final String token = loginData['token'];
+      final List<dynamic> roles = loginData['roles'];
+
+      print('TOKEN: $token');
+      print('ROLES: $roles');
+
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => ChooseRoleScreen(
+            name: '',
+            email: emailController.text.trim(),
+            password: '',
+            phone: '',
+            availableRoles: roles
+                .map((role) => role.toString())
+                .toList(),
+            isLoginFlow: true,
+          ),
+        ),
+      );
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Invalid email or password.'),
+        ),
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Login')),
+      appBar: AppBar(
+        title: const Text('Login'),
+      ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(24.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const SizedBox(height: 20),
+
             Container(
               width: 84,
               height: 84,
@@ -523,7 +598,9 @@ class LoginScreen extends StatelessWidget {
                 color: AppColors.primary,
               ),
             ),
+
             const SizedBox(height: 24),
+
             const Text(
               'Welcome Back!',
               style: TextStyle(
@@ -532,38 +609,63 @@ class LoginScreen extends StatelessWidget {
                 color: AppColors.textPrimary,
               ),
             ),
+
             const SizedBox(height: 6),
+
             const Text(
               'Login to continue using SkillLink',
-              style: TextStyle(fontSize: 15, color: AppColors.textSecondary),
+              style: TextStyle(
+                fontSize: 15,
+                color: AppColors.textSecondary,
+              ),
             ),
+
             const SizedBox(height: 32),
+
             TextField(
-              decoration: InputDecoration(
+              controller: emailController,
+              keyboardType: TextInputType.emailAddress,
+              decoration: const InputDecoration(
                 labelText: 'Email',
-                prefixIcon: const Icon(Icons.email_outlined),
+                prefixIcon: Icon(Icons.email_outlined),
               ),
             ),
+
             const SizedBox(height: 16),
+
             TextField(
+              controller: passwordController,
               obscureText: true,
-              decoration: InputDecoration(
+              decoration: const InputDecoration(
                 labelText: 'Password',
-                prefixIcon: const Icon(Icons.lock_outline),
+                prefixIcon: Icon(Icons.lock_outline),
               ),
             ),
+
             const SizedBox(height: 28),
+
             SizedBox(
               width: double.infinity,
               height: 55,
               child: ElevatedButton(
-                onPressed: () {
-                  // Login functionality will be added later
-                },
-                child: const Text('Login', style: TextStyle(fontSize: 17)),
+                onPressed: isLoading ? null : login,
+                child: isLoading
+                    ? const SizedBox(
+                        width: 24,
+                        height: 24,
+                        child: CircularProgressIndicator(
+                          strokeWidth: 2,
+                        ),
+                      )
+                    : const Text(
+                        'Login',
+                        style: TextStyle(fontSize: 17),
+                      ),
               ),
             ),
+
             const SizedBox(height: 16),
+
             Center(
               child: TextButton(
                 onPressed: () {
@@ -574,7 +676,9 @@ class LoginScreen extends StatelessWidget {
                     ),
                   );
                 },
-                child: const Text("Don't have an account? Register"),
+                child: const Text(
+                  "Don't have an account? Register",
+                ),
               ),
             ),
           ],
@@ -582,23 +686,80 @@ class LoginScreen extends StatelessWidget {
       ),
     );
   }
+
+  @override
+  void dispose() {
+    emailController.dispose();
+    passwordController.dispose();
+    super.dispose();
+  }
 }
 
 //==================== Register Screen ====================
 
-class RegisterScreen extends StatelessWidget {
+class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});
+
+  @override
+  State<RegisterScreen> createState() => _RegisterScreenState();
+}
+
+class _RegisterScreenState extends State<RegisterScreen> {
+  final nameController = TextEditingController();
+  final emailController = TextEditingController();
+  final phoneController = TextEditingController();
+  final passwordController = TextEditingController();
+  final confirmPasswordController = TextEditingController();
+
+  void continueToRole() {
+    if (nameController.text.trim().isEmpty ||
+        emailController.text.trim().isEmpty ||
+        phoneController.text.trim().isEmpty ||
+        passwordController.text.isEmpty ||
+        confirmPasswordController.text.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Please fill all fields.'),
+        ),
+      );
+      return;
+    }
+
+    if (passwordController.text != confirmPasswordController.text) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Passwords do not match.'),
+        ),
+      );
+      return;
+    }
+
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => ChooseRoleScreen(
+          name: nameController.text.trim(),
+          email: emailController.text.trim(),
+          password: passwordController.text,
+          phone: phoneController.text.trim(),
+        ),
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Create Account')),
+      appBar: AppBar(
+        title: const Text('Create Account'),
+      ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(24.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const SizedBox(height: 10),
+
             Container(
               width: 84,
               height: 84,
@@ -612,7 +773,9 @@ class RegisterScreen extends StatelessWidget {
                 color: AppColors.secondary,
               ),
             ),
+
             const SizedBox(height: 20),
+
             const Text(
               'Create Your Account',
               style: TextStyle(
@@ -621,76 +784,95 @@ class RegisterScreen extends StatelessWidget {
                 color: AppColors.textPrimary,
               ),
             ),
+
             const SizedBox(height: 6),
+
             const Text(
               'Join SkillLink to get started',
-              style: TextStyle(fontSize: 15, color: AppColors.textSecondary),
+              style: TextStyle(
+                fontSize: 15,
+                color: AppColors.textSecondary,
+              ),
             ),
+
             const SizedBox(height: 28),
+
             TextField(
-              decoration: InputDecoration(
+              controller: nameController,
+              decoration: const InputDecoration(
                 labelText: 'Full Name',
-                prefixIcon: const Icon(Icons.person_outline),
+                prefixIcon: Icon(Icons.person_outline),
               ),
             ),
+
             const SizedBox(height: 16),
+
             TextField(
+              controller: emailController,
               keyboardType: TextInputType.emailAddress,
-              decoration: InputDecoration(
+              decoration: const InputDecoration(
                 labelText: 'Email',
-                prefixIcon: const Icon(Icons.email_outlined),
+                prefixIcon: Icon(Icons.email_outlined),
               ),
             ),
+
             const SizedBox(height: 16),
+
             TextField(
+              controller: phoneController,
               keyboardType: TextInputType.phone,
-              decoration: InputDecoration(
+              decoration: const InputDecoration(
                 labelText: 'Phone Number',
-                prefixIcon: const Icon(Icons.phone_outlined),
+                prefixIcon: Icon(Icons.phone_outlined),
               ),
             ),
+
             const SizedBox(height: 16),
+
             TextField(
+              controller: passwordController,
               obscureText: true,
-              decoration: InputDecoration(
+              decoration: const InputDecoration(
                 labelText: 'Password',
-                prefixIcon: const Icon(Icons.lock_outline),
+                prefixIcon: Icon(Icons.lock_outline),
               ),
             ),
+
             const SizedBox(height: 16),
+
             TextField(
+              controller: confirmPasswordController,
               obscureText: true,
-              decoration: InputDecoration(
+              decoration: const InputDecoration(
                 labelText: 'Confirm Password',
-                prefixIcon: const Icon(Icons.lock_outline),
+                prefixIcon: Icon(Icons.lock_outline),
               ),
             ),
+
             const SizedBox(height: 28),
+
             SizedBox(
               width: double.infinity,
               height: 55,
               child: ElevatedButton(
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => const ChooseRoleScreen(),
-                    ),
-                  );
-                },
+                onPressed: continueToRole,
                 child: const Text(
                   'Create Account',
                   style: TextStyle(fontSize: 17),
                 ),
               ),
             ),
+
             const SizedBox(height: 16),
+
             Center(
               child: TextButton(
                 onPressed: () {
                   Navigator.pop(context);
                 },
-                child: const Text('Already have an account? Login'),
+                child: const Text(
+                  'Already have an account? Login',
+                ),
               ),
             ),
           ],
@@ -698,17 +880,139 @@ class RegisterScreen extends StatelessWidget {
       ),
     );
   }
+
+  @override
+  void dispose() {
+    nameController.dispose();
+    emailController.dispose();
+    phoneController.dispose();
+    passwordController.dispose();
+    confirmPasswordController.dispose();
+    super.dispose();
+  }
 }
+
 
 //==================== Choose Role Screen ====================
 
-class ChooseRoleScreen extends StatelessWidget {
-  const ChooseRoleScreen({super.key});
+class ChooseRoleScreen extends StatefulWidget {
+  final String name;
+  final String email;
+  final String password;
+  final String phone;
+
+  final List<String>? availableRoles;
+  final bool isLoginFlow;
+
+  const ChooseRoleScreen({
+    super.key,
+    required this.name,
+    required this.email,
+    required this.password,
+    required this.phone,
+    this.availableRoles,
+    this.isLoginFlow = false,
+  });
+
+  @override
+  State<ChooseRoleScreen> createState() => _ChooseRoleScreenState();
+}
+
+class _ChooseRoleScreenState extends State<ChooseRoleScreen> {
+  bool isLoading = false;
+
+  Future<void> selectRole(String role) async {
+    print('ROLE SELECTED: $role');
+    print('LOGIN FLOW: ${widget.isLoginFlow}');
+    print('AVAILABLE ROLES: ${widget.availableRoles}');
+
+    // ================= LOGIN FLOW =================
+
+    if (widget.isLoginFlow) {
+      if (role == 'CUSTOMER') {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => const CustomerHomeScreen(),
+          ),
+        );
+      } else if (role == 'PROVIDER') {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => const ProviderDashboardScreen(),
+          ),
+        );
+      }
+
+      return;
+    }
+
+    // ================= REGISTRATION FLOW =================
+
+    setState(() {
+      isLoading = true;
+    });
+
+    final success = await ApiService.registerUser(
+      name: widget.name,
+      email: widget.email,
+      password: widget.password,
+      phone: widget.phone,
+      role: role,
+    );
+
+    if (!mounted) return;
+
+    setState(() {
+      isLoading = false;
+    });
+
+    print('REGISTRATION SUCCESS: $success');
+
+    if (success) {
+      if (role == 'CUSTOMER') {
+        Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(
+            builder: (context) => const CustomerHomeScreen(),
+          ),
+          (route) => false,
+        );
+      } else if (role == 'PROVIDER') {
+        Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(
+            builder: (context) => const ProviderDashboardScreen(),
+          ),
+          (route) => false,
+        );
+      }
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text(
+            'Registration failed. Please try again.',
+          ),
+        ),
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
+    final bool showCustomer =
+        widget.availableRoles == null ||
+        widget.availableRoles!.contains('CUSTOMER');
+
+    final bool showProvider =
+        widget.availableRoles == null ||
+        widget.availableRoles!.contains('PROVIDER');
+
     return Scaffold(
-      appBar: AppBar(title: const Text('Choose Your Role')),
+      appBar: AppBar(
+        title: const Text('Choose Your Role'),
+      ),
       body: Padding(
         padding: const EdgeInsets.all(24.0),
         child: Column(
@@ -724,43 +1028,67 @@ class ChooseRoleScreen extends StatelessWidget {
                 height: 1.25,
               ),
             ),
+
             const SizedBox(height: 8),
+
             const Text(
-              'You can switch roles anytime from settings.',
-              style: TextStyle(fontSize: 14, color: AppColors.textSecondary),
+              'Choose how you want to use SkillLink.',
+              style: TextStyle(
+                fontSize: 14,
+                color: AppColors.textSecondary,
+              ),
             ),
+
             const SizedBox(height: 36),
-            _roleCard(
-              context,
-              icon: Icons.person_rounded,
-              color: AppColors.primary,
-              title: 'Customer',
-              subtitle: 'Find & book trusted services near you',
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const CustomerHomeScreen(),
-                  ),
-                );
-              },
-            ),
-            const SizedBox(height: 18),
-            _roleCard(
-              context,
-              icon: Icons.handyman_rounded,
-              color: AppColors.secondary,
-              title: 'Service Provider',
-              subtitle: 'Offer your skills and grow your business',
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const ProviderDashboardScreen(),
-                  ),
-                );
-              },
-            ),
+
+            // ================= CUSTOMER =================
+
+            if (showCustomer)
+              _roleCard(
+                context,
+                icon: Icons.person_rounded,
+                color: AppColors.primary,
+                title: 'Customer',
+                subtitle:
+                    'Find & book trusted services near you',
+                onTap: isLoading
+                    ? () {}
+                    : () => selectRole('CUSTOMER'),
+              ),
+
+            // ================= PROVIDER =================
+
+            if (showCustomer && showProvider)
+              const SizedBox(height: 18),
+
+            if (showProvider)
+              _roleCard(
+                context,
+                icon: Icons.handyman_rounded,
+                color: AppColors.secondary,
+                title: 'Service Provider',
+                subtitle:
+                    'Offer your skills and grow your business',
+                onTap: isLoading
+                    ? () {}
+                    : () => selectRole('PROVIDER'),
+              ),
+
+            if (isLoading) ...[
+              const SizedBox(height: 25),
+
+              const Center(
+                child: CircularProgressIndicator(),
+              ),
+
+              const SizedBox(height: 10),
+
+              const Center(
+                child: Text(
+                  'Please wait...',
+                ),
+              ),
+            ],
           ],
         ),
       ),
@@ -792,12 +1120,19 @@ class ChooseRoleScreen extends StatelessWidget {
                     color: color.withOpacity(0.12),
                     borderRadius: BorderRadius.circular(16),
                   ),
-                  child: Icon(icon, size: 32, color: color),
+                  child: Icon(
+                    icon,
+                    size: 32,
+                    color: color,
+                  ),
                 ),
+
                 const SizedBox(width: 16),
+
                 Expanded(
                   child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+                    crossAxisAlignment:
+                        CrossAxisAlignment.start,
                     children: [
                       Text(
                         title,
@@ -807,7 +1142,9 @@ class ChooseRoleScreen extends StatelessWidget {
                           color: AppColors.textPrimary,
                         ),
                       ),
+
                       const SizedBox(height: 4),
+
                       Text(
                         subtitle,
                         style: const TextStyle(
@@ -818,6 +1155,7 @@ class ChooseRoleScreen extends StatelessWidget {
                     ],
                   ),
                 ),
+
                 const Icon(
                   Icons.arrow_forward_ios_rounded,
                   size: 16,
@@ -2518,7 +2856,9 @@ class CustomerProfileScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('My Profile')),
+      appBar: AppBar(
+        title: const Text('My Profile'),
+      ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(20),
         child: Column(
@@ -2532,7 +2872,9 @@ class CustomerProfileScreen extends StatelessWidget {
                 color: AppColors.primary,
               ),
             ),
+
             const SizedBox(height: 16),
+
             const Text(
               'Customer Name',
               style: TextStyle(
@@ -2541,30 +2883,68 @@ class CustomerProfileScreen extends StatelessWidget {
                 color: AppColors.textPrimary,
               ),
             ),
+
             const SizedBox(height: 4),
+
             const Text(
               'customer@email.com',
-              style: TextStyle(fontSize: 14, color: AppColors.textSecondary),
+              style: TextStyle(
+                fontSize: 14,
+                color: AppColors.textSecondary,
+              ),
             ),
+
             const SizedBox(height: 28),
+
             InfoTile(
               icon: Icons.person_rounded,
               title: 'Full Name',
               subtitle: 'Customer Name',
             ),
+
             InfoTile(
               icon: Icons.email_rounded,
               title: 'Email',
               subtitle: 'customer@email.com',
               iconColor: AppColors.secondary,
             ),
+
             InfoTile(
               icon: Icons.phone_rounded,
               title: 'Phone Number',
               subtitle: '071 234 5678',
               iconColor: AppColors.success,
             ),
+
             const SizedBox(height: 14),
+
+            // Become a Service Provider
+            SizedBox(
+              width: double.infinity,
+              height: 52,
+              child: OutlinedButton.icon(
+                onPressed: () {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text(
+                        'Become a Service Provider feature is coming next.',
+                      ),
+                    ),
+                  );
+                },
+                icon: const Icon(
+                  Icons.handyman_rounded,
+                ),
+                label: const Text(
+                  'Become a Service Provider',
+                  style: TextStyle(fontSize: 16),
+                ),
+              ),
+            ),
+
+            const SizedBox(height: 14),
+
+            // Edit Profile
             SizedBox(
               width: double.infinity,
               height: 52,
@@ -2572,29 +2952,50 @@ class CustomerProfileScreen extends StatelessWidget {
                 onPressed: () {
                   ScaffoldMessenger.of(context).showSnackBar(
                     const SnackBar(
-                      content:
-                          Text('Edit profile feature will be added later.'),
+                      content: Text(
+                        'Edit profile feature will be added later.',
+                      ),
                     ),
                   );
                 },
-                icon: const Icon(Icons.edit_rounded, size: 18),
-                label: const Text('Edit Profile', style: TextStyle(fontSize: 16)),
+                icon: const Icon(
+                  Icons.edit_rounded,
+                  size: 18,
+                ),
+                label: const Text(
+                  'Edit Profile',
+                  style: TextStyle(fontSize: 16),
+                ),
               ),
             ),
+
             const SizedBox(height: 12),
+
+            // Logout
             SizedBox(
               width: double.infinity,
               height: 52,
               child: OutlinedButton.icon(
                 style: OutlinedButton.styleFrom(
                   foregroundColor: AppColors.danger,
-                  side: const BorderSide(color: AppColors.danger),
+                  side: const BorderSide(
+                    color: AppColors.danger,
+                  ),
                 ),
                 onPressed: () {
-                  Navigator.popUntil(context, (route) => route.isFirst);
+                  Navigator.popUntil(
+                    context,
+                    (route) => route.isFirst,
+                  );
                 },
-                icon: const Icon(Icons.logout_rounded, size: 18),
-                label: const Text('Logout', style: TextStyle(fontSize: 16)),
+                icon: const Icon(
+                  Icons.logout_rounded,
+                  size: 18,
+                ),
+                label: const Text(
+                  'Logout',
+                  style: TextStyle(fontSize: 16),
+                ),
               ),
             ),
           ],
@@ -2603,3 +3004,5 @@ class CustomerProfileScreen extends StatelessWidget {
     );
   }
 }
+
+
