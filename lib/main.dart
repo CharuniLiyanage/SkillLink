@@ -1,6 +1,11 @@
 import 'package:flutter/material.dart';
 import 'services/api_service.dart';
 
+class Session {
+  static String? email;
+  static List<String> roles = [];
+}
+
 void main() {
   ApiService.testConnection();
 
@@ -96,24 +101,33 @@ class SkillLinkApp extends StatelessWidget {
         outlinedButtonTheme: OutlinedButtonThemeData(
           style: OutlinedButton.styleFrom(
             foregroundColor: AppColors.primary,
-            side: const BorderSide(color: AppColors.primary, width: 1.3),
+            side: const BorderSide(
+              color: AppColors.primary,
+              width: 1.3,
+            ),
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(12),
             ),
-            textStyle: const TextStyle(fontWeight: FontWeight.w600),
+            textStyle: const TextStyle(
+              fontWeight: FontWeight.w600,
+            ),
           ),
         ),
         textButtonTheme: TextButtonThemeData(
           style: TextButton.styleFrom(
             foregroundColor: AppColors.primary,
-            textStyle: const TextStyle(fontWeight: FontWeight.w600),
+            textStyle: const TextStyle(
+              fontWeight: FontWeight.w600,
+            ),
           ),
         ),
         inputDecorationTheme: InputDecorationTheme(
           filled: true,
           fillColor: const Color(0xFFEFF1F4),
-          contentPadding:
-              const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+          contentPadding: const EdgeInsets.symmetric(
+            horizontal: 16,
+            vertical: 14,
+          ),
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(12),
             borderSide: BorderSide.none,
@@ -124,16 +138,27 @@ class SkillLinkApp extends StatelessWidget {
           ),
           focusedBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(12),
-            borderSide: const BorderSide(color: AppColors.primary, width: 1.6),
+            borderSide: const BorderSide(
+              color: AppColors.primary,
+              width: 1.6,
+            ),
           ),
           errorBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(12),
-            borderSide: const BorderSide(color: AppColors.danger, width: 1.2),
+            borderSide: const BorderSide(
+              color: AppColors.danger,
+              width: 1.2,
+            ),
           ),
-          labelStyle: const TextStyle(color: AppColors.textSecondary),
-          hintStyle: const TextStyle(color: AppColors.textSecondary),
+          labelStyle: const TextStyle(
+            color: AppColors.textSecondary,
+          ),
+          hintStyle: const TextStyle(
+            color: AppColors.textSecondary,
+          ),
         ),
-        bottomNavigationBarTheme: const BottomNavigationBarThemeData(
+        bottomNavigationBarTheme:
+            const BottomNavigationBarThemeData(
           backgroundColor: Colors.white,
           selectedItemColor: AppColors.primary,
           unselectedItemColor: AppColors.textSecondary,
@@ -162,7 +187,11 @@ class SectionHeader extends StatelessWidget {
   final String title;
   final String? subtitle;
 
-  const SectionHeader({super.key, required this.title, this.subtitle});
+  const SectionHeader({
+    super.key,
+    required this.title,
+    this.subtitle,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -211,8 +240,10 @@ class InfoTile extends StatelessWidget {
     return Card(
       margin: const EdgeInsets.only(bottom: 12),
       child: ListTile(
-        contentPadding:
-            const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
+        contentPadding: const EdgeInsets.symmetric(
+          horizontal: 16,
+          vertical: 6,
+        ),
         leading: Container(
           width: 42,
           height: 42,
@@ -220,7 +251,11 @@ class InfoTile extends StatelessWidget {
             color: (iconColor ?? AppColors.primary).withOpacity(0.1),
             borderRadius: BorderRadius.circular(12),
           ),
-          child: Icon(icon, color: iconColor ?? AppColors.primary, size: 22),
+          child: Icon(
+            icon,
+            color: iconColor ?? AppColors.primary,
+            size: 22,
+          ),
         ),
         title: Text(
           title,
@@ -248,13 +283,20 @@ class InfoTile extends StatelessWidget {
 class StatusBadge extends StatelessWidget {
   final String status;
 
-  const StatusBadge({super.key, required this.status});
+  const StatusBadge({
+    super.key,
+    required this.status,
+  });
 
   @override
   Widget build(BuildContext context) {
     final color = AppColors.statusColor(status);
+
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+      padding: const EdgeInsets.symmetric(
+        horizontal: 10,
+        vertical: 5,
+      ),
       decoration: BoxDecoration(
         color: color.withOpacity(0.12),
         borderRadius: BorderRadius.circular(20),
@@ -272,13 +314,6 @@ class StatusBadge extends StatelessWidget {
 }
 
 //==================== Welcome Screen ====================
-//
-// This screen reuses the app's global AppColors (blue + white, the
-// same palette every other screen uses) so page 1 now looks
-// consistent with the rest of the app instead of standing out as a
-// separate dark theme. Layout uses Expanded sections so the content
-// fills the full screen height on every device, instead of leaving
-// blank space at the bottom.
 
 class WelcomeScreen extends StatelessWidget {
   const WelcomeScreen({super.key});
@@ -289,7 +324,6 @@ class WelcomeScreen extends StatelessWidget {
       backgroundColor: AppColors.background,
       body: Column(
         children: [
-          // ---- Top hero section: blue gradient banner ----
           Expanded(
             flex: 5,
             child: Container(
@@ -298,7 +332,10 @@ class WelcomeScreen extends StatelessWidget {
                 gradient: LinearGradient(
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
-                  colors: [AppColors.primary, AppColors.primaryDark],
+                  colors: [
+                    AppColors.primary,
+                    AppColors.primaryDark,
+                  ],
                 ),
                 borderRadius: BorderRadius.only(
                   bottomLeft: Radius.circular(36),
@@ -308,7 +345,9 @@ class WelcomeScreen extends StatelessWidget {
               child: SafeArea(
                 bottom: false,
                 child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 24),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 24,
+                  ),
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
@@ -355,16 +394,20 @@ class WelcomeScreen extends StatelessWidget {
               ),
             ),
           ),
-
-          // ---- Bottom section: white, fills remaining space ----
           Expanded(
             flex: 6,
             child: SafeArea(
               top: false,
               child: Padding(
-                padding: const EdgeInsets.fromLTRB(28, 28, 28, 24),
+                padding: const EdgeInsets.fromLTRB(
+                  28,
+                  28,
+                  28,
+                  24,
+                ),
                 child: Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  mainAxisAlignment:
+                      MainAxisAlignment.spaceBetween,
                   children: [
                     Column(
                       children: [
@@ -390,13 +433,23 @@ class WelcomeScreen extends StatelessWidget {
                         ),
                         const SizedBox(height: 26),
                         Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          mainAxisAlignment:
+                              MainAxisAlignment.spaceEvenly,
                           children: const [
-                            _WelcomeStat(value: '500+', label: 'Professionals'),
+                            _WelcomeStat(
+                              value: '500+',
+                              label: 'Professionals',
+                            ),
                             _WelcomeStatDivider(),
-                            _WelcomeStat(value: '4.8★', label: 'Avg. Rating'),
+                            _WelcomeStat(
+                              value: '4.8★',
+                              label: 'Avg. Rating',
+                            ),
                             _WelcomeStatDivider(),
-                            _WelcomeStat(value: '10k+', label: 'Bookings'),
+                            _WelcomeStat(
+                              value: '10k+',
+                              label: 'Bookings',
+                            ),
                           ],
                         ),
                       ],
@@ -411,19 +464,24 @@ class WelcomeScreen extends StatelessWidget {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                  builder: (context) => const LoginScreen(),
+                                  builder: (context) =>
+                                      const LoginScreen(),
                                 ),
                               );
                             },
                             child: const Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
+                              mainAxisAlignment:
+                                  MainAxisAlignment.center,
                               children: [
                                 Text(
                                   'Get Started',
                                   style: TextStyle(fontSize: 17),
                                 ),
                                 SizedBox(width: 8),
-                                Icon(Icons.arrow_forward_rounded, size: 20),
+                                Icon(
+                                  Icons.arrow_forward_rounded,
+                                  size: 20,
+                                ),
                               ],
                             ),
                           ),
@@ -450,12 +508,14 @@ class WelcomeScreen extends StatelessWidget {
   }
 }
 
-/// A single stat in the credibility row (e.g. "500+ / Professionals").
 class _WelcomeStat extends StatelessWidget {
   final String value;
   final String label;
 
-  const _WelcomeStat({required this.value, required this.label});
+  const _WelcomeStat({
+    required this.value,
+    required this.label,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -484,7 +544,6 @@ class _WelcomeStat extends StatelessWidget {
   }
 }
 
-/// A thin vertical divider between stats.
 class _WelcomeStatDivider extends StatelessWidget {
   const _WelcomeStatDivider();
 
@@ -542,11 +601,22 @@ class _LoginScreenState extends State<LoginScreen> {
     });
 
     if (loginData != null) {
-      final String token = loginData['token'];
-      final List<dynamic> roles = loginData['roles'];
+      final String token = loginData['token'].toString();
+
+      final List<dynamic> roles =
+          loginData['roles'] as List<dynamic>;
+
+      // Save logged-in user details
+      Session.email = emailController.text.trim();
+
+      Session.roles = roles
+          .map((role) => role.toString())
+          .toList();
 
       print('TOKEN: $token');
       print('ROLES: $roles');
+      print('SESSION EMAIL: ${Session.email}');
+      print('SESSION ROLES: ${Session.roles}');
 
       Navigator.push(
         context,
@@ -672,7 +742,8 @@ class _LoginScreenState extends State<LoginScreen> {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => const RegisterScreen(),
+                      builder: (context) =>
+                          const RegisterScreen(),
                     ),
                   );
                 },
@@ -725,7 +796,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
       return;
     }
 
-    if (passwordController.text != confirmPasswordController.text) {
+    if (passwordController.text !=
+        confirmPasswordController.text) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text('Passwords do not match.'),
@@ -759,7 +831,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const SizedBox(height: 10),
-
             Container(
               width: 84,
               height: 84,
@@ -773,9 +844,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 color: AppColors.secondary,
               ),
             ),
-
             const SizedBox(height: 20),
-
             const Text(
               'Create Your Account',
               style: TextStyle(
@@ -784,9 +853,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 color: AppColors.textPrimary,
               ),
             ),
-
             const SizedBox(height: 6),
-
             const Text(
               'Join SkillLink to get started',
               style: TextStyle(
@@ -794,9 +861,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 color: AppColors.textSecondary,
               ),
             ),
-
             const SizedBox(height: 28),
-
             TextField(
               controller: nameController,
               decoration: const InputDecoration(
@@ -804,9 +869,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 prefixIcon: Icon(Icons.person_outline),
               ),
             ),
-
             const SizedBox(height: 16),
-
             TextField(
               controller: emailController,
               keyboardType: TextInputType.emailAddress,
@@ -815,9 +878,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 prefixIcon: Icon(Icons.email_outlined),
               ),
             ),
-
             const SizedBox(height: 16),
-
             TextField(
               controller: phoneController,
               keyboardType: TextInputType.phone,
@@ -826,9 +887,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 prefixIcon: Icon(Icons.phone_outlined),
               ),
             ),
-
             const SizedBox(height: 16),
-
             TextField(
               controller: passwordController,
               obscureText: true,
@@ -837,9 +896,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 prefixIcon: Icon(Icons.lock_outline),
               ),
             ),
-
             const SizedBox(height: 16),
-
             TextField(
               controller: confirmPasswordController,
               obscureText: true,
@@ -848,9 +905,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 prefixIcon: Icon(Icons.lock_outline),
               ),
             ),
-
             const SizedBox(height: 28),
-
             SizedBox(
               width: double.infinity,
               height: 55,
@@ -862,9 +917,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 ),
               ),
             ),
-
             const SizedBox(height: 16),
-
             Center(
               child: TextButton(
                 onPressed: () {
@@ -892,7 +945,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
   }
 }
 
-
 //==================== Choose Role Screen ====================
 
 class ChooseRoleScreen extends StatefulWidget {
@@ -900,7 +952,6 @@ class ChooseRoleScreen extends StatefulWidget {
   final String email;
   final String password;
   final String phone;
-
   final List<String>? availableRoles;
   final bool isLoginFlow;
 
@@ -915,10 +966,12 @@ class ChooseRoleScreen extends StatefulWidget {
   });
 
   @override
-  State<ChooseRoleScreen> createState() => _ChooseRoleScreenState();
+  State<ChooseRoleScreen> createState() =>
+      _ChooseRoleScreenState();
 }
 
-class _ChooseRoleScreenState extends State<ChooseRoleScreen> {
+class _ChooseRoleScreenState
+    extends State<ChooseRoleScreen> {
   bool isLoading = false;
 
   Future<void> selectRole(String role) async {
@@ -933,14 +986,16 @@ class _ChooseRoleScreenState extends State<ChooseRoleScreen> {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => const CustomerHomeScreen(),
+            builder: (context) =>
+                const CustomerHomeScreen(),
           ),
         );
       } else if (role == 'PROVIDER') {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => const ProviderDashboardScreen(),
+            builder: (context) =>
+                const ProviderDashboardScreen(),
           ),
         );
       }
@@ -971,21 +1026,25 @@ class _ChooseRoleScreenState extends State<ChooseRoleScreen> {
     print('REGISTRATION SUCCESS: $success');
 
     if (success) {
+      // IMPORTANT:
+      Session.email = widget.email;
+      Session.roles = [role];
+
       if (role == 'CUSTOMER') {
-        Navigator.pushAndRemoveUntil(
+        Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => const CustomerHomeScreen(),
+            builder: (context) =>
+                const CustomerHomeScreen(),
           ),
-          (route) => false,
         );
       } else if (role == 'PROVIDER') {
-        Navigator.pushAndRemoveUntil(
+        Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => const ProviderDashboardScreen(),
+            builder: (context) =>
+                const ProviderDashboardScreen(),
           ),
-          (route) => false,
         );
       }
     } else {
@@ -1003,11 +1062,11 @@ class _ChooseRoleScreenState extends State<ChooseRoleScreen> {
   Widget build(BuildContext context) {
     final bool showCustomer =
         widget.availableRoles == null ||
-        widget.availableRoles!.contains('CUSTOMER');
+            widget.availableRoles!.contains('CUSTOMER');
 
     final bool showProvider =
         widget.availableRoles == null ||
-        widget.availableRoles!.contains('PROVIDER');
+            widget.availableRoles!.contains('PROVIDER');
 
     return Scaffold(
       appBar: AppBar(
@@ -1028,9 +1087,7 @@ class _ChooseRoleScreenState extends State<ChooseRoleScreen> {
                 height: 1.25,
               ),
             ),
-
             const SizedBox(height: 8),
-
             const Text(
               'Choose how you want to use SkillLink.',
               style: TextStyle(
@@ -1038,10 +1095,7 @@ class _ChooseRoleScreenState extends State<ChooseRoleScreen> {
                 color: AppColors.textSecondary,
               ),
             ),
-
             const SizedBox(height: 36),
-
-            // ================= CUSTOMER =================
 
             if (showCustomer)
               _roleCard(
@@ -1055,8 +1109,6 @@ class _ChooseRoleScreenState extends State<ChooseRoleScreen> {
                     ? () {}
                     : () => selectRole('CUSTOMER'),
               ),
-
-            // ================= PROVIDER =================
 
             if (showCustomer && showProvider)
               const SizedBox(height: 18),
@@ -1076,17 +1128,12 @@ class _ChooseRoleScreenState extends State<ChooseRoleScreen> {
 
             if (isLoading) ...[
               const SizedBox(height: 25),
-
               const Center(
                 child: CircularProgressIndicator(),
               ),
-
               const SizedBox(height: 10),
-
               const Center(
-                child: Text(
-                  'Please wait...',
-                ),
+                child: Text('Please wait...'),
               ),
             ],
           ],
@@ -1126,9 +1173,7 @@ class _ChooseRoleScreenState extends State<ChooseRoleScreen> {
                     color: color,
                   ),
                 ),
-
                 const SizedBox(width: 16),
-
                 Expanded(
                   child: Column(
                     crossAxisAlignment:
@@ -1142,9 +1187,7 @@ class _ChooseRoleScreenState extends State<ChooseRoleScreen> {
                           color: AppColors.textPrimary,
                         ),
                       ),
-
                       const SizedBox(height: 4),
-
                       Text(
                         subtitle,
                         style: const TextStyle(
@@ -1155,7 +1198,6 @@ class _ChooseRoleScreenState extends State<ChooseRoleScreen> {
                     ],
                   ),
                 ),
-
                 const Icon(
                   Icons.arrow_forward_ios_rounded,
                   size: 16,
@@ -1178,15 +1220,51 @@ class CustomerHomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final services = [
-      {'name': 'Electrician', 'icon': Icons.electrical_services_rounded, 'color': const Color(0xFF2F6FED)},
-      {'name': 'Plumber', 'icon': Icons.plumbing_rounded, 'color': const Color(0xFF17A2A0)},
-      {'name': 'Carpenter', 'icon': Icons.carpenter_rounded, 'color': const Color(0xFFB5652C)},
-      {'name': 'Mason', 'icon': Icons.foundation_rounded, 'color': const Color(0xFF6B7280)},
-      {'name': 'Mechanic', 'icon': Icons.car_repair_rounded, 'color': const Color(0xFFE5484D)},
-      {'name': 'AC Technician', 'icon': Icons.ac_unit_rounded, 'color': const Color(0xFF2CB1E8)},
-      {'name': 'Computer Technician', 'icon': Icons.computer_rounded, 'color': const Color(0xFF7C5CFC)},
-      {'name': 'Phone Repair', 'icon': Icons.phone_android_rounded, 'color': const Color(0xFF22A559)},
-      {'name': 'Painter', 'icon': Icons.format_paint_rounded, 'color': const Color(0xFFFF8A3D)},
+      {
+        'name': 'Electrician',
+        'icon': Icons.electrical_services_rounded,
+        'color': const Color(0xFF2F6FED),
+      },
+      {
+        'name': 'Plumber',
+        'icon': Icons.plumbing_rounded,
+        'color': const Color(0xFF17A2A0),
+      },
+      {
+        'name': 'Carpenter',
+        'icon': Icons.carpenter_rounded,
+        'color': const Color(0xFFB5652C),
+      },
+      {
+        'name': 'Mason',
+        'icon': Icons.foundation_rounded,
+        'color': const Color(0xFF6B7280),
+      },
+      {
+        'name': 'Mechanic',
+        'icon': Icons.car_repair_rounded,
+        'color': const Color(0xFFE5484D),
+      },
+      {
+        'name': 'AC Technician',
+        'icon': Icons.ac_unit_rounded,
+        'color': const Color(0xFF2CB1E8),
+      },
+      {
+        'name': 'Computer Technician',
+        'icon': Icons.computer_rounded,
+        'color': const Color(0xFF7C5CFC),
+      },
+      {
+        'name': 'Phone Repair',
+        'icon': Icons.phone_android_rounded,
+        'color': const Color(0xFF22A559),
+      },
+      {
+        'name': 'Painter',
+        'icon': Icons.format_paint_rounded,
+        'color': const Color(0xFFFF8A3D),
+      },
     ];
 
     return Scaffold(
@@ -1194,16 +1272,22 @@ class CustomerHomeScreen extends StatelessWidget {
         title: const Text('SkillLink'),
         actions: [
           IconButton(
-            onPressed: () {
-              // Notifications will be added later
-            },
-            icon: const Icon(Icons.notifications_outlined),
+            onPressed: () {},
+            icon: const Icon(
+              Icons.notifications_outlined,
+            ),
           ),
           const SizedBox(width: 8),
         ],
       ),
+
       body: SingleChildScrollView(
-        padding: const EdgeInsets.fromLTRB(16, 0, 16, 24),
+        padding: const EdgeInsets.fromLTRB(
+          16,
+          0,
+          16,
+          24,
+        ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -1215,74 +1299,195 @@ class CustomerHomeScreen extends StatelessWidget {
                 color: AppColors.textPrimary,
               ),
             ),
+
             const SizedBox(height: 4),
+
             const Text(
               'What service do you need today?',
-              style: TextStyle(fontSize: 15, color: AppColors.textSecondary),
+              style: TextStyle(
+                fontSize: 15,
+                color: AppColors.textSecondary,
+              ),
             ),
+
             const SizedBox(height: 20),
+
             TextField(
               decoration: InputDecoration(
                 hintText: 'Search for a service...',
-                prefixIcon: const Icon(Icons.search_rounded),
+                prefixIcon: const Icon(
+                  Icons.search_rounded,
+                ),
               ),
             ),
+
+            const SizedBox(height: 20),
+
+            // ==================== Become Provider Banner ====================
+
+            Card(
+              elevation: 0,
+              color: AppColors.primary,
+              child: InkWell(
+                borderRadius: BorderRadius.circular(16),
+
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) =>
+                          const BecomeProviderScreen(),
+                    ),
+                  );
+                },
+
+                child: Padding(
+                  padding: const EdgeInsets.all(18),
+
+                  child: Row(
+                    children: [
+                      Container(
+                        width: 52,
+                        height: 52,
+                        decoration: BoxDecoration(
+                          color: Colors.white.withOpacity(0.15),
+                          borderRadius:
+                              BorderRadius.circular(14),
+                        ),
+                        child: const Icon(
+                          Icons.handyman_rounded,
+                          color: Colors.white,
+                          size: 28,
+                        ),
+                      ),
+
+                      const SizedBox(width: 14),
+
+                      const Expanded(
+                        child: Column(
+                          crossAxisAlignment:
+                              CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              'Become a Service Provider',
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 16,
+                                fontWeight: FontWeight.w800,
+                              ),
+                            ),
+
+                            SizedBox(height: 4),
+
+                            Text(
+                              'Offer your skills and earn through SkillLink',
+                              style: TextStyle(
+                                color: Colors.white70,
+                                fontSize: 12.5,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+
+                      const Icon(
+                        Icons.arrow_forward_ios_rounded,
+                        color: Colors.white,
+                        size: 17,
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+
             const SizedBox(height: 28),
-            const SectionHeader(title: 'Service Categories'),
+
+            const SectionHeader(
+              title: 'Service Categories',
+            ),
+
             const SizedBox(height: 16),
+
             GridView.builder(
               shrinkWrap: true,
-              physics: const NeverScrollableScrollPhysics(),
+              physics:
+                  const NeverScrollableScrollPhysics(),
+
               itemCount: services.length,
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+
+              gridDelegate:
+                  const SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: 3,
                 crossAxisSpacing: 12,
                 mainAxisSpacing: 12,
                 childAspectRatio: 0.85,
               ),
+
               itemBuilder: (context, index) {
                 final service = services[index];
-                final color = service['color'] as Color;
+
+                final color =
+                    service['color'] as Color;
 
                 return Card(
                   child: InkWell(
-                    borderRadius: BorderRadius.circular(16),
+                    borderRadius:
+                        BorderRadius.circular(16),
+
                     onTap: () {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => ProviderListScreen(
-                            serviceName: service['name'] as String,
+                          builder: (context) =>
+                              ProviderListScreen(
+                            serviceName:
+                                service['name'] as String,
                           ),
                         ),
                       );
                     },
+
                     child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 8),
+                      padding:
+                          const EdgeInsets.symmetric(
+                        horizontal: 8,
+                      ),
+
                       child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
+                        mainAxisAlignment:
+                            MainAxisAlignment.center,
+
                         children: [
                           Container(
                             width: 48,
                             height: 48,
                             decoration: BoxDecoration(
-                              color: color.withOpacity(0.12),
-                              borderRadius: BorderRadius.circular(12),
+                              color:
+                                  color.withOpacity(0.12),
+                              borderRadius:
+                                  BorderRadius.circular(12),
                             ),
+
                             child: Icon(
                               service['icon'] as IconData,
                               size: 26,
                               color: color,
                             ),
                           ),
+
                           const SizedBox(height: 10),
+
                           Text(
                             service['name'] as String,
                             textAlign: TextAlign.center,
+
                             style: const TextStyle(
-                              fontWeight: FontWeight.w600,
+                              fontWeight:
+                                  FontWeight.w600,
                               fontSize: 12.5,
-                              color: AppColors.textPrimary,
+                              color:
+                                  AppColors.textPrimary,
                             ),
                           ),
                         ],
@@ -1295,40 +1500,54 @@ class CustomerHomeScreen extends StatelessWidget {
           ],
         ),
       ),
+
+      // ==================== Bottom Navigation ====================
+
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: 0,
+
         onTap: (index) {
           if (index == 1) {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => const CustomerBookingsScreen(),
+                builder: (context) =>
+                    const CustomerBookingsScreen(),
               ),
             );
           }
+
           if (index == 2) {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => const CustomerProfileScreen(),
+                builder: (context) =>
+                    const CustomerProfileScreen(),
               ),
             );
           }
         },
+
         items: const [
           BottomNavigationBarItem(
             icon: Icon(Icons.home_outlined),
-            activeIcon: Icon(Icons.home_rounded),
+            activeIcon:
+                Icon(Icons.home_rounded),
             label: 'Home',
           ),
+
           BottomNavigationBarItem(
-            icon: Icon(Icons.calendar_month_outlined),
-            activeIcon: Icon(Icons.calendar_month_rounded),
+            icon:
+                Icon(Icons.calendar_month_outlined),
+            activeIcon:
+                Icon(Icons.calendar_month_rounded),
             label: 'Bookings',
           ),
+
           BottomNavigationBarItem(
             icon: Icon(Icons.person_outline),
-            activeIcon: Icon(Icons.person_rounded),
+            activeIcon:
+                Icon(Icons.person_rounded),
             label: 'Profile',
           ),
         ],
@@ -1336,18 +1555,265 @@ class CustomerHomeScreen extends StatelessWidget {
     );
   }
 }
+//==================== Become Provider Screen ====================
 
+class BecomeProviderScreen extends StatefulWidget {
+  const BecomeProviderScreen({super.key});
+
+  @override
+  State<BecomeProviderScreen> createState() =>
+      _BecomeProviderScreenState();
+}
+
+class _BecomeProviderScreenState
+    extends State<BecomeProviderScreen> {
+
+  bool isLoading = false;
+
+  // ==================== Become Provider ====================
+
+  Future<void> becomeProvider() async {
+    final email = Session.email;
+
+    // Check login session
+    if (email == null || email.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text(
+            'User session not found. Please login again.',
+          ),
+        ),
+      );
+
+      return;
+    }
+
+    // Already a provider
+    if (Session.roles.contains('PROVIDER')) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) =>
+              const ProviderDashboardScreen(),
+        ),
+      );
+
+      return;
+    }
+
+    // Start loading
+    setState(() {
+      isLoading = true;
+    });
+
+    // Call backend API
+    final success = await ApiService.addRole(
+      email: email,
+      role: 'PROVIDER',
+    );
+
+    if (!mounted) return;
+
+    // Stop loading
+    setState(() {
+      isLoading = false;
+    });
+
+    // ==================== Success ====================
+
+    if (success) {
+      // Add provider role to current session
+      Session.roles.add('PROVIDER');
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text(
+            'You are now a Service Provider!',
+          ),
+        ),
+      );
+
+      // Go to Provider Dashboard
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) =>
+              const ProviderDashboardScreen(),
+        ),
+      );
+    }
+
+    // ==================== Failed ====================
+
+    else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text(
+            'Could not become a Service Provider.',
+          ),
+        ),
+      );
+    }
+  }
+
+  // ==================== UI ====================
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text(
+          'Become a Service Provider',
+        ),
+      ),
+
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.all(20),
+
+        child: Column(
+          children: [
+
+            // ==================== Icon ====================
+
+            Container(
+              width: 100,
+              height: 100,
+
+              decoration: BoxDecoration(
+                color:
+                    AppColors.primary.withOpacity(0.1),
+                shape: BoxShape.circle,
+              ),
+
+              child: const Icon(
+                Icons.handyman_rounded,
+                size: 52,
+                color: AppColors.primary,
+              ),
+            ),
+
+            const SizedBox(height: 22),
+
+            // ==================== Title ====================
+
+            const Text(
+              'Start Offering Your Skills',
+              textAlign: TextAlign.center,
+
+              style: TextStyle(
+                fontSize: 26,
+                fontWeight: FontWeight.w800,
+                color: AppColors.textPrimary,
+              ),
+            ),
+
+            const SizedBox(height: 10),
+
+            // ==================== Description ====================
+
+            const Text(
+              'Become a SkillLink service provider and connect with customers who need your skills.',
+              textAlign: TextAlign.center,
+
+              style: TextStyle(
+                fontSize: 15,
+                height: 1.5,
+                color: AppColors.textSecondary,
+              ),
+            ),
+
+            const SizedBox(height: 30),
+
+            // ==================== Info 1 ====================
+
+            InfoTile(
+              icon: Icons.people_alt_rounded,
+              title: 'Reach Customers',
+              subtitle:
+                  'Connect with people looking for your services.',
+            ),
+
+            // ==================== Info 2 ====================
+
+            InfoTile(
+              icon: Icons.work_rounded,
+              title: 'Show Your Skills',
+              subtitle:
+                  'Create your provider profile and list your services.',
+              iconColor: AppColors.secondary,
+            ),
+
+            // ==================== Info 3 ====================
+
+            InfoTile(
+              icon: Icons.trending_up_rounded,
+              title: 'Grow Your Business',
+              subtitle:
+                  'Receive service requests through SkillLink.',
+              iconColor: AppColors.success,
+            ),
+
+            const SizedBox(height: 14),
+
+            // ==================== Button ====================
+
+            SizedBox(
+              width: double.infinity,
+              height: 54,
+
+              child: ElevatedButton.icon(
+                onPressed:
+                    isLoading
+                        ? null
+                        : becomeProvider,
+
+                icon: isLoading
+                    ? const SizedBox(
+                        width: 20,
+                        height: 20,
+
+                        child:
+                            CircularProgressIndicator(
+                          strokeWidth: 2,
+                        ),
+                      )
+                    : const Icon(
+                        Icons.handyman_rounded,
+                      ),
+
+                label: Text(
+                  isLoading
+                      ? 'Becoming a Provider...'
+                      : 'Become a Service Provider',
+
+                  style: const TextStyle(
+                    fontSize: 16,
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
 //==================== Provider List Screen ====================
 
 class ProviderListScreen extends StatelessWidget {
   final String serviceName;
 
-  const ProviderListScreen({super.key, required this.serviceName});
+  const ProviderListScreen({
+    super.key,
+    required this.serviceName,
+  });
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('$serviceName Providers')),
+      appBar: AppBar(
+        title: Text('$serviceName Providers'),
+      ),
       body: ListView(
         padding: const EdgeInsets.all(16),
         children: [
@@ -1393,7 +1859,8 @@ class ProviderListScreen extends StatelessWidget {
           Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) => ProviderProfileScreen(
+              builder: (context) =>
+                  ProviderProfileScreen(
                 name: name,
                 location: location,
                 experience: experience,
@@ -1409,7 +1876,8 @@ class ProviderListScreen extends StatelessWidget {
             children: [
               CircleAvatar(
                 radius: 30,
-                backgroundColor: AppColors.primary.withOpacity(0.1),
+                backgroundColor:
+                    AppColors.primary.withOpacity(0.1),
                 child: const Icon(
                   Icons.person_rounded,
                   size: 30,
@@ -1419,7 +1887,8 @@ class ProviderListScreen extends StatelessWidget {
               const SizedBox(width: 14),
               Expanded(
                 child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                  crossAxisAlignment:
+                      CrossAxisAlignment.start,
                   children: [
                     Text(
                       name,
@@ -1441,7 +1910,8 @@ class ProviderListScreen extends StatelessWidget {
                         Text(
                           location,
                           style: const TextStyle(
-                            color: AppColors.textSecondary,
+                            color:
+                                AppColors.textSecondary,
                             fontSize: 13,
                           ),
                         ),
@@ -1460,15 +1930,23 @@ class ProviderListScreen extends StatelessWidget {
               ),
               Container(
                 padding:
-                    const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                    const EdgeInsets.symmetric(
+                  horizontal: 10,
+                  vertical: 6,
+                ),
                 decoration: BoxDecoration(
-                  color: AppColors.warning.withOpacity(0.12),
-                  borderRadius: BorderRadius.circular(12),
+                  color:
+                      AppColors.warning.withOpacity(0.12),
+                  borderRadius:
+                      BorderRadius.circular(12),
                 ),
                 child: Row(
                   children: [
-                    const Icon(Icons.star_rounded,
-                        color: AppColors.warning, size: 18),
+                    const Icon(
+                      Icons.star_rounded,
+                      color: AppColors.warning,
+                      size: 18,
+                    ),
                     const SizedBox(width: 3),
                     Text(
                       rating,
@@ -1510,14 +1988,17 @@ class ProviderProfileScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Provider Profile')),
+      appBar: AppBar(
+        title: const Text('Provider Profile'),
+      ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(20),
         child: Column(
           children: [
             CircleAvatar(
               radius: 55,
-              backgroundColor: AppColors.primary.withOpacity(0.1),
+              backgroundColor:
+                  AppColors.primary.withOpacity(0.1),
               child: const Icon(
                 Icons.person_rounded,
                 size: 58,
@@ -1536,10 +2017,15 @@ class ProviderProfileScreen extends StatelessWidget {
             const SizedBox(height: 6),
             Container(
               padding:
-                  const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
+                  const EdgeInsets.symmetric(
+                horizontal: 14,
+                vertical: 6,
+              ),
               decoration: BoxDecoration(
-                color: AppColors.primary.withOpacity(0.1),
-                borderRadius: BorderRadius.circular(20),
+                color:
+                    AppColors.primary.withOpacity(0.1),
+                borderRadius:
+                    BorderRadius.circular(20),
               ),
               child: Text(
                 serviceName,
@@ -1552,10 +2038,14 @@ class ProviderProfileScreen extends StatelessWidget {
             ),
             const SizedBox(height: 14),
             Row(
-              mainAxisAlignment: MainAxisAlignment.center,
+              mainAxisAlignment:
+                  MainAxisAlignment.center,
               children: [
-                const Icon(Icons.star_rounded,
-                    color: AppColors.warning, size: 22),
+                const Icon(
+                  Icons.star_rounded,
+                  color: AppColors.warning,
+                  size: 22,
+                ),
                 const SizedBox(width: 6),
                 Text(
                   rating,
@@ -1582,7 +2072,8 @@ class ProviderProfileScreen extends StatelessWidget {
             InfoTile(
               icon: Icons.verified_rounded,
               title: 'Verified Provider',
-              subtitle: 'Identity verification will be available later.',
+              subtitle:
+                  'Identity verification will be available later.',
               iconColor: AppColors.success,
             ),
             const SizedBox(height: 12),
@@ -1594,7 +2085,8 @@ class ProviderProfileScreen extends StatelessWidget {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => RequestServiceScreen(
+                      builder: (context) =>
+                          RequestServiceScreen(
                         providerName: name,
                         serviceName: serviceName,
                       ),
@@ -1627,24 +2119,30 @@ class RequestServiceScreen extends StatefulWidget {
   });
 
   @override
-  State<RequestServiceScreen> createState() => _RequestServiceScreenState();
+  State<RequestServiceScreen> createState() =>
+      _RequestServiceScreenState();
 }
 
-class _RequestServiceScreenState extends State<RequestServiceScreen> {
+class _RequestServiceScreenState
+    extends State<RequestServiceScreen> {
   final _formKey = GlobalKey<FormState>();
-  final TextEditingController addressController = TextEditingController();
-  final TextEditingController descriptionController = TextEditingController();
+  final TextEditingController addressController =
+      TextEditingController();
+  final TextEditingController descriptionController =
+      TextEditingController();
 
   DateTime? selectedDate;
   TimeOfDay? selectedTime;
 
   Future<void> selectDate() async {
-    final DateTime? pickedDate = await showDatePicker(
+    final DateTime? pickedDate =
+        await showDatePicker(
       context: context,
       initialDate: DateTime.now(),
       firstDate: DateTime.now(),
       lastDate: DateTime(2030),
     );
+
     if (pickedDate != null) {
       setState(() {
         selectedDate = pickedDate;
@@ -1653,10 +2151,12 @@ class _RequestServiceScreenState extends State<RequestServiceScreen> {
   }
 
   Future<void> selectTime() async {
-    final TimeOfDay? pickedTime = await showTimePicker(
+    final TimeOfDay? pickedTime =
+        await showTimePicker(
       context: context,
       initialTime: TimeOfDay.now(),
     );
+
     if (pickedTime != null) {
       setState(() {
         selectedTime = pickedTime;
@@ -1666,15 +2166,23 @@ class _RequestServiceScreenState extends State<RequestServiceScreen> {
 
   void submitRequest() {
     if (_formKey.currentState!.validate()) {
-      if (selectedDate == null || selectedTime == null) {
+      if (selectedDate == null ||
+          selectedTime == null) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Please select date and time.')),
+          const SnackBar(
+            content: Text(
+              'Please select date and time.',
+            ),
+          ),
         );
         return;
       }
+
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-          content: Text('Service request submitted successfully!'),
+          content: Text(
+            'Service request submitted successfully!',
+          ),
           backgroundColor: AppColors.success,
         ),
       );
@@ -1684,15 +2192,20 @@ class _RequestServiceScreenState extends State<RequestServiceScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Request Service')),
+      appBar: AppBar(
+        title: const Text('Request Service'),
+      ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(20),
         child: Form(
           key: _formKey,
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+            crossAxisAlignment:
+                CrossAxisAlignment.start,
             children: [
-              const SectionHeader(title: 'Service Details'),
+              const SectionHeader(
+                title: 'Service Details',
+              ),
               const SizedBox(height: 18),
               InfoTile(
                 icon: Icons.person_rounded,
@@ -1719,7 +2232,10 @@ class _RequestServiceScreenState extends State<RequestServiceScreen> {
                 height: 52,
                 child: OutlinedButton.icon(
                   onPressed: selectDate,
-                  icon: const Icon(Icons.calendar_today_rounded, size: 18),
+                  icon: const Icon(
+                    Icons.calendar_today_rounded,
+                    size: 18,
+                  ),
                   label: Text(
                     selectedDate == null
                         ? 'Choose Date'
@@ -1741,7 +2257,10 @@ class _RequestServiceScreenState extends State<RequestServiceScreen> {
                 height: 52,
                 child: OutlinedButton.icon(
                   onPressed: selectTime,
-                  icon: const Icon(Icons.access_time_rounded, size: 18),
+                  icon: const Icon(
+                    Icons.access_time_rounded,
+                    size: 18,
+                  ),
                   label: Text(
                     selectedTime == null
                         ? 'Choose Time'
@@ -1761,12 +2280,16 @@ class _RequestServiceScreenState extends State<RequestServiceScreen> {
               TextFormField(
                 controller: addressController,
                 maxLines: 2,
-                decoration: InputDecoration(
-                  hintText: 'Enter your service address',
-                  prefixIcon: const Icon(Icons.location_on_outlined),
+                decoration: const InputDecoration(
+                  hintText:
+                      'Enter your service address',
+                  prefixIcon: Icon(
+                    Icons.location_on_outlined,
+                  ),
                 ),
                 validator: (value) {
-                  if (value == null || value.trim().isEmpty) {
+                  if (value == null ||
+                      value.trim().isEmpty) {
                     return 'Please enter your address';
                   }
                   return null;
@@ -1784,12 +2307,16 @@ class _RequestServiceScreenState extends State<RequestServiceScreen> {
               TextFormField(
                 controller: descriptionController,
                 maxLines: 4,
-                decoration: InputDecoration(
-                  hintText: 'Describe what service you need...',
-                  prefixIcon: const Icon(Icons.description_outlined),
+                decoration: const InputDecoration(
+                  hintText:
+                      'Describe what service you need...',
+                  prefixIcon: Icon(
+                    Icons.description_outlined,
+                  ),
                 ),
                 validator: (value) {
-                  if (value == null || value.trim().isEmpty) {
+                  if (value == null ||
+                      value.trim().isEmpty) {
                     return 'Please describe your problem';
                   }
                   return null;
@@ -1801,7 +2328,10 @@ class _RequestServiceScreenState extends State<RequestServiceScreen> {
                 height: 54,
                 child: ElevatedButton.icon(
                   onPressed: submitRequest,
-                  icon: const Icon(Icons.send_rounded, size: 18),
+                  icon: const Icon(
+                    Icons.send_rounded,
+                    size: 18,
+                  ),
                   label: const Text(
                     'Submit Request',
                     style: TextStyle(fontSize: 17),
@@ -1828,6 +2358,74 @@ class _RequestServiceScreenState extends State<RequestServiceScreen> {
 class ProviderDashboardScreen extends StatelessWidget {
   const ProviderDashboardScreen({super.key});
 
+  // ==================== Switch to Customer ====================
+
+  Future<void> switchToCustomer(BuildContext context) async {
+    final email = Session.email;
+
+    // Check session
+    if (email == null || email.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text(
+            'User session not found. Please login again.',
+          ),
+        ),
+      );
+
+      return;
+    }
+
+    // Customer role already exists
+    if (Session.roles.contains('CUSTOMER')) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => const CustomerHomeScreen(),
+        ),
+      );
+
+      return;
+    }
+
+    // Add CUSTOMER role
+    final success = await ApiService.addRole(
+      email: email,
+      role: 'CUSTOMER',
+    );
+
+    if (!context.mounted) return;
+
+    if (success) {
+      // Update current session
+      Session.roles.add('CUSTOMER');
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text(
+            'You can now use SkillLink as a Customer!',
+          ),
+        ),
+      );
+
+      // Go to Customer Home
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => const CustomerHomeScreen(),
+        ),
+      );
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text(
+            'Could not switch to Customer.',
+          ),
+        ),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -1836,15 +2434,21 @@ class ProviderDashboardScreen extends StatelessWidget {
         actions: [
           IconButton(
             onPressed: () {},
-            icon: const Icon(Icons.notifications_outlined),
+            icon: const Icon(
+              Icons.notifications_outlined,
+            ),
           ),
           const SizedBox(width: 8),
         ],
       ),
+
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(20),
+
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+          crossAxisAlignment:
+              CrossAxisAlignment.start,
+
           children: [
             const Text(
               'Welcome, Service Provider!',
@@ -1854,92 +2458,149 @@ class ProviderDashboardScreen extends StatelessWidget {
                 color: AppColors.textPrimary,
               ),
             ),
+
             const SizedBox(height: 6),
+
             const Text(
               'Manage your services and customer requests.',
-              style: TextStyle(fontSize: 14, color: AppColors.textSecondary),
+              style: TextStyle(
+                fontSize: 14,
+                color: AppColors.textSecondary,
+              ),
             ),
+
             const SizedBox(height: 24),
+
+            // ==================== My Profile ====================
+
             _dashboardTile(
               context,
               icon: Icons.person_rounded,
               color: AppColors.primary,
               title: 'My Profile',
-              subtitle: 'View and edit your provider profile',
+              subtitle:
+                  'View and edit your provider profile',
               onTap: () {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => const ProviderProfileEditScreen(),
+                    builder: (context) =>
+                        const ProviderProfileEditScreen(),
                   ),
                 );
               },
             ),
+
             const SizedBox(height: 12),
+
+            // ==================== My Services ====================
+
             _dashboardTile(
               context,
               icon: Icons.build_rounded,
               color: AppColors.secondary,
               title: 'My Services',
-              subtitle: 'Manage the services you provide',
+              subtitle:
+                  'Manage the services you provide',
               onTap: () {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => const MyServicesScreen(),
+                    builder: (context) =>
+                        const MyServicesScreen(),
                   ),
                 );
               },
             ),
+
             const SizedBox(height: 12),
+
+            // ==================== Service Requests ====================
+
             _dashboardTile(
               context,
               icon: Icons.assignment_rounded,
               color: AppColors.warning,
               title: 'Service Requests',
-              subtitle: 'View customer service requests',
+              subtitle:
+                  'View customer service requests',
               onTap: () {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => const ServiceRequestsScreen(),
+                    builder: (context) =>
+                        const ServiceRequestsScreen(),
                   ),
                 );
               },
             ),
+
             const SizedBox(height: 12),
+
+            // ==================== My Bookings ====================
+
             _dashboardTile(
               context,
               icon: Icons.calendar_month_rounded,
               color: AppColors.success,
               title: 'My Bookings',
-              subtitle: 'View accepted and completed bookings',
+              subtitle:
+                  'View accepted and completed bookings',
               onTap: () {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => const ProviderBookingsScreen(),
+                    builder: (context) =>
+                        const ProviderBookingsScreen(),
                   ),
                 );
               },
             ),
+
+            const SizedBox(height: 12),
+
+            // ==================== Switch to Customer ====================
+
+            _dashboardTile(
+              context,
+              icon: Icons.person_search_rounded,
+              color: AppColors.primary,
+              title: 'Switch to Customer',
+              subtitle:
+                  'Find and book services from other providers',
+              onTap: () {
+                switchToCustomer(context);
+              },
+            ),
+
             const SizedBox(height: 28),
-            const SectionHeader(title: 'Overview'),
+
+            // ==================== Overview ====================
+
+            const SectionHeader(
+              title: 'Overview',
+            ),
+
             const SizedBox(height: 16),
+
             Row(
               children: [
                 Expanded(
                   child: _statCard(
-                    icon: Icons.pending_actions_rounded,
+                    icon:
+                        Icons.pending_actions_rounded,
                     title: 'Requests',
                     value: '0',
                     color: AppColors.warning,
                   ),
                 ),
+
                 const SizedBox(width: 12),
+
                 Expanded(
                   child: _statCard(
-                    icon: Icons.check_circle_rounded,
+                    icon:
+                        Icons.check_circle_rounded,
                     title: 'Completed',
                     value: '0',
                     color: AppColors.success,
@@ -1947,7 +2608,9 @@ class ProviderDashboardScreen extends StatelessWidget {
                 ),
               ],
             ),
+
             const SizedBox(height: 12),
+
             Row(
               children: [
                 Expanded(
@@ -1958,7 +2621,9 @@ class ProviderDashboardScreen extends StatelessWidget {
                     color: AppColors.secondary,
                   ),
                 ),
+
                 const SizedBox(width: 12),
+
                 Expanded(
                   child: _statCard(
                     icon: Icons.people_rounded,
@@ -1975,6 +2640,8 @@ class ProviderDashboardScreen extends StatelessWidget {
     );
   }
 
+  // ==================== Dashboard Tile ====================
+
   Widget _dashboardTile(
     BuildContext context, {
     required IconData icon,
@@ -1987,43 +2654,61 @@ class ProviderDashboardScreen extends StatelessWidget {
       child: InkWell(
         borderRadius: BorderRadius.circular(16),
         onTap: onTap,
+
         child: Padding(
           padding: const EdgeInsets.all(16),
+
           child: Row(
             children: [
               Container(
                 width: 50,
                 height: 50,
+
                 decoration: BoxDecoration(
                   color: color.withOpacity(0.12),
-                  borderRadius: BorderRadius.circular(12),
+                  borderRadius:
+                      BorderRadius.circular(12),
                 ),
-                child: Icon(icon, color: color, size: 26),
+
+                child: Icon(
+                  icon,
+                  color: color,
+                  size: 26,
+                ),
               ),
+
               const SizedBox(width: 14),
+
               Expanded(
                 child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                  crossAxisAlignment:
+                      CrossAxisAlignment.start,
+
                   children: [
                     Text(
                       title,
                       style: const TextStyle(
                         fontWeight: FontWeight.w700,
                         fontSize: 16,
-                        color: AppColors.textPrimary,
+                        color:
+                            AppColors.textPrimary,
                       ),
                     ),
+
                     const SizedBox(height: 3),
+
                     Text(
                       subtitle,
                       style: const TextStyle(
                         fontSize: 12.5,
-                        color: AppColors.textSecondary,
+                        color:
+                            AppColors.textSecondary,
                       ),
                     ),
                   ],
                 ),
               ),
+
               const Icon(
                 Icons.arrow_forward_ios_rounded,
                 size: 16,
@@ -2036,6 +2721,8 @@ class ProviderDashboardScreen extends StatelessWidget {
     );
   }
 
+  // ==================== Stat Card ====================
+
   Widget _statCard({
     required IconData icon,
     required String title,
@@ -2045,18 +2732,28 @@ class ProviderDashboardScreen extends StatelessWidget {
     return Card(
       child: Padding(
         padding: const EdgeInsets.all(16),
+
         child: Column(
           children: [
             Container(
               width: 44,
               height: 44,
+
               decoration: BoxDecoration(
                 color: color.withOpacity(0.12),
-                borderRadius: BorderRadius.circular(12),
+                borderRadius:
+                    BorderRadius.circular(12),
               ),
-              child: Icon(icon, size: 22, color: color),
+
+              child: Icon(
+                icon,
+                size: 22,
+                color: color,
+              ),
             ),
+
             const SizedBox(height: 10),
+
             Text(
               value,
               style: const TextStyle(
@@ -2065,7 +2762,9 @@ class ProviderDashboardScreen extends StatelessWidget {
                 color: AppColors.textPrimary,
               ),
             ),
+
             const SizedBox(height: 4),
+
             Text(
               title,
               style: const TextStyle(
@@ -2092,49 +2791,220 @@ class ProviderProfileEditScreen extends StatefulWidget {
 
 class _ProviderProfileEditScreenState
     extends State<ProviderProfileEditScreen> {
-  final TextEditingController nameController = TextEditingController();
-  final TextEditingController phoneController = TextEditingController();
-  final TextEditingController locationController = TextEditingController();
-  final TextEditingController experienceController = TextEditingController();
-  final TextEditingController descriptionController = TextEditingController();
+  final TextEditingController nameController =
+      TextEditingController();
 
-  void saveProfile() {
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text('Profile saved successfully!'),
-        backgroundColor: AppColors.success,
-      ),
+  final TextEditingController phoneController =
+      TextEditingController();
+
+  final TextEditingController locationController =
+      TextEditingController();
+
+  final TextEditingController experienceController =
+      TextEditingController();
+
+  final TextEditingController descriptionController =
+      TextEditingController();
+
+  bool isLoading = false;
+
+  // ==================== Save Profile ====================
+
+  Future<void> saveProfile() async {
+    // Check session
+    final email = Session.email;
+
+    if (email == null || email.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text(
+            'User session not found. Please login again.',
+          ),
+        ),
+      );
+
+      return;
+    }
+
+    // Validate name
+    if (nameController.text.trim().isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text(
+            'Please enter your full name.',
+          ),
+        ),
+      );
+
+      return;
+    }
+
+    // Validate phone
+    if (phoneController.text.trim().isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text(
+            'Please enter your phone number.',
+          ),
+        ),
+      );
+
+      return;
+    }
+
+    // Validate location
+    if (locationController.text.trim().isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text(
+            'Please enter your location.',
+          ),
+        ),
+      );
+
+      return;
+    }
+
+    // Validate experience
+    if (experienceController.text.trim().isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text(
+            'Please enter your years of experience.',
+          ),
+        ),
+      );
+
+      return;
+    }
+
+    final experience =
+        int.tryParse(
+          experienceController.text.trim(),
+        );
+
+    if (experience == null || experience < 0) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text(
+            'Please enter a valid experience.',
+          ),
+        ),
+      );
+
+      return;
+    }
+
+    // Validate description
+    if (descriptionController.text.trim().isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text(
+            'Please enter a description about yourself.',
+          ),
+        ),
+      );
+
+      return;
+    }
+
+    // Start loading
+    setState(() {
+      isLoading = true;
+    });
+
+    // Call API
+    final success =
+        await ApiService.saveProviderProfile(
+      email: email,
+      location:
+          locationController.text.trim(),
+      experience: experience,
+      description:
+          descriptionController.text.trim(),
     );
+
+    if (!mounted) return;
+
+    // Stop loading
+    setState(() {
+      isLoading = false;
+    });
+
+    // ==================== Success ====================
+
+    if (success) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text(
+            'Profile saved successfully!',
+          ),
+          backgroundColor: AppColors.success,
+        ),
+      );
+    }
+
+    // ==================== Failed ====================
+
+    else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text(
+            'Could not save profile. Please try again.',
+          ),
+        ),
+      );
+    }
   }
+
+  // ==================== UI ====================
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('My Provider Profile')),
+      appBar: AppBar(
+        title: const Text(
+          'My Provider Profile',
+        ),
+      ),
+
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(20),
+
         child: Column(
           children: [
+            // ==================== Profile Photo ====================
+
             Stack(
               children: [
                 CircleAvatar(
                   radius: 55,
-                  backgroundColor: AppColors.primary.withOpacity(0.1),
+
+                  backgroundColor:
+                      AppColors.primary
+                          .withOpacity(0.1),
+
                   child: const Icon(
                     Icons.person_rounded,
                     size: 58,
                     color: AppColors.primary,
                   ),
                 ),
+
                 Positioned(
                   bottom: 0,
                   right: 0,
+
                   child: Container(
-                    padding: const EdgeInsets.all(6),
-                    decoration: const BoxDecoration(
+                    padding:
+                        const EdgeInsets.all(6),
+
+                    decoration:
+                        const BoxDecoration(
                       color: AppColors.primary,
                       shape: BoxShape.circle,
                     ),
+
                     child: const Icon(
                       Icons.camera_alt_rounded,
                       size: 16,
@@ -2144,71 +3014,159 @@ class _ProviderProfileEditScreenState
                 ),
               ],
             ),
+
             const SizedBox(height: 10),
+
             TextButton.icon(
               onPressed: () {},
-              icon: const Icon(Icons.camera_alt_outlined, size: 18),
-              label: const Text('Change Profile Photo'),
+
+              icon: const Icon(
+                Icons.camera_alt_outlined,
+                size: 18,
+              ),
+
+              label: const Text(
+                'Change Profile Photo',
+              ),
             ),
+
             const SizedBox(height: 20),
+
+            // ==================== Full Name ====================
+
             TextField(
               controller: nameController,
-              decoration: InputDecoration(
+
+              decoration:
+                  const InputDecoration(
                 labelText: 'Full Name',
-                hintText: 'Enter your full name',
-                prefixIcon: const Icon(Icons.person_outline),
+                hintText:
+                    'Enter your full name',
+                prefixIcon: Icon(
+                  Icons.person_outline,
+                ),
               ),
             ),
+
             const SizedBox(height: 16),
+
+            // ==================== Phone ====================
+
             TextField(
               controller: phoneController,
-              keyboardType: TextInputType.phone,
-              decoration: InputDecoration(
+
+              keyboardType:
+                  TextInputType.phone,
+
+              decoration:
+                  const InputDecoration(
                 labelText: 'Phone Number',
-                hintText: 'Enter your phone number',
-                prefixIcon: const Icon(Icons.phone_outlined),
+                hintText:
+                    'Enter your phone number',
+                prefixIcon: Icon(
+                  Icons.phone_outlined,
+                ),
               ),
             ),
+
             const SizedBox(height: 16),
+
+            // ==================== Location ====================
+
             TextField(
               controller: locationController,
-              decoration: InputDecoration(
+
+              decoration:
+                  const InputDecoration(
                 labelText: 'Location',
-                hintText: 'Enter your location',
-                prefixIcon: const Icon(Icons.location_on_outlined),
+                hintText:
+                    'Enter your location',
+                prefixIcon: Icon(
+                  Icons.location_on_outlined,
+                ),
               ),
             ),
+
             const SizedBox(height: 16),
+
+            // ==================== Experience ====================
+
             TextField(
-              controller: experienceController,
-              keyboardType: TextInputType.number,
-              decoration: InputDecoration(
+              controller:
+                  experienceController,
+
+              keyboardType:
+                  TextInputType.number,
+
+              decoration:
+                  const InputDecoration(
                 labelText: 'Experience',
-                hintText: 'Years of experience',
-                prefixIcon: const Icon(Icons.work_outline),
+                hintText:
+                    'Years of experience',
+                prefixIcon: Icon(
+                  Icons.work_outline,
+                ),
               ),
             ),
+
             const SizedBox(height: 16),
+
+            // ==================== About Me ====================
+
             TextField(
-              controller: descriptionController,
+              controller:
+                  descriptionController,
+
               maxLines: 4,
-              decoration: InputDecoration(
+
+              decoration:
+                  const InputDecoration(
                 labelText: 'About Me',
                 hintText:
                     'Tell customers about your experience and services...',
-                prefixIcon: const Icon(Icons.description_outlined),
+                prefixIcon: Icon(
+                  Icons.description_outlined,
+                ),
               ),
             ),
+
             const SizedBox(height: 25),
+
+            // ==================== Save Button ====================
+
             SizedBox(
               width: double.infinity,
               height: 54,
+
               child: ElevatedButton.icon(
-                onPressed: saveProfile,
-                icon: const Icon(Icons.save_rounded, size: 18),
-                label: const Text(
-                  'Save Profile',
-                  style: TextStyle(fontSize: 17),
+                onPressed:
+                    isLoading
+                        ? null
+                        : saveProfile,
+
+                icon: isLoading
+                    ? const SizedBox(
+                        width: 20,
+                        height: 20,
+
+                        child:
+                            CircularProgressIndicator(
+                          strokeWidth: 2,
+                        ),
+                      )
+                    : const Icon(
+                        Icons.save_rounded,
+                        size: 18,
+                      ),
+
+                label: Text(
+                  isLoading
+                      ? 'Saving Profile...'
+                      : 'Save Profile',
+
+                  style: const TextStyle(
+                    fontSize: 17,
+                  ),
                 ),
               ),
             ),
@@ -2218,6 +3176,8 @@ class _ProviderProfileEditScreenState
     );
   }
 
+  // ==================== Dispose ====================
+
   @override
   void dispose() {
     nameController.dispose();
@@ -2225,20 +3185,22 @@ class _ProviderProfileEditScreenState
     locationController.dispose();
     experienceController.dispose();
     descriptionController.dispose();
+
     super.dispose();
   }
 }
-
 //==================== My Services Screen ====================
 
 class MyServicesScreen extends StatefulWidget {
   const MyServicesScreen({super.key});
 
   @override
-  State<MyServicesScreen> createState() => _MyServicesScreenState();
+  State<MyServicesScreen> createState() =>
+      _MyServicesScreenState();
 }
 
-class _MyServicesScreenState extends State<MyServicesScreen> {
+class _MyServicesScreenState
+    extends State<MyServicesScreen> {
   final List<String> services = [
     'Electrician',
     'Plumber',
@@ -2256,14 +3218,19 @@ class _MyServicesScreenState extends State<MyServicesScreen> {
   void saveServices() {
     if (selectedServices.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Please select at least one service.')),
+        const SnackBar(
+          content:
+              Text('Please select at least one service.'),
+        ),
       );
       return;
     }
+
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content:
-            Text('${selectedServices.length} service(s) saved successfully!'),
+        content: Text(
+          '${selectedServices.length} service(s) saved successfully!',
+        ),
         backgroundColor: AppColors.success,
       ),
     );
@@ -2272,35 +3239,50 @@ class _MyServicesScreenState extends State<MyServicesScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('My Services')),
+      appBar: AppBar(
+        title: const Text('My Services'),
+      ),
       body: Padding(
-        padding: const EdgeInsets.fromLTRB(20, 8, 20, 20),
+        padding: const EdgeInsets.fromLTRB(
+          20,
+          8,
+          20,
+          20,
+        ),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+          crossAxisAlignment:
+              CrossAxisAlignment.start,
           children: [
             const SectionHeader(
               title: 'Select Your Services',
-              subtitle: 'Choose the services you provide to customers.',
+              subtitle:
+                  'Choose the services you provide to customers.',
             ),
             const SizedBox(height: 18),
             Expanded(
               child: ListView.separated(
                 itemCount: services.length,
-                separatorBuilder: (_, __) => const SizedBox(height: 10),
+                separatorBuilder: (_, __) =>
+                    const SizedBox(height: 10),
                 itemBuilder: (context, index) {
                   final service = services[index];
-                  final isSelected = selectedServices.contains(service);
+                  final isSelected =
+                      selectedServices.contains(service);
 
                   return Card(
                     color: isSelected
-                        ? AppColors.primary.withOpacity(0.06)
+                        ? AppColors.primary
+                            .withOpacity(0.06)
                         : AppColors.surface,
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(16),
+                      borderRadius:
+                          BorderRadius.circular(16),
                       side: BorderSide(
                         color: isSelected
-                            ? AppColors.primary.withOpacity(0.4)
-                            : Colors.black.withOpacity(0.05),
+                            ? AppColors.primary
+                                .withOpacity(0.4)
+                            : Colors.black
+                                .withOpacity(0.05),
                       ),
                     ),
                     child: CheckboxListTile(
@@ -2309,15 +3291,18 @@ class _MyServicesScreenState extends State<MyServicesScreen> {
                         service,
                         style: const TextStyle(
                           fontWeight: FontWeight.w600,
-                          color: AppColors.textPrimary,
+                          color:
+                              AppColors.textPrimary,
                         ),
                       ),
                       secondary: Container(
                         width: 40,
                         height: 40,
                         decoration: BoxDecoration(
-                          color: AppColors.primary.withOpacity(0.1),
-                          borderRadius: BorderRadius.circular(10),
+                          color: AppColors.primary
+                              .withOpacity(0.1),
+                          borderRadius:
+                              BorderRadius.circular(10),
                         ),
                         child: const Icon(
                           Icons.build_rounded,
@@ -2327,14 +3312,17 @@ class _MyServicesScreenState extends State<MyServicesScreen> {
                       ),
                       activeColor: AppColors.primary,
                       shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(16),
+                        borderRadius:
+                            BorderRadius.circular(16),
                       ),
                       onChanged: (value) {
                         setState(() {
                           if (value == true) {
-                            selectedServices.add(service);
+                            selectedServices
+                                .add(service);
                           } else {
-                            selectedServices.remove(service);
+                            selectedServices
+                                .remove(service);
                           }
                         });
                       },
@@ -2349,7 +3337,10 @@ class _MyServicesScreenState extends State<MyServicesScreen> {
               height: 54,
               child: ElevatedButton.icon(
                 onPressed: saveServices,
-                icon: const Icon(Icons.save_rounded, size: 18),
+                icon: const Icon(
+                  Icons.save_rounded,
+                  size: 18,
+                ),
                 label: const Text(
                   'Save Services',
                   style: TextStyle(fontSize: 17),
@@ -2369,10 +3360,12 @@ class ServiceRequestsScreen extends StatefulWidget {
   const ServiceRequestsScreen({super.key});
 
   @override
-  State<ServiceRequestsScreen> createState() => _ServiceRequestsScreenState();
+  State<ServiceRequestsScreen> createState() =>
+      _ServiceRequestsScreenState();
 }
 
-class _ServiceRequestsScreenState extends State<ServiceRequestsScreen> {
+class _ServiceRequestsScreenState
+    extends State<ServiceRequestsScreen> {
   final List<Map<String, String>> requests = [
     {
       'customer': 'Kasun Perera',
@@ -2380,7 +3373,8 @@ class _ServiceRequestsScreenState extends State<ServiceRequestsScreen> {
       'date': '20/09/2026',
       'time': '10:00 AM',
       'address': 'Matara',
-      'description': 'Need to repair a damaged power socket.',
+      'description':
+          'Need to repair a damaged power socket.',
       'status': 'Pending',
     },
     {
@@ -2389,7 +3383,8 @@ class _ServiceRequestsScreenState extends State<ServiceRequestsScreen> {
       'date': '21/09/2026',
       'time': '2:00 PM',
       'address': 'Galle',
-      'description': 'AC is not cooling properly.',
+      'description':
+          'AC is not cooling properly.',
       'status': 'Pending',
     },
   ];
@@ -2398,10 +3393,14 @@ class _ServiceRequestsScreenState extends State<ServiceRequestsScreen> {
     setState(() {
       requests[index]['status'] = status;
     });
+
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: Text('Request $status successfully.'),
-        backgroundColor: AppColors.statusColor(status),
+        content: Text(
+          'Request $status successfully.',
+        ),
+        backgroundColor:
+            AppColors.statusColor(status),
       ),
     );
   }
@@ -2409,18 +3408,24 @@ class _ServiceRequestsScreenState extends State<ServiceRequestsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Service Requests')),
+      appBar: AppBar(
+        title: const Text('Service Requests'),
+      ),
       body: requests.isEmpty
           ? const Center(
               child: Text(
                 'No service requests available.',
-                style: TextStyle(fontSize: 16, color: AppColors.textSecondary),
+                style: TextStyle(
+                  fontSize: 16,
+                  color: AppColors.textSecondary,
+                ),
               ),
             )
           : ListView.separated(
               padding: const EdgeInsets.all(16),
               itemCount: requests.length,
-              separatorBuilder: (_, __) => const SizedBox(height: 16),
+              separatorBuilder: (_, __) =>
+                  const SizedBox(height: 16),
               itemBuilder: (context, index) {
                 final request = requests[index];
 
@@ -2428,16 +3433,19 @@ class _ServiceRequestsScreenState extends State<ServiceRequestsScreen> {
                   child: Padding(
                     padding: const EdgeInsets.all(18),
                     child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
+                      crossAxisAlignment:
+                          CrossAxisAlignment.start,
                       children: [
                         Row(
                           children: [
                             CircleAvatar(
                               backgroundColor:
-                                  AppColors.primary.withOpacity(0.1),
+                                  AppColors.primary
+                                      .withOpacity(0.1),
                               child: const Icon(
                                 Icons.person_rounded,
-                                color: AppColors.primary,
+                                color:
+                                    AppColors.primary,
                               ),
                             ),
                             const SizedBox(width: 12),
@@ -2446,12 +3454,17 @@ class _ServiceRequestsScreenState extends State<ServiceRequestsScreen> {
                                 request['customer']!,
                                 style: const TextStyle(
                                   fontSize: 17,
-                                  fontWeight: FontWeight.w700,
-                                  color: AppColors.textPrimary,
+                                  fontWeight:
+                                      FontWeight.w700,
+                                  color:
+                                      AppColors.textPrimary,
                                 ),
                               ),
                             ),
-                            StatusBadge(status: request['status']!),
+                            StatusBadge(
+                              status:
+                                  request['status']!,
+                            ),
                           ],
                         ),
                         const Divider(height: 28),
@@ -2464,58 +3477,92 @@ class _ServiceRequestsScreenState extends State<ServiceRequestsScreen> {
                           ),
                         ),
                         const SizedBox(height: 12),
-                        _iconRow(Icons.calendar_today_rounded, request['date']!),
-                        const SizedBox(height: 8),
-                        _iconRow(Icons.access_time_rounded, request['time']!),
+                        _iconRow(
+                          Icons.calendar_today_rounded,
+                          request['date']!,
+                        ),
                         const SizedBox(height: 8),
                         _iconRow(
-                            Icons.location_on_rounded, request['address']!),
+                          Icons.access_time_rounded,
+                          request['time']!,
+                        ),
+                        const SizedBox(height: 8),
+                        _iconRow(
+                          Icons.location_on_rounded,
+                          request['address']!,
+                        ),
                         const SizedBox(height: 14),
                         const Text(
                           'Problem Description',
                           style: TextStyle(
                             fontWeight: FontWeight.w700,
                             fontSize: 13,
-                            color: AppColors.textPrimary,
+                            color:
+                                AppColors.textPrimary,
                           ),
                         ),
                         const SizedBox(height: 5),
                         Text(
                           request['description']!,
                           style: const TextStyle(
-                            color: AppColors.textSecondary,
+                            color:
+                                AppColors.textSecondary,
                             fontSize: 14,
                           ),
                         ),
                         const SizedBox(height: 18),
-                        if (request['status'] == 'Pending')
+                        if (request['status'] ==
+                            'Pending')
                           Row(
                             children: [
                               Expanded(
-                                child: OutlinedButton.icon(
-                                  style: OutlinedButton.styleFrom(
-                                    foregroundColor: AppColors.danger,
-                                    side: const BorderSide(
-                                        color: AppColors.danger),
+                                child:
+                                    OutlinedButton.icon(
+                                  style: OutlinedButton
+                                      .styleFrom(
+                                    foregroundColor:
+                                        AppColors.danger,
+                                    side:
+                                        const BorderSide(
+                                      color:
+                                          AppColors.danger,
+                                    ),
                                   ),
                                   onPressed: () =>
-                                      updateStatus(index, 'Rejected'),
-                                  icon: const Icon(Icons.close_rounded,
-                                      size: 18),
-                                  label: const Text('Reject'),
+                                      updateStatus(
+                                    index,
+                                    'Rejected',
+                                  ),
+                                  icon: const Icon(
+                                    Icons.close_rounded,
+                                    size: 18,
+                                  ),
+                                  label: const Text(
+                                    'Reject',
+                                  ),
                                 ),
                               ),
                               const SizedBox(width: 12),
                               Expanded(
-                                child: ElevatedButton.icon(
-                                  style: ElevatedButton.styleFrom(
-                                    backgroundColor: AppColors.success,
+                                child:
+                                    ElevatedButton.icon(
+                                  style: ElevatedButton
+                                      .styleFrom(
+                                    backgroundColor:
+                                        AppColors.success,
                                   ),
                                   onPressed: () =>
-                                      updateStatus(index, 'Accepted'),
-                                  icon: const Icon(Icons.check_rounded,
-                                      size: 18),
-                                  label: const Text('Accept'),
+                                      updateStatus(
+                                    index,
+                                    'Accepted',
+                                  ),
+                                  icon: const Icon(
+                                    Icons.check_rounded,
+                                    size: 18,
+                                  ),
+                                  label: const Text(
+                                    'Accept',
+                                  ),
                                 ),
                               ),
                             ],
@@ -2529,11 +3576,19 @@ class _ServiceRequestsScreenState extends State<ServiceRequestsScreen> {
     );
   }
 
-  Widget _iconRow(IconData icon, String text) {
+  Widget _iconRow(
+    IconData icon,
+    String text,
+  ) {
     return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
+      crossAxisAlignment:
+          CrossAxisAlignment.start,
       children: [
-        Icon(icon, size: 17, color: AppColors.textSecondary),
+        Icon(
+          icon,
+          size: 17,
+          color: AppColors.textSecondary,
+        ),
         const SizedBox(width: 8),
         Expanded(
           child: Text(
@@ -2551,7 +3606,8 @@ class _ServiceRequestsScreenState extends State<ServiceRequestsScreen> {
 
 //==================== Provider Bookings Screen ====================
 
-class ProviderBookingsScreen extends StatelessWidget {
+class ProviderBookingsScreen
+    extends StatelessWidget {
   const ProviderBookingsScreen({super.key});
 
   @override
@@ -2576,11 +3632,14 @@ class ProviderBookingsScreen extends StatelessWidget {
     ];
 
     return Scaffold(
-      appBar: AppBar(title: const Text('My Bookings')),
+      appBar: AppBar(
+        title: const Text('My Bookings'),
+      ),
       body: ListView.separated(
         padding: const EdgeInsets.all(16),
         itemCount: bookings.length,
-        separatorBuilder: (_, __) => const SizedBox(height: 16),
+        separatorBuilder: (_, __) =>
+            const SizedBox(height: 16),
         itemBuilder: (context, index) {
           final booking = bookings[index];
 
@@ -2588,13 +3647,15 @@ class ProviderBookingsScreen extends StatelessWidget {
             child: Padding(
               padding: const EdgeInsets.all(18),
               child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+                crossAxisAlignment:
+                    CrossAxisAlignment.start,
                 children: [
                   Row(
                     children: [
                       CircleAvatar(
                         backgroundColor:
-                            AppColors.primary.withOpacity(0.1),
+                            AppColors.primary
+                                .withOpacity(0.1),
                         child: const Icon(
                           Icons.person_rounded,
                           color: AppColors.primary,
@@ -2607,11 +3668,15 @@ class ProviderBookingsScreen extends StatelessWidget {
                           style: const TextStyle(
                             fontSize: 17,
                             fontWeight: FontWeight.w700,
-                            color: AppColors.textPrimary,
+                            color:
+                                AppColors.textPrimary,
                           ),
                         ),
                       ),
-                      StatusBadge(status: booking['status']!),
+                      StatusBadge(
+                        status:
+                            booking['status']!,
+                      ),
                     ],
                   ),
                   const Divider(height: 28),
@@ -2624,31 +3689,53 @@ class ProviderBookingsScreen extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(height: 12),
-                  _iconRow(Icons.calendar_today_rounded, booking['date']!),
+                  _iconRow(
+                    Icons.calendar_today_rounded,
+                    booking['date']!,
+                  ),
                   const SizedBox(height: 8),
-                  _iconRow(Icons.access_time_rounded, booking['time']!),
+                  _iconRow(
+                    Icons.access_time_rounded,
+                    booking['time']!,
+                  ),
                   const SizedBox(height: 8),
-                  _iconRow(Icons.location_on_rounded, booking['address']!),
+                  _iconRow(
+                    Icons.location_on_rounded,
+                    booking['address']!,
+                  ),
                   const SizedBox(height: 18),
-                  if (booking['status'] == 'Accepted')
+                  if (booking['status'] ==
+                      'Accepted')
                     SizedBox(
                       width: double.infinity,
                       height: 48,
-                      child: ElevatedButton.icon(
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: AppColors.success,
+                      child:
+                          ElevatedButton.icon(
+                        style: ElevatedButton
+                            .styleFrom(
+                          backgroundColor:
+                              AppColors.success,
                         ),
                         onPressed: () {
-                          ScaffoldMessenger.of(context).showSnackBar(
+                          ScaffoldMessenger.of(
+                            context,
+                          ).showSnackBar(
                             const SnackBar(
-                              content:
-                                  Text('Service marked as completed!'),
-                              backgroundColor: AppColors.success,
+                              content: Text(
+                                'Service marked as completed!',
+                              ),
+                              backgroundColor:
+                                  AppColors.success,
                             ),
                           );
                         },
-                        icon: const Icon(Icons.check_circle_rounded, size: 18),
-                        label: const Text('Mark as Completed'),
+                        icon: const Icon(
+                          Icons.check_circle_rounded,
+                          size: 18,
+                        ),
+                        label: const Text(
+                          'Mark as Completed',
+                        ),
                       ),
                     ),
                 ],
@@ -2660,11 +3747,19 @@ class ProviderBookingsScreen extends StatelessWidget {
     );
   }
 
-  Widget _iconRow(IconData icon, String text) {
+  Widget _iconRow(
+    IconData icon,
+    String text,
+  ) {
     return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
+      crossAxisAlignment:
+          CrossAxisAlignment.start,
       children: [
-        Icon(icon, size: 17, color: AppColors.textSecondary),
+        Icon(
+          icon,
+          size: 17,
+          color: AppColors.textSecondary,
+        ),
         const SizedBox(width: 8),
         Expanded(
           child: Text(
@@ -2682,7 +3777,8 @@ class ProviderBookingsScreen extends StatelessWidget {
 
 //==================== Customer Bookings Screen ====================
 
-class CustomerBookingsScreen extends StatelessWidget {
+class CustomerBookingsScreen
+    extends StatelessWidget {
   const CustomerBookingsScreen({super.key});
 
   @override
@@ -2715,18 +3811,24 @@ class CustomerBookingsScreen extends StatelessWidget {
     ];
 
     return Scaffold(
-      appBar: AppBar(title: const Text('My Bookings')),
+      appBar: AppBar(
+        title: const Text('My Bookings'),
+      ),
       body: bookings.isEmpty
           ? const Center(
               child: Text(
                 'No bookings available.',
-                style: TextStyle(fontSize: 16, color: AppColors.textSecondary),
+                style: TextStyle(
+                  fontSize: 16,
+                  color: AppColors.textSecondary,
+                ),
               ),
             )
           : ListView.separated(
               padding: const EdgeInsets.all(16),
               itemCount: bookings.length,
-              separatorBuilder: (_, __) => const SizedBox(height: 16),
+              separatorBuilder: (_, __) =>
+                  const SizedBox(height: 16),
               itemBuilder: (context, index) {
                 final booking = bookings[index];
 
@@ -2734,17 +3836,20 @@ class CustomerBookingsScreen extends StatelessWidget {
                   child: Padding(
                     padding: const EdgeInsets.all(18),
                     child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
+                      crossAxisAlignment:
+                          CrossAxisAlignment.start,
                       children: [
                         Row(
                           children: [
                             CircleAvatar(
                               radius: 25,
                               backgroundColor:
-                                  AppColors.primary.withOpacity(0.1),
+                                  AppColors.primary
+                                      .withOpacity(0.1),
                               child: const Icon(
                                 Icons.person_rounded,
-                                color: AppColors.primary,
+                                color:
+                                    AppColors.primary,
                               ),
                             ),
                             const SizedBox(width: 12),
@@ -2753,12 +3858,17 @@ class CustomerBookingsScreen extends StatelessWidget {
                                 booking['provider'] ?? '',
                                 style: const TextStyle(
                                   fontSize: 17,
-                                  fontWeight: FontWeight.w700,
-                                  color: AppColors.textPrimary,
+                                  fontWeight:
+                                      FontWeight.w700,
+                                  color:
+                                      AppColors.textPrimary,
                                 ),
                               ),
                             ),
-                            StatusBadge(status: booking['status'] ?? ''),
+                            StatusBadge(
+                              status:
+                                  booking['status'] ?? '',
+                            ),
                           ],
                         ),
                         const Divider(height: 28),
@@ -2772,51 +3882,82 @@ class CustomerBookingsScreen extends StatelessWidget {
                         ),
                         const SizedBox(height: 12),
                         _iconRow(
-                            Icons.calendar_today_rounded, booking['date'] ?? ''),
+                          Icons.calendar_today_rounded,
+                          booking['date'] ?? '',
+                        ),
                         const SizedBox(height: 8),
                         _iconRow(
-                            Icons.access_time_rounded, booking['time'] ?? ''),
+                          Icons.access_time_rounded,
+                          booking['time'] ?? '',
+                        ),
                         const SizedBox(height: 8),
-                        _iconRow(Icons.location_on_rounded,
-                            booking['address'] ?? ''),
+                        _iconRow(
+                          Icons.location_on_rounded,
+                          booking['address'] ?? '',
+                        ),
                         const SizedBox(height: 18),
-                        if (booking['status'] == 'Accepted')
+                        if (booking['status'] ==
+                            'Accepted')
                           SizedBox(
                             width: double.infinity,
                             height: 46,
-                            child: OutlinedButton.icon(
+                            child:
+                                OutlinedButton.icon(
                               onPressed: () {
-                                ScaffoldMessenger.of(context).showSnackBar(
+                                ScaffoldMessenger
+                                    .of(context)
+                                    .showSnackBar(
                                   const SnackBar(
                                     content: Text(
-                                        'Contact feature will be added later.'),
+                                      'Contact feature will be added later.',
+                                    ),
                                   ),
                                 );
                               },
-                              icon: const Icon(Icons.phone_rounded, size: 18),
-                              label: const Text('Contact Provider'),
+                              icon: const Icon(
+                                Icons.phone_rounded,
+                                size: 18,
+                              ),
+                              label: const Text(
+                                'Contact Provider',
+                              ),
                             ),
                           ),
-                        if (booking['status'] == 'Completed')
+                        if (booking['status'] ==
+                            'Completed')
                           SizedBox(
                             width: double.infinity,
                             height: 46,
-                            child: OutlinedButton.icon(
-                              style: OutlinedButton.styleFrom(
-                                foregroundColor: AppColors.warning,
-                                side: const BorderSide(
-                                    color: AppColors.warning),
+                            child:
+                                OutlinedButton.icon(
+                              style: OutlinedButton
+                                  .styleFrom(
+                                foregroundColor:
+                                    AppColors.warning,
+                                side:
+                                    const BorderSide(
+                                  color:
+                                      AppColors.warning,
+                                ),
                               ),
                               onPressed: () {
-                                ScaffoldMessenger.of(context).showSnackBar(
+                                ScaffoldMessenger
+                                    .of(context)
+                                    .showSnackBar(
                                   const SnackBar(
                                     content: Text(
-                                        'Review feature will be added later.'),
+                                      'Review feature will be added later.',
+                                    ),
                                   ),
                                 );
                               },
-                              icon: const Icon(Icons.star_rounded, size: 18),
-                              label: const Text('Rate Provider'),
+                              icon: const Icon(
+                                Icons.star_rounded,
+                                size: 18,
+                              ),
+                              label: const Text(
+                                'Rate Provider',
+                              ),
                             ),
                           ),
                       ],
@@ -2828,11 +3969,19 @@ class CustomerBookingsScreen extends StatelessWidget {
     );
   }
 
-  Widget _iconRow(IconData icon, String text) {
+  Widget _iconRow(
+    IconData icon,
+    String text,
+  ) {
     return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
+      crossAxisAlignment:
+          CrossAxisAlignment.start,
       children: [
-        Icon(icon, size: 17, color: AppColors.textSecondary),
+        Icon(
+          icon,
+          size: 17,
+          color: AppColors.textSecondary,
+        ),
         const SizedBox(width: 8),
         Expanded(
           child: Text(
@@ -2850,7 +3999,8 @@ class CustomerBookingsScreen extends StatelessWidget {
 
 //==================== Customer Profile Screen ====================
 
-class CustomerProfileScreen extends StatelessWidget {
+class CustomerProfileScreen
+    extends StatelessWidget {
   const CustomerProfileScreen({super.key});
 
   @override
@@ -2865,16 +4015,15 @@ class CustomerProfileScreen extends StatelessWidget {
           children: [
             CircleAvatar(
               radius: 55,
-              backgroundColor: AppColors.primary.withOpacity(0.1),
+              backgroundColor:
+                  AppColors.primary.withOpacity(0.1),
               child: const Icon(
                 Icons.person_rounded,
                 size: 58,
                 color: AppColors.primary,
               ),
             ),
-
             const SizedBox(height: 16),
-
             const Text(
               'Customer Name',
               style: TextStyle(
@@ -2883,9 +4032,7 @@ class CustomerProfileScreen extends StatelessWidget {
                 color: AppColors.textPrimary,
               ),
             ),
-
             const SizedBox(height: 4),
-
             const Text(
               'customer@email.com',
               style: TextStyle(
@@ -2893,29 +4040,24 @@ class CustomerProfileScreen extends StatelessWidget {
                 color: AppColors.textSecondary,
               ),
             ),
-
             const SizedBox(height: 28),
-
-            InfoTile(
+            const InfoTile(
               icon: Icons.person_rounded,
               title: 'Full Name',
               subtitle: 'Customer Name',
             ),
-
-            InfoTile(
+            const InfoTile(
               icon: Icons.email_rounded,
               title: 'Email',
               subtitle: 'customer@email.com',
               iconColor: AppColors.secondary,
             ),
-
-            InfoTile(
+            const InfoTile(
               icon: Icons.phone_rounded,
               title: 'Phone Number',
               subtitle: '071 234 5678',
               iconColor: AppColors.success,
             ),
-
             const SizedBox(height: 14),
 
             // Become a Service Provider
@@ -2924,11 +4066,11 @@ class CustomerProfileScreen extends StatelessWidget {
               height: 52,
               child: OutlinedButton.icon(
                 onPressed: () {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                      content: Text(
-                        'Become a Service Provider feature is coming next.',
-                      ),
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) =>
+                          const BecomeProviderScreen(),
                     ),
                   );
                 },
@@ -2950,7 +4092,8 @@ class CustomerProfileScreen extends StatelessWidget {
               height: 52,
               child: ElevatedButton.icon(
                 onPressed: () {
-                  ScaffoldMessenger.of(context).showSnackBar(
+                  ScaffoldMessenger.of(context)
+                      .showSnackBar(
                     const SnackBar(
                       content: Text(
                         'Edit profile feature will be added later.',
@@ -2983,6 +4126,9 @@ class CustomerProfileScreen extends StatelessWidget {
                   ),
                 ),
                 onPressed: () {
+                  // Return to the first screen.
+                  // This keeps logout behavior separate
+                  // from normal Back navigation.
                   Navigator.popUntil(
                     context,
                     (route) => route.isFirst,
@@ -3004,5 +4150,3 @@ class CustomerProfileScreen extends StatelessWidget {
     );
   }
 }
-
-
