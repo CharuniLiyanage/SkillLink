@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'services/api_service.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
 
 class Session {
   static String? email;
@@ -563,25 +565,32 @@ class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
 
   @override
-  State<LoginScreen> createState() => _LoginScreenState();
+  State<LoginScreen> createState() =>
+      _LoginScreenState();
 }
 
-class _LoginScreenState extends State<LoginScreen> {
-  final emailController = TextEditingController();
-  final passwordController = TextEditingController();
+class _LoginScreenState
+    extends State<LoginScreen> {
+
+  final TextEditingController emailController =
+      TextEditingController();
+
+  final TextEditingController passwordController =
+      TextEditingController();
 
   bool isLoading = false;
 
   Future<void> login() async {
-    print('LOGIN BUTTON CLICKED');
-
     if (emailController.text.trim().isEmpty ||
         passwordController.text.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-          content: Text('Please enter email and password.'),
+          content: Text(
+            'Please enter email and password.',
+          ),
         ),
       );
+
       return;
     }
 
@@ -589,7 +598,8 @@ class _LoginScreenState extends State<LoginScreen> {
       isLoading = true;
     });
 
-    final loginData = await ApiService.loginUser(
+    final loginData =
+        await ApiService.loginUser(
       email: emailController.text.trim(),
       password: passwordController.text,
     );
@@ -601,42 +611,86 @@ class _LoginScreenState extends State<LoginScreen> {
     });
 
     if (loginData != null) {
-      final String token = loginData['token'].toString();
+
+      final String token =
+          loginData['token'].toString();
 
       final List<dynamic> roles =
           loginData['roles'] as List<dynamic>;
 
-      // Save logged-in user details
-      Session.email = emailController.text.trim();
+      // ==========================================
+      // SAVE LOGIN SESSION
+      // ==========================================
+
+      Session.email =
+          emailController.text.trim();
 
       Session.roles = roles
-          .map((role) => role.toString())
+          .map(
+            (role) => role.toString(),
+          )
           .toList();
+
+      // ==========================================
+      // SAVE EMAIL USING SHARED PREFERENCES
+      // ==========================================
+
+      final prefs =
+          await SharedPreferences.getInstance();
+
+      await prefs.setString(
+        'customerEmail',
+        emailController.text.trim(),
+      );
+
+      // ==========================================
+      // DEBUG
+      // ==========================================
 
       print('TOKEN: $token');
       print('ROLES: $roles');
-      print('SESSION EMAIL: ${Session.email}');
-      print('SESSION ROLES: ${Session.roles}');
+      print(
+        'SESSION EMAIL: ${Session.email}',
+      );
+      print(
+        'SESSION ROLES: ${Session.roles}',
+      );
+      print(
+        'SAVED CUSTOMER EMAIL: '
+        '${emailController.text.trim()}',
+      );
+
+      // ==========================================
+      // CHOOSE ROLE
+      // ==========================================
 
       Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (context) => ChooseRoleScreen(
+          builder: (context) =>
+              ChooseRoleScreen(
             name: '',
-            email: emailController.text.trim(),
+            email:
+                emailController.text.trim(),
             password: '',
             phone: '',
             availableRoles: roles
-                .map((role) => role.toString())
+                .map(
+                  (role) => role.toString(),
+                )
                 .toList(),
             isLoginFlow: true,
           ),
         ),
       );
+
     } else {
+
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-          content: Text('Invalid email or password.'),
+          content: Text(
+            'Invalid email or password.',
+          ),
         ),
       );
     }
@@ -648,20 +702,34 @@ class _LoginScreenState extends State<LoginScreen> {
       appBar: AppBar(
         title: const Text('Login'),
       ),
+
       body: SingleChildScrollView(
-        padding: const EdgeInsets.all(24.0),
+        padding:
+            const EdgeInsets.all(24.0),
+
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+          crossAxisAlignment:
+              CrossAxisAlignment.start,
+
           children: [
+
             const SizedBox(height: 20),
+
+            // ==========================================
+            // ICON
+            // ==========================================
 
             Container(
               width: 84,
               height: 84,
+
               decoration: BoxDecoration(
-                color: AppColors.primary.withOpacity(0.1),
+                color:
+                    AppColors.primary
+                        .withOpacity(0.1),
                 shape: BoxShape.circle,
               ),
+
               child: const Icon(
                 Icons.person_rounded,
                 size: 44,
@@ -671,12 +739,18 @@ class _LoginScreenState extends State<LoginScreen> {
 
             const SizedBox(height: 24),
 
+            // ==========================================
+            // TITLE
+            // ==========================================
+
             const Text(
               'Welcome Back!',
               style: TextStyle(
                 fontSize: 28,
-                fontWeight: FontWeight.w800,
-                color: AppColors.textPrimary,
+                fontWeight:
+                    FontWeight.w800,
+                color:
+                    AppColors.textPrimary,
               ),
             ),
 
@@ -686,55 +760,92 @@ class _LoginScreenState extends State<LoginScreen> {
               'Login to continue using SkillLink',
               style: TextStyle(
                 fontSize: 15,
-                color: AppColors.textSecondary,
+                color:
+                    AppColors.textSecondary,
               ),
             ),
 
             const SizedBox(height: 32),
 
+            // ==========================================
+            // EMAIL
+            // ==========================================
+
             TextField(
-              controller: emailController,
-              keyboardType: TextInputType.emailAddress,
-              decoration: const InputDecoration(
+              controller:
+                  emailController,
+
+              keyboardType:
+                  TextInputType.emailAddress,
+
+              decoration:
+                  const InputDecoration(
                 labelText: 'Email',
-                prefixIcon: Icon(Icons.email_outlined),
+                prefixIcon: Icon(
+                  Icons.email_outlined,
+                ),
               ),
             ),
 
             const SizedBox(height: 16),
 
+            // ==========================================
+            // PASSWORD
+            // ==========================================
+
             TextField(
-              controller: passwordController,
+              controller:
+                  passwordController,
+
               obscureText: true,
-              decoration: const InputDecoration(
+
+              decoration:
+                  const InputDecoration(
                 labelText: 'Password',
-                prefixIcon: Icon(Icons.lock_outline),
+                prefixIcon: Icon(
+                  Icons.lock_outline,
+                ),
               ),
             ),
 
             const SizedBox(height: 28),
 
+            // ==========================================
+            // LOGIN BUTTON
+            // ==========================================
+
             SizedBox(
               width: double.infinity,
               height: 55,
+
               child: ElevatedButton(
-                onPressed: isLoading ? null : login,
+                onPressed:
+                    isLoading ? null : login,
+
                 child: isLoading
                     ? const SizedBox(
                         width: 24,
                         height: 24,
-                        child: CircularProgressIndicator(
+
+                        child:
+                            CircularProgressIndicator(
                           strokeWidth: 2,
                         ),
                       )
                     : const Text(
                         'Login',
-                        style: TextStyle(fontSize: 17),
+                        style: TextStyle(
+                          fontSize: 17,
+                        ),
                       ),
               ),
             ),
 
             const SizedBox(height: 16),
+
+            // ==========================================
+            // REGISTER
+            // ==========================================
 
             Center(
               child: TextButton(
@@ -747,6 +858,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                   );
                 },
+
                 child: const Text(
                   "Don't have an account? Register",
                 ),
@@ -762,10 +874,11 @@ class _LoginScreenState extends State<LoginScreen> {
   void dispose() {
     emailController.dispose();
     passwordController.dispose();
+
     super.dispose();
   }
 }
-
+    
 //==================== Register Screen ====================
 
 class RegisterScreen extends StatefulWidget {
@@ -1400,6 +1513,7 @@ class CustomerHomeScreen extends StatelessWidget {
                 ),
               ),
             ),
+            
 
             const SizedBox(height: 28),
 
@@ -1800,7 +1914,7 @@ class _BecomeProviderScreenState
 }
 //==================== Provider List Screen ====================
 
-class ProviderListScreen extends StatelessWidget {
+class ProviderListScreen extends StatefulWidget {
   final String serviceName;
 
   const ProviderListScreen({
@@ -1809,63 +1923,145 @@ class ProviderListScreen extends StatelessWidget {
   });
 
   @override
+  State<ProviderListScreen> createState() =>
+      _ProviderListScreenState();
+}
+
+class _ProviderListScreenState
+    extends State<ProviderListScreen> {
+  List<dynamic> providers = [];
+  bool isLoading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    loadProviders();
+  }
+  Future<void> loadProviders() async {
+      final services =
+          await ApiService.getServicesByCategory(
+        widget.serviceName,
+      );
+
+      final List<dynamic> providerList = [];
+
+      for (final service in services) {
+        final provider = service['provider'];
+
+        if (provider != null) {
+          final providerId = provider['id'];
+
+          final alreadyAdded = providerList.any(
+            (item) => item['id'] == providerId,
+          );
+
+          if (!alreadyAdded) {
+            providerList.add(provider);
+          }
+        }
+      }
+
+      if (!mounted) {
+        return;
+      }
+
+      setState(() {
+        providers = providerList;
+        isLoading = false;
+      });
+    }
+
+  
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('$serviceName Providers'),
+        title: Text('${widget.serviceName} Providers'),
       ),
-      body: ListView(
-        padding: const EdgeInsets.all(16),
-        children: [
-          _providerCard(
-            context,
-            name: 'Nimal Perera',
-            location: 'Matara',
-            experience: '5 years experience',
-            rating: '4.8',
-          ),
-          const SizedBox(height: 14),
-          _providerCard(
-            context,
-            name: 'Kasun Silva',
-            location: 'Galle',
-            experience: '3 years experience',
-            rating: '4.6',
-          ),
-          const SizedBox(height: 14),
-          _providerCard(
-            context,
-            name: 'Saman Fernando',
-            location: 'Colombo',
-            experience: '7 years experience',
-            rating: '4.9',
-          ),
-        ],
-      ),
+      body: isLoading
+          ? const Center(
+              child: CircularProgressIndicator(),
+            )
+          : providers.isEmpty
+              ? const Center(
+                  child: Text(
+                    'No providers found.',
+                  ),
+                )
+              : ListView.builder(
+                  padding: const EdgeInsets.all(16),
+                  itemCount: providers.length,
+                  itemBuilder: (context, index) {
+                    final provider = providers[index];
+
+                    return _providerCard(
+                      context,
+                      provider: provider,
+                    );
+                  },
+                ),
     );
   }
 
   Widget _providerCard(
     BuildContext context, {
-    required String name,
-    required String location,
-    required String experience,
-    required String rating,
+    required Map<String, dynamic> provider,
   }) {
+    final name =
+        provider['name']?.toString() ?? 'Unknown Provider';
+
+    final phone =
+        provider['phone']?.toString() ?? 'No phone number';
+
+    final email =
+        provider['email']?.toString() ?? 'No email';
+
     return Card(
       child: InkWell(
         borderRadius: BorderRadius.circular(16),
-        onTap: () {
+        onTap: () async {
+          final email = provider['email']?.toString();
+
+          if (email == null || email.isEmpty) {
+            return;
+          }
+
+          final profile =
+              await ApiService.getProviderProfile(email);
+
+          if (!context.mounted) {
+            return;
+          }
+
+          if (profile == null) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(
+                content: Text(
+                  'Provider profile not found.',
+                ),
+              ),
+            );
+
+            return;
+          }
+
           Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) =>
-                  ProviderProfileScreen(
+              builder: (context) => ProviderProfileScreen(
                 name: name,
-                location: location,
-                experience: experience,
-                rating: rating,
-                serviceName: serviceName,
+                location:
+                    profile['location']?.toString() ??
+                        'Location not available',
+                experience:
+                    '${profile['experience']?.toString() ?? 'N/A'} years experience',
+                rating: 'New',
+                serviceName: widget.serviceName,
+                description:
+                  profile['description']?.toString() ??
+                      'No description available',
+                email: email,
               ),
             ),
           );
@@ -1884,7 +2080,9 @@ class ProviderListScreen extends StatelessWidget {
                   color: AppColors.primary,
                 ),
               ),
+
               const SizedBox(width: 14),
+
               Expanded(
                 child: Column(
                   crossAxisAlignment:
@@ -1898,28 +2096,21 @@ class ProviderListScreen extends StatelessWidget {
                         color: AppColors.textPrimary,
                       ),
                     ),
+
                     const SizedBox(height: 6),
-                    Row(
-                      children: [
-                        const Icon(
-                          Icons.location_on_outlined,
-                          size: 15,
-                          color: AppColors.textSecondary,
-                        ),
-                        const SizedBox(width: 3),
-                        Text(
-                          location,
-                          style: const TextStyle(
-                            color:
-                                AppColors.textSecondary,
-                            fontSize: 13,
-                          ),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 2),
+
                     Text(
-                      experience,
+                      phone,
+                      style: const TextStyle(
+                        color: AppColors.textSecondary,
+                        fontSize: 13,
+                      ),
+                    ),
+
+                    const SizedBox(height: 2),
+
+                    Text(
+                      email,
                       style: const TextStyle(
                         color: AppColors.textSecondary,
                         fontSize: 13,
@@ -1928,36 +2119,10 @@ class ProviderListScreen extends StatelessWidget {
                   ],
                 ),
               ),
-              Container(
-                padding:
-                    const EdgeInsets.symmetric(
-                  horizontal: 10,
-                  vertical: 6,
-                ),
-                decoration: BoxDecoration(
-                  color:
-                      AppColors.warning.withOpacity(0.12),
-                  borderRadius:
-                      BorderRadius.circular(12),
-                ),
-                child: Row(
-                  children: [
-                    const Icon(
-                      Icons.star_rounded,
-                      color: AppColors.warning,
-                      size: 18,
-                    ),
-                    const SizedBox(width: 3),
-                    Text(
-                      rating,
-                      style: const TextStyle(
-                        fontWeight: FontWeight.w700,
-                        color: AppColors.warning,
-                        fontSize: 13,
-                      ),
-                    ),
-                  ],
-                ),
+
+              const Icon(
+                Icons.arrow_forward_ios_rounded,
+                size: 17,
               ),
             ],
           ),
@@ -1966,15 +2131,16 @@ class ProviderListScreen extends StatelessWidget {
     );
   }
 }
-
 //==================== Provider Profile Screen ====================
 
-class ProviderProfileScreen extends StatelessWidget {
+class ProviderProfileScreen extends StatefulWidget {
   final String name;
   final String location;
   final String experience;
   final String rating;
   final String serviceName;
+  final String description;
+  final String email;
 
   const ProviderProfileScreen({
     super.key,
@@ -1983,7 +2149,42 @@ class ProviderProfileScreen extends StatelessWidget {
     required this.experience,
     required this.rating,
     required this.serviceName,
+    required this.description,
+    required this.email,
   });
+
+  @override
+  State<ProviderProfileScreen> createState() =>
+      _ProviderProfileScreenState();
+}
+
+class _ProviderProfileScreenState
+    extends State<ProviderProfileScreen> {
+
+  List<dynamic> services = [];
+  bool isLoadingServices = true;
+
+  @override
+  void initState() {
+    super.initState();
+    loadProviderServices();
+  }
+
+  Future<void> loadProviderServices() async {
+    final result =
+        await ApiService.getProviderServices(
+      email: widget.email,
+    );
+
+    if (!mounted) {
+      return;
+    }
+
+    setState(() {
+      services = result ?? [];
+      isLoadingServices = false;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -1991,44 +2192,59 @@ class ProviderProfileScreen extends StatelessWidget {
       appBar: AppBar(
         title: const Text('Provider Profile'),
       ),
+
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(20),
+
         child: Column(
           children: [
+
+            // ==================== PROFILE ICON ====================
+
             CircleAvatar(
               radius: 55,
               backgroundColor:
                   AppColors.primary.withOpacity(0.1),
+
               child: const Icon(
                 Icons.person_rounded,
                 size: 58,
                 color: AppColors.primary,
               ),
             ),
+
             const SizedBox(height: 16),
+
+            // ==================== NAME ====================
+
             Text(
-              name,
+              widget.name,
               style: const TextStyle(
                 fontSize: 24,
                 fontWeight: FontWeight.w800,
                 color: AppColors.textPrimary,
               ),
             ),
+
             const SizedBox(height: 6),
+
+            // ==================== SERVICE CATEGORY ====================
+
             Container(
-              padding:
-                  const EdgeInsets.symmetric(
+              padding: const EdgeInsets.symmetric(
                 horizontal: 14,
                 vertical: 6,
               ),
+
               decoration: BoxDecoration(
                 color:
                     AppColors.primary.withOpacity(0.1),
                 borderRadius:
                     BorderRadius.circular(20),
               ),
+
               child: Text(
-                serviceName,
+                widget.serviceName,
                 style: const TextStyle(
                   fontSize: 14,
                   fontWeight: FontWeight.w600,
@@ -2036,19 +2252,26 @@ class ProviderProfileScreen extends StatelessWidget {
                 ),
               ),
             ),
+
             const SizedBox(height: 14),
+
+            // ==================== RATING ====================
+
             Row(
               mainAxisAlignment:
                   MainAxisAlignment.center,
+
               children: [
                 const Icon(
                   Icons.star_rounded,
                   color: AppColors.warning,
                   size: 22,
                 ),
+
                 const SizedBox(width: 6),
+
                 Text(
-                  rating,
+                  widget.rating,
                   style: const TextStyle(
                     fontSize: 17,
                     fontWeight: FontWeight.w700,
@@ -2057,18 +2280,162 @@ class ProviderProfileScreen extends StatelessWidget {
                 ),
               ],
             ),
+
             const SizedBox(height: 28),
+
+            // ==================== LOCATION ====================
+
             InfoTile(
               icon: Icons.location_on_rounded,
               title: 'Location',
-              subtitle: location,
+              subtitle: widget.location,
             ),
+
+            // ==================== EXPERIENCE ====================
+
             InfoTile(
               icon: Icons.work_rounded,
               title: 'Experience',
-              subtitle: experience,
+              subtitle: widget.experience,
               iconColor: AppColors.secondary,
             ),
+
+            // ==================== DESCRIPTION ====================
+
+            InfoTile(
+              icon: Icons.description_rounded,
+              title: 'About',
+              subtitle: widget.description,
+              iconColor: AppColors.primary,
+            ),
+
+            const SizedBox(height: 20),
+
+            // ==================== SERVICES ====================
+
+            Align(
+              alignment: Alignment.centerLeft,
+              child: Text(
+                'Services Offered',
+                style: const TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.w800,
+                  color: AppColors.textPrimary,
+                ),
+              ),
+            ),
+
+            const SizedBox(height: 12),
+
+            if (isLoadingServices)
+              const Padding(
+                padding: EdgeInsets.all(20),
+                child: CircularProgressIndicator(),
+              )
+            else if (services.isEmpty)
+              const Padding(
+                padding: EdgeInsets.all(20),
+                child: Text(
+                  'No services available.',
+                  style: TextStyle(
+                    color: AppColors.textSecondary,
+                  ),
+                ),
+              )
+            else
+              Column(
+                children: services.map((service) {
+
+                  final serviceName =
+                      service['name']?.toString() ??
+                          'Service';
+
+                  final category =
+                      service['category']?.toString() ??
+                          '';
+
+                  final description =
+                      service['description']?.toString() ??
+                          '';
+
+                  final price =
+                      service['price']?.toString() ??
+                          '0';
+
+                  return Card(
+                    margin: const EdgeInsets.only(
+                      bottom: 12,
+                    ),
+
+                    child: Padding(
+                      padding:
+                          const EdgeInsets.all(16),
+
+                      child: Column(
+                        crossAxisAlignment:
+                            CrossAxisAlignment.start,
+
+                        children: [
+
+                          Text(
+                            serviceName,
+                            style: const TextStyle(
+                              fontSize: 17,
+                              fontWeight:
+                                  FontWeight.w700,
+                              color:
+                                  AppColors.textPrimary,
+                            ),
+                          ),
+
+                          const SizedBox(height: 5),
+
+                          if (category.isNotEmpty)
+                            Text(
+                              category,
+                              style: const TextStyle(
+                                fontSize: 13,
+                                color:
+                                    AppColors.secondary,
+                              ),
+                            ),
+
+                          if (description.isNotEmpty) ...[
+                            const SizedBox(height: 8),
+
+                            Text(
+                              description,
+                              style: const TextStyle(
+                                fontSize: 13.5,
+                                color:
+                                    AppColors.textSecondary,
+                              ),
+                            ),
+                          ],
+
+                          const SizedBox(height: 10),
+
+                          Text(
+                            'Rs. $price',
+                            style: const TextStyle(
+                              fontSize: 16,
+                              fontWeight:
+                                  FontWeight.w700,
+                              color:
+                                  AppColors.primary,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  );
+                }).toList(),
+              ),
+
+            const SizedBox(height: 12),
+
+            // ==================== VERIFIED ====================
+
             InfoTile(
               icon: Icons.verified_rounded,
               title: 'Verified Provider',
@@ -2076,10 +2443,15 @@ class ProviderProfileScreen extends StatelessWidget {
                   'Identity verification will be available later.',
               iconColor: AppColors.success,
             ),
+
             const SizedBox(height: 12),
+
+            // ==================== REQUEST SERVICE ====================
+
             SizedBox(
               width: double.infinity,
               height: 54,
+
               child: ElevatedButton(
                 onPressed: () {
                   Navigator.push(
@@ -2087,15 +2459,19 @@ class ProviderProfileScreen extends StatelessWidget {
                     MaterialPageRoute(
                       builder: (context) =>
                           RequestServiceScreen(
-                        providerName: name,
-                        serviceName: serviceName,
-                      ),
+                            providerName: widget.name,
+                            serviceName: widget.serviceName,
+                            customerEmail: Session.email ?? '',
+                          ),
                     ),
                   );
                 },
+
                 child: const Text(
                   'Request Service',
-                  style: TextStyle(fontSize: 17),
+                  style: TextStyle(
+                    fontSize: 17,
+                  ),
                 ),
               ),
             ),
@@ -2107,15 +2483,16 @@ class ProviderProfileScreen extends StatelessWidget {
 }
 
 //==================== Request Service Screen ====================
-
 class RequestServiceScreen extends StatefulWidget {
   final String providerName;
   final String serviceName;
+  final String customerEmail;
 
   const RequestServiceScreen({
     super.key,
     required this.providerName,
     required this.serviceName,
+    required this.customerEmail,
   });
 
   @override
@@ -2126,8 +2503,10 @@ class RequestServiceScreen extends StatefulWidget {
 class _RequestServiceScreenState
     extends State<RequestServiceScreen> {
   final _formKey = GlobalKey<FormState>();
+
   final TextEditingController addressController =
       TextEditingController();
+
   final TextEditingController descriptionController =
       TextEditingController();
 
@@ -2195,30 +2574,48 @@ class _RequestServiceScreenState
       appBar: AppBar(
         title: const Text('Request Service'),
       ),
+
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(20),
+
         child: Form(
           key: _formKey,
+
           child: Column(
             crossAxisAlignment:
                 CrossAxisAlignment.start,
+
             children: [
+
+              // ==================== SERVICE DETAILS ====================
+
               const SectionHeader(
                 title: 'Service Details',
               ),
+
               const SizedBox(height: 18),
+
+              // ==================== PROVIDER ====================
+
               InfoTile(
                 icon: Icons.person_rounded,
                 title: 'Provider',
                 subtitle: widget.providerName,
               ),
+
+              // ==================== SERVICE ====================
+
               InfoTile(
                 icon: Icons.build_rounded,
                 title: 'Service',
                 subtitle: widget.serviceName,
                 iconColor: AppColors.secondary,
               ),
+
               const SizedBox(height: 12),
+
+              // ==================== DATE ====================
+
               const Text(
                 'Select Date',
                 style: TextStyle(
@@ -2226,16 +2623,21 @@ class _RequestServiceScreenState
                   color: AppColors.textPrimary,
                 ),
               ),
+
               const SizedBox(height: 8),
+
               SizedBox(
                 width: double.infinity,
                 height: 52,
+
                 child: OutlinedButton.icon(
                   onPressed: selectDate,
+
                   icon: const Icon(
                     Icons.calendar_today_rounded,
                     size: 18,
                   ),
+
                   label: Text(
                     selectedDate == null
                         ? 'Choose Date'
@@ -2243,7 +2645,11 @@ class _RequestServiceScreenState
                   ),
                 ),
               ),
+
               const SizedBox(height: 20),
+
+              // ==================== TIME ====================
+
               const Text(
                 'Select Time',
                 style: TextStyle(
@@ -2251,16 +2657,21 @@ class _RequestServiceScreenState
                   color: AppColors.textPrimary,
                 ),
               ),
+
               const SizedBox(height: 8),
+
               SizedBox(
                 width: double.infinity,
                 height: 52,
+
                 child: OutlinedButton.icon(
                   onPressed: selectTime,
+
                   icon: const Icon(
                     Icons.access_time_rounded,
                     size: 18,
                   ),
+
                   label: Text(
                     selectedTime == null
                         ? 'Choose Time'
@@ -2268,7 +2679,11 @@ class _RequestServiceScreenState
                   ),
                 ),
               ),
+
               const SizedBox(height: 20),
+
+              // ==================== ADDRESS ====================
+
               const Text(
                 'Service Address',
                 style: TextStyle(
@@ -2276,26 +2691,36 @@ class _RequestServiceScreenState
                   color: AppColors.textPrimary,
                 ),
               ),
+
               const SizedBox(height: 8),
+
               TextFormField(
                 controller: addressController,
                 maxLines: 2,
+
                 decoration: const InputDecoration(
                   hintText:
                       'Enter your service address',
+
                   prefixIcon: Icon(
                     Icons.location_on_outlined,
                   ),
                 ),
+
                 validator: (value) {
                   if (value == null ||
                       value.trim().isEmpty) {
                     return 'Please enter your address';
                   }
+
                   return null;
                 },
               ),
+
               const SizedBox(height: 20),
+
+              // ==================== PROBLEM ====================
+
               const Text(
                 'Describe Your Problem',
                 style: TextStyle(
@@ -2303,38 +2728,55 @@ class _RequestServiceScreenState
                   color: AppColors.textPrimary,
                 ),
               ),
+
               const SizedBox(height: 8),
+
               TextFormField(
-                controller: descriptionController,
+                controller:
+                    descriptionController,
+
                 maxLines: 4,
+
                 decoration: const InputDecoration(
                   hintText:
                       'Describe what service you need...',
+
                   prefixIcon: Icon(
                     Icons.description_outlined,
                   ),
                 ),
+
                 validator: (value) {
                   if (value == null ||
                       value.trim().isEmpty) {
                     return 'Please describe your problem';
                   }
+
                   return null;
                 },
               ),
+
               const SizedBox(height: 30),
+
+              // ==================== SUBMIT ====================
+
               SizedBox(
                 width: double.infinity,
                 height: 54,
+
                 child: ElevatedButton.icon(
                   onPressed: submitRequest,
+
                   icon: const Icon(
                     Icons.send_rounded,
                     size: 18,
                   ),
+
                   label: const Text(
                     'Submit Request',
-                    style: TextStyle(fontSize: 17),
+                    style: TextStyle(
+                      fontSize: 17,
+                    ),
                   ),
                 ),
               ),
@@ -3190,7 +3632,6 @@ class _ProviderProfileEditScreenState
   }
 }
 //==================== My Services Screen ====================
-
 class MyServicesScreen extends StatefulWidget {
   const MyServicesScreen({super.key});
 
@@ -3201,159 +3642,945 @@ class MyServicesScreen extends StatefulWidget {
 
 class _MyServicesScreenState
     extends State<MyServicesScreen> {
-  final List<String> services = [
-    'Electrician',
-    'Plumber',
-    'Carpenter',
-    'Mason',
-    'Mechanic',
-    'AC Technician',
-    'Computer Technician',
-    'Phone Repair',
-    'Painter',
-  ];
+  List<dynamic> services = [];
 
-  final Set<String> selectedServices = {};
+  bool isLoading = true;
+  bool isSaving = false;
 
-  void saveServices() {
-    if (selectedServices.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content:
-              Text('Please select at least one service.'),
-        ),
-      );
+  @override
+  void initState() {
+    super.initState();
+    loadServices();
+  }
+
+  // ============================================================
+  // LOAD SERVICES
+  // ============================================================
+
+  Future<void> loadServices() async {
+    final email = Session.email;
+
+    if (email == null || email.isEmpty) {
+      if (!mounted) return;
+
+      setState(() {
+        isLoading = false;
+      });
+
       return;
     }
+
+    try {
+      final result =
+          await ApiService.getProviderServices(
+        email: email,
+      );
+
+      if (!mounted) return;
+
+      setState(() {
+        services = result ?? [];
+        isLoading = false;
+      });
+    } catch (e) {
+      print('Load Services Error: $e');
+
+      if (!mounted) return;
+
+      setState(() {
+        services = [];
+        isLoading = false;
+      });
+    }
+  }
+  
+
+  // ============================================================
+  // SERVICE FORM DIALOG
+  // ============================================================
+Future<Map<String, dynamic>?> showServiceForm({
+  Map<String, dynamic>? service,
+}) async {
+  final bool isEditing = service != null;
+
+  final nameController = TextEditingController(
+    text: isEditing
+        ? service!['name']?.toString() ?? ''
+        : '',
+  );
+
+  final descriptionController = TextEditingController(
+    text: isEditing
+        ? service!['description']?.toString() ?? ''
+        : '',
+  );
+
+  final priceController = TextEditingController(
+    text: isEditing
+        ? service!['price']?.toString() ?? ''
+        : '',
+  );
+
+  String selectedCategory = isEditing
+      ? service!['category']?.toString() ?? 'Electrician'
+      : 'Electrician';
+
+  final result = await showDialog<Map<String, dynamic>>(
+    context: context,
+    barrierDismissible: false,
+    builder: (dialogContext) {
+      return StatefulBuilder(
+        builder: (
+          dialogContext,
+          setDialogState,
+        ) {
+          return AlertDialog(
+            title: Text(
+              isEditing
+                  ? 'Edit Service'
+                  : 'Add Service',
+            ),
+
+            content: SingleChildScrollView(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+
+                  // ==================== SERVICE NAME ====================
+
+                  TextField(
+                    controller: nameController,
+                    textInputAction: TextInputAction.next,
+                    decoration: const InputDecoration(
+                      labelText: 'Service Name',
+                      hintText: 'e.g. House Wiring',
+                      prefixIcon: Icon(
+                        Icons.build_outlined,
+                      ),
+                    ),
+                  ),
+
+                  const SizedBox(
+                    height: 16,
+                  ),
+
+                  // ==================== CATEGORY ====================
+
+                  DropdownButtonFormField<String>(
+                    value: selectedCategory,
+                    decoration: const InputDecoration(
+                      labelText: 'Category',
+                      prefixIcon: Icon(
+                        Icons.category_outlined,
+                      ),
+                    ),
+                    items: const [
+                      'Electrician',
+                      'Plumber',
+                      'Carpenter',
+                      'Mason',
+                      'Mechanic',
+                      'AC Technician',
+                      'Computer Technician',
+                      'Phone Repair',
+                      'Painter',
+                    ].map(
+                      (category) {
+                        return DropdownMenuItem<String>(
+                          value: category,
+                          child: Text(category),
+                        );
+                      },
+                    ).toList(),
+                    onChanged: (value) {
+                      if (value != null) {
+                        setDialogState(() {
+                          selectedCategory = value;
+                        });
+                      }
+                    },
+                  ),
+
+                  const SizedBox(
+                    height: 16,
+                  ),
+
+                  // ==================== DESCRIPTION ====================
+
+                  TextField(
+                    controller: descriptionController,
+                    maxLines: 3,
+                    textInputAction: TextInputAction.newline,
+                    decoration: const InputDecoration(
+                      labelText: 'Description',
+                      hintText: 'Describe your service',
+                      prefixIcon: Icon(
+                        Icons.description_outlined,
+                      ),
+                    ),
+                  ),
+
+                  const SizedBox(
+                    height: 16,
+                  ),
+
+                  // ==================== PRICE ====================
+
+                  TextField(
+                    controller: priceController,
+                    keyboardType:
+                        const TextInputType.numberWithOptions(
+                      decimal: true,
+                    ),
+                    textInputAction: TextInputAction.done,
+                    decoration: const InputDecoration(
+                      labelText: 'Price',
+                      hintText: 'Enter service price',
+                      prefixIcon: Icon(
+                        Icons.payments_outlined,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+
+            // ==================== ACTIONS ====================
+
+            actions: [
+
+              // ==================== CANCEL ====================
+
+              TextButton(
+                onPressed: () async {
+                  // Close keyboard
+                  FocusManager.instance.primaryFocus?.unfocus();
+
+                  // Give Android keyboard time to close
+                  await Future.delayed(
+                    const Duration(milliseconds: 300),
+                  );
+
+                  // Close dialog
+                  if (dialogContext.mounted) {
+                    Navigator.of(dialogContext).pop();
+                  }
+                },
+                child: const Text(
+                  'Cancel',
+                ),
+              ),
+
+              // ==================== ADD / UPDATE ====================
+
+              ElevatedButton(
+                onPressed: () async {
+                  final name =
+                      nameController.text.trim();
+
+                  final description =
+                      descriptionController.text.trim();
+
+                  final priceText =
+                      priceController.text.trim();
+
+                  // ==================== VALIDATION ====================
+
+                  if (name.isEmpty ||
+                      description.isEmpty ||
+                      priceText.isEmpty) {
+                    FocusManager.instance
+                        .primaryFocus
+                        ?.unfocus();
+
+                    ScaffoldMessenger.of(context)
+                        .showSnackBar(
+                      const SnackBar(
+                        content: Text(
+                          'Please fill all fields.',
+                        ),
+                      ),
+                    );
+
+                    return;
+                  }
+
+                  final price =
+                      double.tryParse(priceText);
+
+                  if (price == null || price < 0) {
+                    FocusManager.instance
+                        .primaryFocus
+                        ?.unfocus();
+
+                    ScaffoldMessenger.of(context)
+                        .showSnackBar(
+                      const SnackBar(
+                        content: Text(
+                          'Please enter a valid price.',
+                        ),
+                      ),
+                    );
+
+                    return;
+                  }
+
+                  // ==================== CLOSE KEYBOARD ====================
+
+                  FocusManager.instance
+                      .primaryFocus
+                      ?.unfocus();
+
+                  // Give Android keyboard time to close
+                  await Future.delayed(
+                    const Duration(milliseconds: 300),
+                  );
+
+                  // ==================== CLOSE DIALOG ====================
+
+                  if (dialogContext.mounted) {
+                    Navigator.of(dialogContext).pop({
+                      'name': name,
+                      'category': selectedCategory,
+                      'description': description,
+                      'price': price,
+                    });
+                  }
+                },
+                child: Text(
+                  isEditing
+                      ? 'Update'
+                      : 'Add Service',
+                ),
+              ),
+            ],
+          );
+        },
+      );
+    },
+  );
+
+  // ==================== DISPOSE CONTROLLERS ====================
+
+  nameController.dispose();
+  descriptionController.dispose();
+  priceController.dispose();
+
+  return result;
+}
+
+
+  // ============================================================
+  // ADD SERVICE
+  // ============================================================
+
+  Future<void> addService() async {
+    final email = Session.email;
+
+    if (email == null || email.isEmpty) {
+      ScaffoldMessenger.of(context)
+          .showSnackBar(
+        const SnackBar(
+          content: Text(
+            'User session not found. Please login again.',
+          ),
+        ),
+      );
+
+      return;
+    }
+
+    final data =
+        await showServiceForm();
+
+    if (data == null) {
+      return;
+    }
+
+    if (!mounted) return;
+
+    setState(() {
+      isSaving = true;
+    });
+
+    final success =
+        await ApiService.addService(
+      email: email,
+      name: data['name'],
+      category: data['category'],
+      description: data['description'],
+      price: data['price'],
+    );
+
+    if (!mounted) return;
+
+    setState(() {
+      isSaving = false;
+    });
+
+    if (success) {
+      ScaffoldMessenger.of(context)
+          .showSnackBar(
+        const SnackBar(
+          content: Text(
+            'Service added successfully!',
+          ),
+          backgroundColor:
+              AppColors.success,
+        ),
+      );
+
+      await loadServices();
+    } else {
+      ScaffoldMessenger.of(context)
+          .showSnackBar(
+        const SnackBar(
+          content: Text(
+            'Could not add service.',
+          ),
+        ),
+      );
+    }
+  }
+
+  // ============================================================
+  // EDIT SERVICE
+  // ============================================================
+  Future<void> editService(
+  Map<String, dynamic> service,
+) async {
+  final email = Session.email;
+
+  if (email == null || email.isEmpty) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Text(
+          'User session not found. Please login again.',
+        ),
+      ),
+    );
+    return;
+  }
+
+  final serviceId = int.tryParse(
+    service['id'].toString(),
+  );
+
+  if (serviceId == null) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Text('Invalid service ID.'),
+      ),
+    );
+    return;
+  }
+
+  // Open edit form
+  final data = await showServiceForm(
+    service: service,
+  );
+
+  // User cancelled
+  if (data == null) {
+    return;
+  }
+
+  // Make sure screen is still active
+  if (!mounted) {
+    return;
+  }
+
+  print('EDIT: FORM CLOSED');
+  print('EDIT: API CALL STARTED');
+
+  setState(() {
+    isSaving = true;
+  });
+
+  try {
+    final success = await ApiService.updateService(
+      id: serviceId,
+      email: email,
+      name: data['name'].toString(),
+      category: data['category'].toString(),
+      description: data['description'].toString(),
+      price: (data['price'] as num).toDouble(),
+    );
+
+    print('EDIT: API CALL FINISHED - $success');
+
+    if (!mounted) {
+      return;
+    }
+
+    setState(() {
+      isSaving = false;
+    });
+
+    if (success) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text(
+            'Service updated successfully!',
+          ),
+          backgroundColor: AppColors.success,
+        ),
+      );
+
+      await loadServices();
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text(
+            'Could not update service.',
+          ),
+        ),
+      );
+    }
+  } catch (e) {
+    print('EDIT ERROR: $e');
+
+    if (!mounted) {
+      return;
+    }
+
+    setState(() {
+      isSaving = false;
+    });
 
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(
-          '${selectedServices.length} service(s) saved successfully!',
-        ),
-        backgroundColor: AppColors.success,
-      ),
-    );
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('My Services'),
-      ),
-      body: Padding(
-        padding: const EdgeInsets.fromLTRB(
-          20,
-          8,
-          20,
-          20,
-        ),
-        child: Column(
-          crossAxisAlignment:
-              CrossAxisAlignment.start,
-          children: [
-            const SectionHeader(
-              title: 'Select Your Services',
-              subtitle:
-                  'Choose the services you provide to customers.',
-            ),
-            const SizedBox(height: 18),
-            Expanded(
-              child: ListView.separated(
-                itemCount: services.length,
-                separatorBuilder: (_, __) =>
-                    const SizedBox(height: 10),
-                itemBuilder: (context, index) {
-                  final service = services[index];
-                  final isSelected =
-                      selectedServices.contains(service);
-
-                  return Card(
-                    color: isSelected
-                        ? AppColors.primary
-                            .withOpacity(0.06)
-                        : AppColors.surface,
-                    shape: RoundedRectangleBorder(
-                      borderRadius:
-                          BorderRadius.circular(16),
-                      side: BorderSide(
-                        color: isSelected
-                            ? AppColors.primary
-                                .withOpacity(0.4)
-                            : Colors.black
-                                .withOpacity(0.05),
-                      ),
-                    ),
-                    child: CheckboxListTile(
-                      value: isSelected,
-                      title: Text(
-                        service,
-                        style: const TextStyle(
-                          fontWeight: FontWeight.w600,
-                          color:
-                              AppColors.textPrimary,
-                        ),
-                      ),
-                      secondary: Container(
-                        width: 40,
-                        height: 40,
-                        decoration: BoxDecoration(
-                          color: AppColors.primary
-                              .withOpacity(0.1),
-                          borderRadius:
-                              BorderRadius.circular(10),
-                        ),
-                        child: const Icon(
-                          Icons.build_rounded,
-                          color: AppColors.primary,
-                          size: 20,
-                        ),
-                      ),
-                      activeColor: AppColors.primary,
-                      shape: RoundedRectangleBorder(
-                        borderRadius:
-                            BorderRadius.circular(16),
-                      ),
-                      onChanged: (value) {
-                        setState(() {
-                          if (value == true) {
-                            selectedServices
-                                .add(service);
-                          } else {
-                            selectedServices
-                                .remove(service);
-                          }
-                        });
-                      },
-                    ),
-                  );
-                },
-              ),
-            ),
-            const SizedBox(height: 10),
-            SizedBox(
-              width: double.infinity,
-              height: 54,
-              child: ElevatedButton.icon(
-                onPressed: saveServices,
-                icon: const Icon(
-                  Icons.save_rounded,
-                  size: 18,
-                ),
-                label: const Text(
-                  'Save Services',
-                  style: TextStyle(fontSize: 17),
-                ),
-              ),
-            ),
-          ],
+          'Update error: $e',
         ),
       ),
     );
   }
 }
+  
+  // ============================================================
+  // DELETE SERVICE
+  // ============================================================
 
+  Future<void> deleteService(
+      Map<String, dynamic> service) async {
+
+    final email = Session.email;
+
+    if (email == null || email.isEmpty) {
+      ScaffoldMessenger.of(context)
+          .showSnackBar(
+        const SnackBar(
+          content: Text(
+            'User session not found. Please login again.',
+          ),
+        ),
+      );
+
+      return;
+    }
+
+    final serviceId =
+        int.tryParse(
+      service['id'].toString(),
+    );
+
+    if (serviceId == null) {
+      return;
+    }
+
+    final shouldDelete =
+        await showDialog<bool>(
+      context: context,
+      builder: (dialogContext) {
+        return AlertDialog(
+          title: const Text(
+            'Delete Service',
+          ),
+          content: Text(
+            'Are you sure you want to delete '
+            '"${service['name']}"?',
+          ),
+          actions: [
+
+            TextButton(
+              onPressed: () {
+                Navigator.of(
+                  dialogContext,
+                ).pop(false);
+              },
+              child: const Text(
+                'Cancel',
+              ),
+            ),
+
+            ElevatedButton(
+              onPressed: () {
+                Navigator.of(
+                  dialogContext,
+                ).pop(true);
+              },
+              child: const Text(
+                'Delete',
+              ),
+            ),
+          ],
+        );
+      },
+    );
+
+    if (shouldDelete != true) {
+      return;
+    }
+
+    if (!mounted) return;
+
+    setState(() {
+      isSaving = true;
+    });
+
+    final success =
+        await ApiService.deleteService(
+      id: serviceId,
+      email: email,
+    );
+
+    if (!mounted) return;
+
+    setState(() {
+      isSaving = false;
+    });
+
+    if (success) {
+      ScaffoldMessenger.of(context)
+          .showSnackBar(
+        const SnackBar(
+          content: Text(
+            'Service deleted successfully!',
+          ),
+          backgroundColor:
+              AppColors.success,
+        ),
+      );
+
+      await loadServices();
+    } else {
+      ScaffoldMessenger.of(context)
+          .showSnackBar(
+        const SnackBar(
+          content: Text(
+            'Could not delete service.',
+          ),
+        ),
+      );
+    }
+  }
+
+  // ============================================================
+  // BUILD
+  // ============================================================
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text(
+          'My Services',
+        ),
+      ),
+
+      floatingActionButton:
+          FloatingActionButton.extended(
+        onPressed:
+            isSaving ? null : addService,
+        icon: const Icon(
+          Icons.add,
+        ),
+        label: const Text(
+          'Add Service',
+        ),
+      ),
+
+      body: isLoading
+
+          ? const Center(
+              child:
+                  CircularProgressIndicator(),
+            )
+
+          : services.isEmpty
+
+              ? const Center(
+                  child: Column(
+                    mainAxisAlignment:
+                        MainAxisAlignment.center,
+                    children: [
+
+                      Icon(
+                        Icons
+                            .build_circle_outlined,
+                        size: 70,
+                        color:
+                            AppColors
+                                .textSecondary,
+                      ),
+
+                      SizedBox(
+                        height: 16,
+                      ),
+
+                      Text(
+                        'No services added yet.',
+                        style: TextStyle(
+                          fontSize: 17,
+                          fontWeight:
+                              FontWeight.w600,
+                        ),
+                      ),
+
+                      SizedBox(
+                        height: 6,
+                      ),
+
+                      Text(
+                        'Tap + Add Service to get started.',
+                        style: TextStyle(
+                          color:
+                              AppColors
+                                  .textSecondary,
+                        ),
+                      ),
+                    ],
+                  ),
+                )
+
+              : RefreshIndicator(
+                  onRefresh:
+                      loadServices,
+
+                  child:
+                      ListView.builder(
+                    padding:
+                        const EdgeInsets.all(
+                      20,
+                    ),
+
+                    itemCount:
+                        services.length,
+
+                    itemBuilder:
+                        (context, index) {
+
+                      final service =
+                          services[index];
+
+                      return Card(
+                        margin:
+                            const EdgeInsets.only(
+                          bottom: 14,
+                        ),
+
+                        child: Padding(
+                          padding:
+                              const EdgeInsets.all(
+                            16,
+                          ),
+
+                          child: Column(
+                            crossAxisAlignment:
+                                CrossAxisAlignment
+                                    .start,
+
+                            children: [
+
+                              // ==================== SERVICE INFO ====================
+
+                              Row(
+                                children: [
+
+                                  Container(
+                                    width: 48,
+                                    height: 48,
+
+                                    decoration:
+                                        BoxDecoration(
+                                      color: AppColors
+                                          .primary
+                                          .withOpacity(
+                                        0.1,
+                                      ),
+                                      borderRadius:
+                                          BorderRadius
+                                              .circular(
+                                        12,
+                                      ),
+                                    ),
+
+                                    child:
+                                        const Icon(
+                                      Icons
+                                          .build_rounded,
+                                      color:
+                                          AppColors
+                                              .primary,
+                                    ),
+                                  ),
+
+                                  const SizedBox(
+                                    width: 14,
+                                  ),
+
+                                  Expanded(
+                                    child:
+                                        Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment
+                                              .start,
+
+                                      children: [
+
+                                        Text(
+                                          service[
+                                                      'name']
+                                                  ?.toString() ??
+                                              '',
+                                          style:
+                                              const TextStyle(
+                                            fontSize:
+                                                17,
+                                            fontWeight:
+                                                FontWeight
+                                                    .w700,
+                                          ),
+                                        ),
+
+                                        const SizedBox(
+                                          height: 4,
+                                        ),
+
+                                        Text(
+                                          service[
+                                                      'category']
+                                                  ?.toString() ??
+                                              '',
+                                          style:
+                                              const TextStyle(
+                                            color:
+                                                AppColors
+                                                    .secondary,
+                                            fontWeight:
+                                                FontWeight
+                                                    .w600,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+
+                                  Text(
+                                    'Rs. ${service['price'] ?? 0}',
+                                    style:
+                                        const TextStyle(
+                                      fontWeight:
+                                          FontWeight
+                                              .w700,
+                                      fontSize:
+                                          15,
+                                    ),
+                                  ),
+                                ],
+                              ),
+
+                              const SizedBox(
+                                height: 14,
+                              ),
+
+                              // ==================== DESCRIPTION ====================
+
+                              Text(
+                                service[
+                                            'description']
+                                        ?.toString() ??
+                                    '',
+                                style:
+                                    const TextStyle(
+                                  color:
+                                      AppColors
+                                          .textSecondary,
+                                  height: 1.4,
+                                ),
+                              ),
+
+                              const SizedBox(
+                                height: 14,
+                              ),
+
+                              // ==================== BUTTONS ====================
+
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment
+                                        .end,
+
+                                children: [
+
+                                  OutlinedButton.icon(
+                                    onPressed:
+                                        isSaving
+                                            ? null
+                                            : () {
+                                                editService(
+                                                  service,
+                                                );
+                                              },
+                                    icon:
+                                        const Icon(
+                                      Icons
+                                          .edit_outlined,
+                                      size: 18,
+                                    ),
+                                    label:
+                                        const Text(
+                                      'Edit',
+                                    ),
+                                  ),
+
+                                  const SizedBox(
+                                    width: 10,
+                                  ),
+
+                                  OutlinedButton.icon(
+                                    onPressed:
+                                        isSaving
+                                            ? null
+                                            : () {
+                                                deleteService(
+                                                  service,
+                                                );
+                                              },
+                                    icon:
+                                        const Icon(
+                                      Icons
+                                          .delete_outline,
+                                      size: 18,
+                                    ),
+                                    label:
+                                        const Text(
+                                      'Delete',
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+                ),
+    );
+  }
+}
 //==================== Service Requests Screen ====================
 
 class ServiceRequestsScreen extends StatefulWidget {
@@ -3997,6 +5224,106 @@ class CustomerBookingsScreen
   }
 }
 
+//==================== Providers Screen ====================
+class ProvidersScreen extends StatefulWidget {
+  const ProvidersScreen({super.key});
+
+  @override
+  State<ProvidersScreen> createState() => _ProvidersScreenState();
+}
+
+class _ProvidersScreenState extends State<ProvidersScreen> {
+  List<dynamic> providers = [];
+  bool isLoading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    loadProviders();
+  }
+
+  Future<void> loadProviders() async {
+    final result = await ApiService.getProviders();
+
+    if (!mounted) {
+      return;
+    }
+
+    setState(() {
+      providers = result;
+      isLoading = false;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Service Providers'),
+      ),
+      body: isLoading
+          ? const Center(
+              child: CircularProgressIndicator(),
+            )
+          : providers.isEmpty
+              ? const Center(
+                  child: Text(
+                    'No service providers found.',
+                  ),
+                )
+              : RefreshIndicator(
+                  onRefresh: loadProviders,
+                  child: ListView.builder(
+                    padding: const EdgeInsets.all(16),
+                    itemCount: providers.length,
+                    itemBuilder: (context, index) {
+                      final provider = providers[index];
+
+                      return Card(
+                        margin: const EdgeInsets.only(
+                          bottom: 12,
+                        ),
+                        child: ListTile(
+                          leading: CircleAvatar(
+                            child: Text(
+                              provider['name']
+                                      ?.toString()
+                                      .substring(0, 1)
+                                      .toUpperCase() ??
+                                  'P',
+                            ),
+                          ),
+                          title: Text(
+                            provider['name']?.toString() ??
+                                'Unknown Provider',
+                          ),
+                          subtitle: Column(
+                            crossAxisAlignment:
+                                CrossAxisAlignment.start,
+                            children: [
+                              const SizedBox(height: 4),
+                              Text(
+                                provider['phone']?.toString() ??
+                                    'No phone number',
+                              ),
+                              Text(
+                                provider['email']?.toString() ??
+                                    'No email',
+                              ),
+                            ],
+                          ),
+                          trailing: const Icon(
+                            Icons.arrow_forward_ios,
+                            size: 18,
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+                ),
+    );
+  }
+}
 //==================== Customer Profile Screen ====================
 
 class CustomerProfileScreen
@@ -4149,4 +5476,5 @@ class CustomerProfileScreen
       ),
     );
   }
+  
 }
