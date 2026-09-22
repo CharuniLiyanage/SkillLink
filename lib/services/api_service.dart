@@ -630,4 +630,47 @@ static Future<bool> updateService({
         return [];
       }
     }
+
+    //-------------------AddReview-----------------//
+    static Future<bool> addReview({
+      required String customerEmail,
+      required int serviceRequestId,
+      required int rating,
+      required String comment,
+    }) async {
+      try {
+        final uri = Uri.parse(
+          '$baseUrl/api/reviews/add',
+        ).replace(
+          queryParameters: {
+            'customerEmail': customerEmail,
+            'serviceRequestId':
+                serviceRequestId.toString(),
+            'rating': rating.toString(),
+            'comment': comment,
+          },
+        );
+
+        final response = await http.post(uri);
+
+        print(
+          'Add Review Status Code: '
+          '${response.statusCode}',
+        );
+
+        print(
+          'Add Review Response: '
+          '${response.body}',
+        );
+
+        return response.statusCode == 200;
+      } catch (e) {
+        print(
+          'Add Review Error: '
+          '$e',
+        );
+
+        return false;
+      }
+    }
 }
