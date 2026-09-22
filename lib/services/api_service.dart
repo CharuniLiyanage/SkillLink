@@ -517,4 +517,80 @@ static Future<bool> updateService({
         return null;
       }
     }
+
+    //--------------GetProviderRequests----------------//
+    static Future<List<dynamic>> getProviderRequests({
+      required String email,
+    }) async {
+      try {
+        final response = await http.get(
+          Uri.parse(
+            '$baseUrl/api/service-requests/provider'
+            '?email=${Uri.encodeComponent(email)}',
+          ),
+        );
+
+        print(
+          'Get Provider Requests Status: '
+          '${response.statusCode}',
+        );
+
+        print(
+          'Get Provider Requests Response: '
+          '${response.body}',
+        );
+
+        if (response.statusCode == 200) {
+          return jsonDecode(response.body);
+        }
+
+        return [];
+      } catch (e) {
+        print(
+          'Get Provider Requests Error: '
+          '$e',
+        );
+
+        return [];
+      }
+    }
+
+    //-----------------UpdateServiceRequestStatus---------//
+    static Future<bool> updateServiceRequestStatus({
+  required int requestId,
+  required String email,
+  required String status,
+}) async {
+  try {
+    final uri = Uri.parse(
+      '$baseUrl/api/service-requests/update-status/$requestId',
+    ).replace(
+      queryParameters: {
+        'email': email,
+        'status': status,
+      },
+    );
+
+    final response = await http.put(uri);
+
+    print(
+      'Update Request Status Code: '
+      '${response.statusCode}',
+    );
+
+    print(
+      'Update Request Response: '
+      '${response.body}',
+    );
+
+    return response.statusCode == 200;
+  } catch (e) {
+    print(
+      'Update Request Status Error: '
+      '$e',
+    );
+
+    return false;
+  }
+}
 }
