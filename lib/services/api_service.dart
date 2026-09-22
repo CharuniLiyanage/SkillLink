@@ -428,4 +428,93 @@ static Future<bool> updateService({
         return null;
       }
     }
+
+    //-----------------GetCustomerTequest-------------------//
+    static Future<List<dynamic>> getCustomerRequests({
+      required String email,
+    }) async {
+      try {
+        final response = await http.get(
+          Uri.parse(
+            '$baseUrl/api/service-requests/customer'
+            '?email=${Uri.encodeComponent(email)}',
+          ),
+        );
+
+        print(
+          'Get Customer Requests Status: '
+          '${response.statusCode}',
+        );
+
+        print(
+          'Get Customer Requests Response: '
+          '${response.body}',
+        );
+
+        if (response.statusCode == 200) {
+          return jsonDecode(response.body);
+        }
+
+        return [];
+      } catch (e) {
+        print(
+          'Get Customer Requests Error: '
+          '$e',
+        );
+
+        return [];
+      }
+    }
+
+    //-----------------CreateServiceRequest---------------//
+    static Future<Map<String, dynamic>?> createServiceRequest({
+      required String customerEmail,
+      required String providerEmail,
+      required int serviceId,
+      required String requestedDate,
+      required String requestedTime,
+      required String address,
+      required String description,
+    }) async {
+      try {
+        final uri = Uri.parse(
+          '$baseUrl/api/service-requests/create',
+        ).replace(
+          queryParameters: {
+            'customerEmail': customerEmail,
+            'providerEmail': providerEmail,
+            'serviceId': serviceId.toString(),
+            'requestedDate': requestedDate,
+            'requestedTime': requestedTime,
+            'address': address,
+            'description': description,
+          },
+        );
+
+        final response = await http.post(uri);
+
+        print(
+          'Create Service Request Status: '
+          '${response.statusCode}',
+        );
+
+        print(
+          'Create Service Request Response: '
+          '${response.body}',
+        );
+
+        if (response.statusCode == 200) {
+          return jsonDecode(response.body);
+        }
+
+        return null;
+      } catch (e) {
+        print(
+          'Create Service Request Error: '
+          '$e',
+        );
+
+        return null;
+      }
+    }
 }
