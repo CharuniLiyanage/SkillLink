@@ -2576,11 +2576,16 @@ class _ProviderProfileScreenState
   List<dynamic> services = [];
   bool isLoadingServices = true;
 
+  List<dynamic> reviews = [];
+  bool isLoadingReviews = true;
+  double averageRating = 0.0;
+
   @override
-  void initState() {
-    super.initState();
-    loadProviderServices();
-  }
+void initState() {
+  super.initState();
+  loadProviderServices();
+  loadProviderReviews();
+}
 
   Future<void> loadProviderServices() async {
     final result =
@@ -2596,6 +2601,40 @@ class _ProviderProfileScreenState
       services = result ?? [];
       isLoadingServices = false;
     });
+  }
+
+  Future<void> loadProviderReviews() async {
+    try {
+      final result = await ApiService.getProviderReviews(widget.email);
+
+      if (!mounted) {
+        return;
+      }
+
+      double totalRating = 0;
+
+      for (final review in result) {
+        totalRating +=
+            double.tryParse(review['rating'].toString()) ?? 0;
+      }
+
+      setState(() {
+        reviews = result;
+        averageRating =
+            result.isEmpty ? 0.0 : totalRating / result.length;
+        isLoadingReviews = false;
+      });
+    } catch (e) {
+      if (!mounted) {
+        return;
+      }
+
+      setState(() {
+        reviews = [];
+        averageRating = 0.0;
+        isLoadingReviews = false;
+      });
+    }
   }
 
   @override
@@ -2683,7 +2722,9 @@ class _ProviderProfileScreenState
                 const SizedBox(width: 6),
 
                 Text(
-                  widget.rating,
+                  averageRating > 0
+                      ? averageRating.toStringAsFixed(1)
+                      : 'No ratings',
                   style: const TextStyle(
                     fontSize: 17,
                     fontWeight: FontWeight.w700,

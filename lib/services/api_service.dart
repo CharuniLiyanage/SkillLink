@@ -673,4 +673,17 @@ static Future<bool> updateService({
         return false;
       }
     }
+
+    //-------------------GetProviderReviews-----------------//
+    static Future<List<dynamic>> getProviderReviews(String email) async {
+      final response = await http.get(
+        Uri.parse('$baseUrl/api/reviews/provider?email=$email'),
+      );
+
+      if (response.statusCode == 200) {
+        return jsonDecode(response.body);
+      } else {
+        throw Exception('Failed to load provider reviews');
+      }
+    }
 }
