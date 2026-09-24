@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'dart:io';
 
 class ApiService {
   static const String baseUrl = 'http://10.0.2.2:8080';
@@ -124,48 +125,55 @@ class ApiService {
 
   // ==================== SAVE PROVIDER PROFILE ====================
 
-  static Future<bool> saveProviderProfile({
-    required String email,
-    required String location,
-    required int experience,
-    required String description,
-  }) async {
-    try {
-      final response = await http.post(
-        Uri.parse(
-          '$baseUrl/api/provider-profile/save'
-          '?email=${Uri.encodeComponent(email)}',
-        ),
-        headers: {
-          'Content-Type': 'application/json',
+static Future<bool> saveProviderProfile({
+  required String email,
+  required String name,
+  required String phone,
+  required String location,
+  required int experience,
+  required String description,
+}) async {
+  try {
+    final response = await http.post(
+      Uri.parse(
+        '$baseUrl/api/provider-profile/save'
+        '?email=${Uri.encodeComponent(email)}',
+      ),
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: jsonEncode({
+        'location': location,
+        'experience': experience,
+        'description': description,
+
+        // User data
+        'user': {
+          'name': name,
+          'phone': phone,
         },
-        body: jsonEncode({
-          'location': location,
-          'experience': experience,
-          'description': description,
-        }),
-      );
+      }),
+    );
 
-      print(
-        'Provider Profile Status Code: '
-        '${response.statusCode}',
-      );
+    print(
+      'Provider Profile Status Code: '
+      '${response.statusCode}',
+    );
 
-      print(
-        'Provider Profile Response: '
-        '${response.body}',
-      );
+    print(
+      'Provider Profile Response: '
+      '${response.body}',
+    );
 
-      return response.statusCode == 200;
-    } catch (e) {
-      print(
-        'Provider Profile Error: $e',
-      );
+    return response.statusCode == 200;
+  } catch (e) {
+    print(
+      'Provider Profile Error: $e',
+    );
 
-      return false;
-    }
+    return false;
   }
-
+}
     // ==================== ADD SERVICE ====================
 
   static Future<bool> addService({
@@ -684,6 +692,59 @@ static Future<bool> updateService({
         return jsonDecode(response.body);
       } else {
         throw Exception('Failed to load provider reviews');
+      }
+    }
+
+    //-------------------UploadProviderProfileImage---------------//
+    static Future<String?> uploadProviderProfileImage({
+      required String email,
+      required File image,
+    }) async {
+      try {
+        final request = http.MultipartRequest(
+          'POST',
+          Uri.parse(
+            '$baseUrl/api/provider-profile/upload-image',
+          ),
+        );
+
+        request.fields['email'] = email;
+
+        request.files.add(
+          await http.MultipartFile.fromPath(
+            'image',
+            image.path,
+          ),
+        );
+
+        final streamedResponse = await request.send();
+
+        final response =
+            await http.Response.fromStream(
+          streamedResponse,
+        );
+
+        print(
+          'Upload Profile Image Status: '
+          '${response.statusCode}',
+        );
+
+        print(
+          'Upload Profile Image Response: '
+          '${response.body}',
+        );
+
+        if (response.statusCode == 200) {
+          return response.body;
+        }
+
+        return null;
+      } catch (e) {
+        print(
+          'Upload Profile Image Error: $e',
+        );
+
+        return null;
       }
     }
 }
