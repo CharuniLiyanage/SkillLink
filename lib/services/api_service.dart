@@ -749,4 +749,125 @@ static Future<bool> updateService({
         return null;
       }
     }
+    // ================= GET USER PROFILE =================
+
+static Future<Map<String, dynamic>?> getUserProfile({
+    required String email,
+  }) async {
+    try {
+      final response = await http.get(
+        Uri.parse(
+          '$baseUrl/api/users/profile'
+          '?email=${Uri.encodeComponent(email)}',
+        ),
+      );
+
+      debugPrint(
+        'Get User Profile Status: ${response.statusCode}',
+      );
+
+      debugPrint(
+        'Get User Profile Response: ${response.body}',
+      );
+
+      if (response.statusCode == 200) {
+        return jsonDecode(response.body);
+      }
+
+      return null;
+    } catch (e) {
+      debugPrint('Get User Profile Error: $e');
+      return null;
+    }
+  }
+
+  // ================= UPDATE USER PROFILE =================
+
+  static Future<bool> updateUserProfile({
+    required String email,
+    required String name,
+    required String phone,
+  }) async {
+    try {
+      final response = await http.put(
+        Uri.parse(
+          '$baseUrl/api/users/profile'
+          '?email=${Uri.encodeComponent(email)}',
+        ),
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: jsonEncode({
+          'name': name,
+          'phone': phone,
+        }),
+      );
+
+      debugPrint(
+        'Update User Profile Status: ${response.statusCode}',
+      );
+
+      debugPrint(
+        'Update User Profile Response: ${response.body}',
+      );
+
+      return response.statusCode == 200;
+    } catch (e) {
+      debugPrint('Update User Profile Error: $e');
+      return false;
+    }
+  }
+      // ================= UPLOAD CUSTOMER PROFILE IMAGE =================
+
+    static Future<String?> uploadCustomerProfileImage({
+      required String email,
+      required File image,
+    }) async {
+      try {
+        final request = http.MultipartRequest(
+          'POST',
+          Uri.parse(
+            '$baseUrl/api/customer-profile/upload-image',
+          ),
+        );
+
+        request.fields['email'] = email;
+
+        request.files.add(
+          await http.MultipartFile.fromPath(
+            'image',
+            image.path,
+          ),
+        );
+
+        final streamedResponse = await request.send();
+
+        final response =
+            await http.Response.fromStream(
+          streamedResponse,
+        );
+
+        debugPrint(
+          'Upload Customer Profile Image Status: '
+          '${response.statusCode}',
+        );
+
+        debugPrint(
+          'Upload Customer Profile Image Response: '
+          '${response.body}',
+        );
+
+        if (response.statusCode == 200) {
+          return response.body;
+        }
+
+        return null;
+      } catch (e) {
+        debugPrint(
+          'Upload Customer Profile Image Error: $e',
+        );
+
+        return null;
+      }
+    }
 }
