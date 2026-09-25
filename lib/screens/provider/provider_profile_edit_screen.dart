@@ -58,13 +58,13 @@ class _ProviderProfileEditScreenState
   Future<void> loadProviderProfile() async {
     final email = Session.email;
 
-    print('================================');
-    print('LOADING PROVIDER PROFILE');
-    print('PROFILE EMAIL: $email');
-    print('================================');
+    debugPrint('================================');
+    debugPrint('LOADING PROVIDER PROFILE');
+    debugPrint('PROFILE EMAIL: $email');
+    debugPrint('================================');
 
-    if (email == null || email.isEmpty) {
-      print('PROFILE EMAIL IS NULL OR EMPTY');
+    if (email.isEmpty) {
+      debugPrint('PROFILE EMAIL IS NULL OR EMPTY');
       return;
     }
 
@@ -72,7 +72,7 @@ class _ProviderProfileEditScreenState
       final profile =
           await ApiService.getProviderProfile(email);
 
-      print('PROFILE DATA: $profile');
+      debugPrint('PROFILE DATA: $profile');
 
       if (!mounted) return;
 
@@ -109,12 +109,12 @@ class _ProviderProfileEditScreenState
           }
         });
 
-        print('PROVIDER PROFILE LOADED SUCCESSFULLY');
+        debugPrint('PROVIDER PROFILE LOADED SUCCESSFULLY');
       } else {
-        print('PROFILE DATA IS NULL');
+        debugPrint('PROFILE DATA IS NULL');
       }
     } catch (e) {
-      print(
+      debugPrint(
         'Load Provider Profile Error: $e',
       );
     }
@@ -143,11 +143,11 @@ class _ProviderProfileEditScreenState
             File(image.path);
       });
 
-      print(
+      debugPrint(
         'SELECTED PROFILE IMAGE: ${image.path}',
       );
     } catch (e) {
-      print(
+      debugPrint(
         'Pick Profile Image Error: $e',
       );
     }
@@ -160,7 +160,7 @@ class _ProviderProfileEditScreenState
 
     // ==================== Check Session ====================
 
-    if (email == null || email.isEmpty) {
+    if (email.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text(
@@ -301,7 +301,7 @@ class _ProviderProfileEditScreenState
 
     if (selectedProfileImage != null) {
 
-      print(
+      debugPrint(
         'UPLOADING PROFILE IMAGE...',
       );
 
@@ -313,7 +313,7 @@ class _ProviderProfileEditScreenState
 
       if (imageResult == null) {
 
-        print(
+        debugPrint(
           'PROFILE IMAGE UPLOAD FAILED',
         );
 
@@ -334,7 +334,7 @@ class _ProviderProfileEditScreenState
         return;
       }
 
-      print(
+      debugPrint(
         'PROFILE IMAGE UPLOAD SUCCESS: $imageResult',
       );
     }
@@ -390,7 +390,7 @@ class _ProviderProfileEditScreenState
                   radius: 55,
 
                   backgroundColor:
-                      AppColors.primary.withOpacity(0.1),
+                      AppColors.primary.withValues(alpha: 0.1),
 
                   backgroundImage:
                     selectedProfileImage != null

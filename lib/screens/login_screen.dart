@@ -1,13 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
 import '../services/api_service.dart';
 import '../utils/app_colors.dart';
 import '../utils/session.dart';
 import 'choose_role_screen.dart';
 import 'register_screen.dart';
-import 'choose_role_screen.dart';
-
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
 
@@ -80,20 +77,22 @@ class _LoginScreenState extends State<LoginScreen> {
       );
 
       // DEBUG
-      print('TOKEN: $token');
-      print('ROLES: $roles');
-      print(
+      debugPrint('TOKEN: $token');
+      debugPrint('ROLES: $roles');
+      debugPrint(
         'SESSION EMAIL: ${Session.email}',
       );
-      print(
+      debugPrint(
         'SESSION ROLES: ${Session.roles}',
       );
-      print(
+      debugPrint(
         'SAVED CUSTOMER EMAIL: '
         '${emailController.text.trim()}',
       );
 
       // CHOOSE ROLE
+      if (!mounted) return;
+
       Navigator.push(
         context,
         MaterialPageRoute(
@@ -142,7 +141,7 @@ class _LoginScreenState extends State<LoginScreen> {
               height: 84,
               decoration: BoxDecoration(
                 color:
-                    AppColors.primary.withOpacity(0.1),
+                    AppColors.primary.withValues(alpha: 0.1),
                 shape: BoxShape.circle,
               ),
               child: const Icon(

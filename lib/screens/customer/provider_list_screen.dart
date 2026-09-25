@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
-
 import '../../services/api_service.dart';
 import '../../utils/app_colors.dart';
-
 import 'provider_profile_screen.dart';
 
 //==================== Provider List Screen ====================
@@ -138,7 +136,7 @@ class _ProviderListScreenState
 
             return;
           }
-          print('OPENING PROVIDER PROFILE EMAIL: $email');
+          debugPrint('OPENING PROVIDER PROFILE EMAIL: $email');
 
           Navigator.push(
             context,
@@ -167,7 +165,7 @@ class _ProviderListScreenState
               CircleAvatar(
                 radius: 30,
                 backgroundColor:
-                    AppColors.primary.withOpacity(0.1),
+                    AppColors.primary.withValues(alpha: 0.1),
                 child: const Icon(
                   Icons.person_rounded,
                   size: 30,

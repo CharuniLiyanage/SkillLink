@@ -1,12 +1,9 @@
 import 'package:flutter/material.dart';
-
 import '../services/api_service.dart';
 import '../utils/app_colors.dart';
 import '../utils/session.dart';
 import 'customer/customer_home_screen.dart';
 import 'provider/provider_dashboard_screen.dart';
-import 'customer/customer_home_screen.dart';
-
 class ChooseRoleScreen extends StatefulWidget {
   final String name;
   final String email;
@@ -35,10 +32,9 @@ class _ChooseRoleScreenState
   bool isLoading = false;
 
   Future<void> selectRole(String role) async {
-    print('ROLE SELECTED: $role');
-    print('LOGIN FLOW: ${widget.isLoginFlow}');
-    print(
-      'AVAILABLE ROLES: ${widget.availableRoles}',
+    debugPrint('ROLE SELECTED: $role');
+    debugPrint('LOGIN FLOW: ${widget.isLoginFlow}');
+    debugPrint('AVAILABLE ROLES: ${widget.availableRoles}',
     );
 
     // ================= LOGIN FLOW =================
@@ -86,7 +82,7 @@ class _ChooseRoleScreenState
       isLoading = false;
     });
 
-    print(
+    debugPrint(
       'REGISTRATION SUCCESS: $success',
     );
 
@@ -241,7 +237,7 @@ class _ChooseRoleScreenState
                   height: 64,
                   decoration: BoxDecoration(
                     color:
-                        color.withOpacity(0.12),
+                        color.withValues(alpha: 0.12),
                     borderRadius:
                         BorderRadius.circular(16),
                   ),

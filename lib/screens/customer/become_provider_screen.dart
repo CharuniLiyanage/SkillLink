@@ -132,7 +132,7 @@ class _BecomeProviderScreenState
 
               decoration: BoxDecoration(
                 color:
-                    AppColors.primary.withOpacity(0.1),
+                    AppColors.primary.withValues(alpha: 0.1),
                 shape: BoxShape.circle,
               ),
 

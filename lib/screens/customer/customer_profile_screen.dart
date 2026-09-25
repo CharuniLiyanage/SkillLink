@@ -25,7 +25,7 @@ class CustomerProfileScreen
             CircleAvatar(
               radius: 55,
               backgroundColor:
-                  AppColors.primary.withOpacity(0.1),
+                  AppColors.primary.withValues(alpha: 0.1),
               child: const Icon(
                 Icons.person_rounded,
                 size: 58,

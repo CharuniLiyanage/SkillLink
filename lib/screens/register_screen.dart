@@ -84,9 +84,7 @@ class _RegisterScreenState
               height: 84,
               decoration: BoxDecoration(
                 color:
-                    AppColors.secondary.withOpacity(
-                  0.12,
-                ),
+                    AppColors.secondary.withValues(alpha: 0.12),
                 shape: BoxShape.circle,
               ),
               child: const Icon(

@@ -1,11 +1,8 @@
 import 'package:flutter/material.dart';
-
 import '../../services/api_service.dart';
-import '../../utils/session.dart';
 import '../../utils/session.dart';
 import '../../widgets/status_badge.dart';
 import '../../utils/app_colors.dart';
-
 import 'rate_provider_screen.dart';
 
 //==================== Customer Bookings Screen ====================
@@ -33,7 +30,7 @@ class _CustomerBookingsScreenState
   Future<void> loadBookings() async {
     final email = Session.email;
 
-    if (email == null || email.isEmpty) {
+    if (email.isEmpty) {
       setState(() {
         isLoading = false;
       });
@@ -110,7 +107,7 @@ class _CustomerBookingsScreenState
                   child: ListView.separated(
                     padding: const EdgeInsets.all(16),
                     itemCount: bookings.length,
-                    separatorBuilder: (_, __) =>
+                    separatorBuilder: (_, _) =>
                         const SizedBox(height: 16),
                     itemBuilder: (context, index) {
                       final booking = bookings[index];
@@ -167,7 +164,7 @@ class _CustomerBookingsScreenState
                                     radius: 25,
                                     backgroundColor:
                                         AppColors.primary
-                                            .withOpacity(0.1),
+                                            .withValues(alpha: 0.1),
                                     child: const Icon(
                                       Icons
                                           .person_rounded,

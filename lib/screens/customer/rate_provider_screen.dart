@@ -38,7 +38,7 @@ class RateProviderScreen extends StatefulWidget {
     Future<void> submitReview() async {
       final email = Session.email;
 
-      if (email == null || email.isEmpty) {
+      if (email.isEmpty) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
             content: Text(

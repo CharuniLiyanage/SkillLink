@@ -142,7 +142,7 @@ class CustomerHomeScreen extends StatelessWidget {
                         width: 52,
                         height: 52,
                         decoration: BoxDecoration(
-                          color: Colors.white.withOpacity(0.15),
+                          color: Colors.white.withValues(alpha: 0.15),
                           borderRadius:
                               BorderRadius.circular(14),
                         ),
@@ -247,7 +247,7 @@ class CustomerHomeScreen extends StatelessWidget {
                             height: 48,
                             decoration: BoxDecoration(
                               color:
-                                  color.withOpacity(0.12),
+                                  color.withValues(alpha: 0.12),
                               borderRadius:
                                   BorderRadius.circular(12),
                             ),

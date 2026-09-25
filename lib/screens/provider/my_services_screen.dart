@@ -33,7 +33,7 @@ class _MyServicesScreenState
   Future<void> loadServices() async {
     final email = Session.email;
 
-    if (email == null || email.isEmpty) {
+    if (email.isEmpty) {
       if (!mounted) return;
 
       setState(() {
@@ -56,7 +56,7 @@ class _MyServicesScreenState
         isLoading = false;
       });
     } catch (e) {
-      print('Load Services Error: $e');
+      debugPrint('Load Services Error: $e');
 
       if (!mounted) return;
 
@@ -78,24 +78,24 @@ Future<Map<String, dynamic>?> showServiceForm({
 
   final nameController = TextEditingController(
     text: isEditing
-        ? service!['name']?.toString() ?? ''
+        ? service['name']?.toString() ?? ''
         : '',
   );
 
   final descriptionController = TextEditingController(
     text: isEditing
-        ? service!['description']?.toString() ?? ''
+        ? service['description']?.toString() ?? ''
         : '',
   );
 
   final priceController = TextEditingController(
     text: isEditing
-        ? service!['price']?.toString() ?? ''
+        ? service['price']?.toString() ?? ''
         : '',
   );
 
   String selectedCategory = isEditing
-      ? service!['category']?.toString() ?? 'Electrician'
+      ? service['category']?.toString() ?? 'Electrician'
       : 'Electrician';
 
   final result = await showDialog<Map<String, dynamic>>(
@@ -140,7 +140,7 @@ Future<Map<String, dynamic>?> showServiceForm({
                   // ==================== CATEGORY ====================
 
                   DropdownButtonFormField<String>(
-                    value: selectedCategory,
+                    initialValue: selectedCategory,
                     decoration: const InputDecoration(
                       labelText: 'Category',
                       prefixIcon: Icon(
@@ -350,7 +350,7 @@ Future<Map<String, dynamic>?> showServiceForm({
   Future<void> addService() async {
     final email = Session.email;
 
-    if (email == null || email.isEmpty) {
+    if (email.isEmpty) {
       ScaffoldMessenger.of(context)
           .showSnackBar(
         const SnackBar(
@@ -424,7 +424,7 @@ Future<Map<String, dynamic>?> showServiceForm({
 ) async {
   final email = Session.email;
 
-  if (email == null || email.isEmpty) {
+  if (email.isEmpty) {
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(
         content: Text(
@@ -463,8 +463,8 @@ Future<Map<String, dynamic>?> showServiceForm({
     return;
   }
 
-  print('EDIT: FORM CLOSED');
-  print('EDIT: API CALL STARTED');
+  debugPrint('EDIT: FORM CLOSED');
+  debugPrint('EDIT: API CALL STARTED');
 
   setState(() {
     isSaving = true;
@@ -480,7 +480,7 @@ Future<Map<String, dynamic>?> showServiceForm({
       price: (data['price'] as num).toDouble(),
     );
 
-    print('EDIT: API CALL FINISHED - $success');
+    debugPrint('EDIT: API CALL FINISHED - $success');
 
     if (!mounted) {
       return;
@@ -511,7 +511,7 @@ Future<Map<String, dynamic>?> showServiceForm({
       );
     }
   } catch (e) {
-    print('EDIT ERROR: $e');
+    debugPrint('EDIT ERROR: $e');
 
     if (!mounted) {
       return;
@@ -540,7 +540,7 @@ Future<Map<String, dynamic>?> showServiceForm({
 
     final email = Session.email;
 
-    if (email == null || email.isEmpty) {
+    if (email.isEmpty) {
       ScaffoldMessenger.of(context)
           .showSnackBar(
         const SnackBar(
@@ -779,9 +779,7 @@ Future<Map<String, dynamic>?> showServiceForm({
                                         BoxDecoration(
                                       color: AppColors
                                           .primary
-                                          .withOpacity(
-                                        0.1,
-                                      ),
+                                          .withValues(alpha: 0.1),
                                       borderRadius:
                                           BorderRadius
                                               .circular(

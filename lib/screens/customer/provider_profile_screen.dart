@@ -1,11 +1,8 @@
 import 'package:flutter/material.dart';
-
 import '../../services/api_service.dart';
 import '../../utils/app_colors.dart';
 import '../../utils/session.dart';
 import '../../widgets/info_tile.dart';
-
-
 import 'request_service_screen.dart';
 
 //==================== Provider Profile Screen ====================
@@ -50,12 +47,6 @@ class _ProviderProfileScreenState
   void initState() {
     super.initState();
 
-    print('================================');
-    print('PROVIDER PROFILE OPENED');
-    print('PROVIDER NAME: ${widget.name}');
-    print('PROVIDER EMAIL: ${widget.email}');
-    print('================================');
-
     loadProviderServices();
     loadProviderReviews();
   }
@@ -75,7 +66,7 @@ class _ProviderProfileScreenState
         isLoadingServices = false;
       });
     } catch (e) {
-      print('SERVICES ERROR: $e');
+      debugPrint('SERVICES ERROR: $e');
 
       if (!mounted) return;
 
@@ -89,22 +80,22 @@ class _ProviderProfileScreenState
   // ==================== LOAD REVIEWS ====================
 
   Future<void> loadProviderReviews() async {
-    print('================================');
-    print('LOADING REVIEWS');
-    print('EMAIL: ${widget.email}');
-    print('================================');
+    debugPrint('================================');
+    debugPrint('LOADING REVIEWS');
+    debugPrint('EMAIL: ${widget.email}');
+    debugPrint('================================');
 
     try {
       final result =
           await ApiService.getProviderReviews(widget.email);
 
-      print('REVIEWS API RESULT: $result');
-      print('NUMBER OF REVIEWS: ${result.length}');
+      debugPrint('REVIEWS API RESULT: $result');
+      debugPrint('NUMBER OF REVIEWS: ${result.length}');
 
       double totalRating = 0.0;
 
       for (final review in result) {
-        print('REVIEW: $review');
+        debugPrint('REVIEW: $review');
 
         final ratingValue =
             double.tryParse(
@@ -112,7 +103,7 @@ class _ProviderProfileScreenState
                 ) ??
                 0.0;
 
-        print('RATING VALUE: $ratingValue');
+        debugPrint('RATING VALUE: $ratingValue');
 
         totalRating += ratingValue;
       }
@@ -124,8 +115,8 @@ class _ProviderProfileScreenState
             totalRating / result.length;
       }
 
-      print('TOTAL RATING: $totalRating');
-      print('AVERAGE RATING: $calculatedAverage');
+      debugPrint('TOTAL RATING: $totalRating');
+      debugPrint('AVERAGE RATING: $calculatedAverage');
 
       if (!mounted) return;
 
@@ -135,13 +126,13 @@ class _ProviderProfileScreenState
         isLoadingReviews = false;
       });
 
-      print('FINAL AVERAGE RATING: $averageRating');
+      debugPrint('FINAL AVERAGE RATING: $averageRating');
 
     } catch (e) {
-      print('================================');
-      print('REVIEWS ERROR');
-      print('$e');
-      print('================================');
+      debugPrint('================================');
+      debugPrint('REVIEWS ERROR');
+      debugPrint('$e');
+      debugPrint('================================');
 
       if (!mounted) return;
 
@@ -171,7 +162,7 @@ class _ProviderProfileScreenState
             CircleAvatar(
               radius: 55,
               backgroundColor:
-                  AppColors.primary.withOpacity(0.1),
+                  AppColors.primary.withValues(alpha: 0.1),
 
               child: const Icon(
                 Icons.person_rounded,
@@ -205,7 +196,7 @@ class _ProviderProfileScreenState
 
               decoration: BoxDecoration(
                 color:
-                    AppColors.primary.withOpacity(0.1),
+                    AppColors.primary.withValues(alpha: 0.1),
                 borderRadius:
                     BorderRadius.circular(20),
               ),
@@ -474,17 +465,10 @@ class _ProviderProfileScreenState
                     MaterialPageRoute(
                       builder: (context) =>
                           RequestServiceScreen(
-                        providerName:
-                            widget.name,
-
-                        serviceName:
-                            widget.serviceName,
-
-                        customerEmail:
-                            Session.email ?? '',
-
-                        providerEmail:
-                            widget.email,
+                        providerName: widget.name,
+                        serviceName: widget.serviceName,
+                        customerEmail: Session.email,
+                        providerEmail: widget.email,
                       ),
                     ),
                   );

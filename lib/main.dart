@@ -1,13 +1,6 @@
 import 'package:flutter/material.dart';
-
 import 'screens/welcome_screen.dart';
 import 'utils/app_colors.dart';
-
-import 'package:flutter/material.dart';
-
-import 'screens/welcome_screen.dart';
-import 'utils/app_colors.dart';
-
 void main() {
   runApp(const SkillLinkApp());
 }

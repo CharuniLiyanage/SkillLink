@@ -1,10 +1,7 @@
 import 'package:flutter/material.dart';
-
 import '../../services/api_service.dart';
 import '../../utils/app_colors.dart';
 import '../../utils/session.dart';
-
-import 'provider_dashboard_screen.dart';
 import '../../widgets/status_badge.dart';
 
 //-----------ProvideRequestsScreen----------------//
@@ -30,7 +27,7 @@ class _ProviderRequestsScreenState
   Future<void> loadRequests() async {
     final email = Session.email;
 
-    if (email == null || email.isEmpty) {
+    if (email.isEmpty) {
       setState(() {
         isLoading = false;
       });
@@ -57,7 +54,7 @@ class _ProviderRequestsScreenState
   ) async {
     final email = Session.email;
 
-    if (email == null || email.isEmpty) {
+    if(email.isEmpty) {
       return;
     }
 
@@ -154,7 +151,7 @@ class _ProviderRequestsScreenState
                   child: ListView.separated(
                     padding: const EdgeInsets.all(16),
                     itemCount: requests.length,
-                    separatorBuilder: (_, __) =>
+                    separatorBuilder: (_, _) =>
                         const SizedBox(height: 16),
                     itemBuilder: (context, index) {
                       final request = requests[index];
@@ -223,7 +220,7 @@ class _ProviderRequestsScreenState
                                     radius: 25,
                                     backgroundColor:
                                         AppColors.primary
-                                            .withOpacity(0.1),
+                                            .withValues(alpha: 0.1),
                                     child: const Icon(
                                       Icons
                                           .person_rounded,

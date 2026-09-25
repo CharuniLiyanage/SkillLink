@@ -51,12 +51,12 @@ class _ProviderDashboardScreenState
   Future<void> loadProviderRating() async {
     final email = Session.email;
 
-    print('================================');
-    print('LOADING PROVIDER DASHBOARD RATING');
-    print('PROVIDER EMAIL: $email');
-    print('================================');
+    debugPrint('================================');
+    debugPrint('LOADING PROVIDER DASHBOARD RATING');
+    debugPrint('PROVIDER EMAIL: $email');
+    debugPrint('================================');
 
-    if (email == null || email.isEmpty) {
+    if (email.isEmpty) {
       if (!mounted) return;
 
       setState(() {
@@ -72,8 +72,8 @@ class _ProviderDashboardScreenState
       final result =
           await ApiService.getProviderReviews(email);
 
-      print('DASHBOARD REVIEWS: $result');
-      print(
+      debugPrint('DASHBOARD REVIEWS: $result');
+      debugPrint(
         'DASHBOARD REVIEW COUNT: ${result.length}',
       );
 
@@ -86,7 +86,7 @@ class _ProviderDashboardScreenState
                 ) ??
                 0.0;
 
-        print('DASHBOARD REVIEW RATING: $rating');
+        debugPrint('DASHBOARD REVIEW RATING: $rating');
 
         totalRating += rating;
       }
@@ -96,11 +96,11 @@ class _ProviderDashboardScreenState
               ? 0.0
               : totalRating / result.length;
 
-      print(
+      debugPrint(
         'DASHBOARD TOTAL RATING: $totalRating',
       );
 
-      print(
+      debugPrint(
         'DASHBOARD AVERAGE RATING: '
         '$calculatedAverage',
       );
@@ -113,9 +113,9 @@ class _ProviderDashboardScreenState
         isLoadingRating = false;
       });
     } catch (e) {
-      print('================================');
-      print('DASHBOARD RATING ERROR: $e');
-      print('================================');
+      debugPrint('================================');
+      debugPrint('DASHBOARD RATING ERROR: $e');
+      debugPrint('================================');
 
       if (!mounted) return;
 
@@ -131,12 +131,12 @@ class _ProviderDashboardScreenState
   Future<void> loadDashboardStats() async {
    final email = Session.email;
 
-    print('================================');
-    print('LOADING PROVIDER DASHBOARD STATS');
-    print('PROVIDER EMAIL: $email');
-    print('================================');
+    debugPrint('================================');
+    debugPrint('LOADING PROVIDER DASHBOARD STATS');
+    debugPrint('PROVIDER EMAIL: $email');
+    debugPrint('================================');
 
-    if (email == null || email.isEmpty) {
+    if (email.isEmpty) {
       if (!mounted) return;
 
       setState(() {
@@ -154,8 +154,8 @@ class _ProviderDashboardScreenState
         email: email,
       );
 
-      print('DASHBOARD REQUESTS: $result');
-      print(
+      debugPrint('DASHBOARD REQUESTS: $result');
+      debugPrint(
         'DASHBOARD REQUEST COUNT: ${result.length}',
       );
 
@@ -168,7 +168,7 @@ class _ProviderDashboardScreenState
         final status =
             request['status']?.toString().toUpperCase() ?? '';
 
-        print('REQUEST STATUS: $status');
+        debugPrint('REQUEST STATUS: $status');
 
         if (status == 'PENDING') {
           pending++;
@@ -197,9 +197,9 @@ class _ProviderDashboardScreenState
         }
       }
 
-      print('PENDING REQUESTS: $pending');
-      print('COMPLETED REQUESTS: $completed');
-      print('UNIQUE CUSTOMERS: ${customerIds.length}');
+      debugPrint('PENDING REQUESTS: $pending');
+      debugPrint('COMPLETED REQUESTS: $completed');
+      debugPrint('UNIQUE CUSTOMERS: ${customerIds.length}');
 
       if (!mounted) return;
 
@@ -210,9 +210,9 @@ class _ProviderDashboardScreenState
         isLoadingStats = false;
       });
     } catch (e) {
-      print('================================');
-      print('DASHBOARD STATS ERROR: $e');
-      print('================================');
+      debugPrint('================================');
+      debugPrint('DASHBOARD STATS ERROR: $e');
+      debugPrint('================================');
 
       if (!mounted) return;
 
@@ -233,7 +233,7 @@ class _ProviderDashboardScreenState
     final email = Session.email;
 
     // Check session
-    if (email == null || email.isEmpty) {
+    if (email.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text(
@@ -629,7 +629,7 @@ class _ProviderDashboardScreenState
                 decoration:
                     BoxDecoration(
                   color:
-                      color.withOpacity(0.12),
+                      color.withValues(alpha: 0.12),
 
                   borderRadius:
                       BorderRadius.circular(12),
@@ -720,7 +720,7 @@ class _ProviderDashboardScreenState
               height: 44,
 
               decoration: BoxDecoration(
-                color: color.withOpacity(0.12),
+                color: color.withValues(alpha: 0.12),
                 borderRadius:
                     BorderRadius.circular(12),
               ),

@@ -28,7 +28,7 @@ class _ProviderBookingsScreenState
   Future<void> loadBookings() async {
     final email = Session.email;
 
-    if (email == null || email.isEmpty) {
+    if (email.isEmpty) {
       setState(() {
         isLoading = false;
       });
@@ -55,7 +55,7 @@ class _ProviderBookingsScreenState
   ) async {
     final email = Session.email;
 
-    if (email == null || email.isEmpty) {
+    if(email.isEmpty) {
       return;
     }
 
@@ -152,7 +152,7 @@ class _ProviderBookingsScreenState
                         const EdgeInsets.all(16),
                     itemCount: bookings.length,
                     separatorBuilder:
-                        (_, __) =>
+                        (_, _) =>
                             const SizedBox(
                       height: 16,
                     ),
@@ -237,9 +237,7 @@ class _ProviderBookingsScreenState
                                     backgroundColor:
                                         AppColors
                                             .primary
-                                            .withOpacity(
-                                      0.1,
-                                    ),
+                                            .withValues(alpha: 0.1),
                                     child:
                                         const Icon(
                                       Icons

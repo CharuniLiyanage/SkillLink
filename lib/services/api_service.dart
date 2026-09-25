@@ -2,6 +2,8 @@ import 'dart:async';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'dart:io';
+import 'package:flutter/foundation.dart';
+
 
 class ApiService {
   static const String baseUrl = 'http://10.0.2.2:8080';
@@ -14,10 +16,10 @@ class ApiService {
         Uri.parse('$baseUrl/api/test'),
       );
 
-      print('Status Code: ${response.statusCode}');
-      print('Response: ${response.body}');
+      debugPrint('Status Code: ${response.statusCode}');
+      debugPrint('Response: ${response.body}');
     } catch (e) {
-      print('API Connection Error: $e');
+      debugPrint('API Connection Error: $e');
     }
   }
 
@@ -45,13 +47,13 @@ class ApiService {
         }),
       );
 
-      print('Status Code: ${response.statusCode}');
-      print('Response: ${response.body}');
+      debugPrint('Status Code: ${response.statusCode}');
+      debugPrint('Response: ${response.body}');
 
       return response.statusCode == 200 ||
           response.statusCode == 201;
     } catch (e) {
-      print('Registration Error: $e');
+      debugPrint('Registration Error: $e');
       return false;
     }
   }
@@ -74,11 +76,11 @@ class ApiService {
         }),
       );
 
-      print(
+      debugPrint(
         'Login Status Code: ${response.statusCode}',
       );
 
-      print(
+      debugPrint(
         'Login Response: ${response.body}',
       );
 
@@ -88,7 +90,7 @@ class ApiService {
 
       return null;
     } catch (e) {
-      print('Login Error: $e');
+      debugPrint('Login Error: $e');
       return null;
     }
   }
@@ -108,17 +110,17 @@ class ApiService {
         ),
       );
 
-      print(
+      debugPrint(
         'Add Role Status Code: ${response.statusCode}',
       );
 
-      print(
+      debugPrint(
         'Add Role Response: ${response.body}',
       );
 
       return response.statusCode == 200;
     } catch (e) {
-      print('Add Role Error: $e');
+      debugPrint('Add Role Error: $e');
       return false;
     }
   }
@@ -155,19 +157,19 @@ static Future<bool> saveProviderProfile({
       }),
     );
 
-    print(
+    debugPrint(
       'Provider Profile Status Code: '
       '${response.statusCode}',
     );
 
-    print(
+    debugPrint(
       'Provider Profile Response: '
       '${response.body}',
     );
 
     return response.statusCode == 200;
   } catch (e) {
-    print(
+    debugPrint(
       'Provider Profile Error: $e',
     );
 
@@ -200,19 +202,19 @@ static Future<bool> saveProviderProfile({
         }),
       );
 
-      print(
+      debugPrint(
         'Add Service Status Code: '
         '${response.statusCode}',
       );
 
-      print(
+      debugPrint(
         'Add Service Response: '
         '${response.body}',
       );
 
       return response.statusCode == 200;
     } catch (e) {
-      print(
+      debugPrint(
         'Add Service Error: $e',
       );
 
@@ -233,12 +235,12 @@ static Future<bool> saveProviderProfile({
         ),
       );
 
-      print(
+      debugPrint(
         'Get Services Status Code: '
         '${response.statusCode}',
       );
 
-      print(
+      debugPrint(
         'Get Services Response: '
         '${response.body}',
       );
@@ -249,7 +251,7 @@ static Future<bool> saveProviderProfile({
 
       return null;
     } catch (e) {
-      print(
+      debugPrint(
         'Get Services Error: '
         '$e',
       );
@@ -268,8 +270,8 @@ static Future<bool> updateService({
   required String description,
   required double price,
 }) async {
-  print('==============================');
-  print('UPDATE SERVICE START');
+  debugPrint('==============================');
+  debugPrint('UPDATE SERVICE START');
 
   try {
     final uri = Uri(
@@ -282,7 +284,7 @@ static Future<bool> updateService({
       },
     );
 
-    print('URI: $uri');
+    debugPrint('URI: $uri');
 
     final body = jsonEncode({
       'name': name,
@@ -291,8 +293,8 @@ static Future<bool> updateService({
       'price': price,
     });
 
-    print('BODY: $body');
-    print('SENDING PUT REQUEST...');
+    debugPrint('BODY: $body');
+    debugPrint('SENDING PUT REQUEST...');
 
     final response = await http
         .put(
@@ -307,19 +309,19 @@ static Future<bool> updateService({
           const Duration(seconds: 10),
         );
 
-    print('RESPONSE RECEIVED!');
-    print('STATUS: ${response.statusCode}');
-    print('BODY: ${response.body}');
+    debugPrint('RESPONSE RECEIVED!');
+    debugPrint('STATUS: ${response.statusCode}');
+    debugPrint('BODY: ${response.body}');
 
     return response.statusCode == 200;
   } on TimeoutException catch (e) {
-    print('!!!!!!!! TIMEOUT !!!!!!!!');
-    print(e);
+    debugPrint('!!!!!!!! TIMEOUT !!!!!!!!');
+    debugPrint(e.toString());
     return false;
   } catch (e, stackTrace) {
-    print('!!!!!!!! UPDATE ERROR !!!!!!!!');
-    print(e);
-    print(stackTrace);
+    debugPrint('!!!!!!!! UPDATE ERROR !!!!!!!!');
+    debugPrint(e.toString());
+    debugPrint(stackTrace.toString());
     return false;
   }
 }
@@ -337,19 +339,19 @@ static Future<bool> updateService({
         ),
       );
 
-      print(
+      debugPrint(
         'Delete Service Status Code: '
         '${response.statusCode}',
       );
 
-      print(
+      debugPrint(
         'Delete Service Response: '
         '${response.body}',
       );
 
       return response.statusCode == 200;
     } catch (e) {
-      print(
+      debugPrint(
         'Delete Service Error: $e',
       );
 
@@ -364,8 +366,8 @@ static Future<bool> updateService({
       Uri.parse('$baseUrl/api/users/providers'),
     );
 
-    print('Get Providers Status Code: ${response.statusCode}');
-    print('Get Providers Response: ${response.body}');
+    debugPrint('Get Providers Status Code: ${response.statusCode}');
+    debugPrint('Get Providers Response: ${response.body}');
 
     if (response.statusCode == 200) {
       return jsonDecode(response.body);
@@ -373,7 +375,7 @@ static Future<bool> updateService({
 
     return [];
   } catch (e) {
-    print('Get Providers Error: $e');
+    debugPrint('Get Providers Error: $e');
     return [];
   }
 }
@@ -390,10 +392,10 @@ static Future<bool> updateService({
           ),
         );
 
-        print(
+        debugPrint(
           'Get Services By Category Status: ${response.statusCode}',
         );
-        print(
+        debugPrint(
           'Get Services By Category Response: ${response.body}',
         );
 
@@ -403,7 +405,7 @@ static Future<bool> updateService({
 
         return [];
       } catch (e) {
-        print('Get Services By Category Error: $e');
+        debugPrint('Get Services By Category Error: $e');
         return [];
       }
     }
@@ -419,10 +421,10 @@ static Future<bool> updateService({
           ),
         );
 
-        print(
+        debugPrint(
           'Get Provider Profile Status: ${response.statusCode}',
         );
-        print(
+        debugPrint(
           'Get Provider Profile Response: ${response.body}',
         );
 
@@ -432,7 +434,7 @@ static Future<bool> updateService({
 
         return null;
       } catch (e) {
-        print('Get Provider Profile Error: $e');
+        debugPrint('Get Provider Profile Error: $e');
         return null;
       }
     }
@@ -449,12 +451,12 @@ static Future<bool> updateService({
           ),
         );
 
-        print(
+        debugPrint(
           'Get Customer Requests Status: '
           '${response.statusCode}',
         );
 
-        print(
+        debugPrint(
           'Get Customer Requests Response: '
           '${response.body}',
         );
@@ -465,7 +467,7 @@ static Future<bool> updateService({
 
         return [];
       } catch (e) {
-        print(
+        debugPrint(
           'Get Customer Requests Error: '
           '$e',
         );
@@ -501,12 +503,12 @@ static Future<bool> updateService({
 
         final response = await http.post(uri);
 
-        print(
+        debugPrint(
           'Create Service Request Status: '
           '${response.statusCode}',
         );
 
-        print(
+        debugPrint(
           'Create Service Request Response: '
           '${response.body}',
         );
@@ -517,7 +519,7 @@ static Future<bool> updateService({
 
         return null;
       } catch (e) {
-        print(
+        debugPrint(
           'Create Service Request Error: '
           '$e',
         );
@@ -538,12 +540,12 @@ static Future<bool> updateService({
           ),
         );
 
-        print(
+        debugPrint(
           'Get Provider Requests Status: '
           '${response.statusCode}',
         );
 
-        print(
+        debugPrint(
           'Get Provider Requests Response: '
           '${response.body}',
         );
@@ -554,7 +556,7 @@ static Future<bool> updateService({
 
         return [];
       } catch (e) {
-        print(
+        debugPrint(
           'Get Provider Requests Error: '
           '$e',
         );
@@ -581,19 +583,19 @@ static Future<bool> updateService({
 
         final response = await http.put(uri);
 
-        print(
+        debugPrint(
           'Update Request Status Code: '
           '${response.statusCode}',
         );
 
-        print(
+        debugPrint(
           'Update Request Response: '
           '${response.body}',
         );
 
         return response.statusCode == 200;
       } catch (e) {
-        print(
+        debugPrint(
           'Update Request Status Error: '
           '$e',
         );
@@ -614,12 +616,12 @@ static Future<bool> updateService({
           ),
         );
 
-        print(
+        debugPrint(
           'Get Provider Bookings Status: '
           '${response.statusCode}',
         );
 
-        print(
+        debugPrint(
           'Get Provider Bookings Response: '
           '${response.body}',
         );
@@ -630,7 +632,7 @@ static Future<bool> updateService({
 
         return [];
       } catch (e) {
-        print(
+        debugPrint(
           'Get Provider Bookings Error: '
           '$e',
         );
@@ -661,19 +663,19 @@ static Future<bool> updateService({
 
         final response = await http.post(uri);
 
-        print(
+        debugPrint(
           'Add Review Status Code: '
           '${response.statusCode}',
         );
 
-        print(
+        debugPrint(
           'Add Review Response: '
           '${response.body}',
         );
 
         return response.statusCode == 200;
       } catch (e) {
-        print(
+        debugPrint(
           'Add Review Error: '
           '$e',
         );
@@ -724,12 +726,12 @@ static Future<bool> updateService({
           streamedResponse,
         );
 
-        print(
+        debugPrint(
           'Upload Profile Image Status: '
           '${response.statusCode}',
         );
 
-        print(
+        debugPrint(
           'Upload Profile Image Response: '
           '${response.body}',
         );
@@ -740,7 +742,7 @@ static Future<bool> updateService({
 
         return null;
       } catch (e) {
-        print(
+        debugPrint(
           'Upload Profile Image Error: $e',
         );
 
