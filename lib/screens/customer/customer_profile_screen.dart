@@ -22,6 +22,7 @@ class _CustomerProfileScreenState
   String name = '';
   String email = '';
   String phone = '';
+  String profileImage = '';
 
   @override
   void initState() {
@@ -33,6 +34,8 @@ class _CustomerProfileScreenState
 
   Future<void> loadProfile() async {
     if (Session.email.isEmpty) {
+      if (!mounted) return;
+
       setState(() {
         isLoading = false;
       });
@@ -53,8 +56,11 @@ class _CustomerProfileScreenState
         name = profile['name'] ?? '';
         email = profile['email'] ?? Session.email;
         phone = profile['phone'] ?? '';
+        profileImage = profile['profileImage'] ?? '';
         isLoading = false;
       });
+
+      debugPrint('CUSTOMER PROFILE IMAGE: $profileImage');
     } else {
       setState(() {
         isLoading = false;
@@ -68,6 +74,19 @@ class _CustomerProfileScreenState
     }
   }
 
+  // ================= PROFILE IMAGE URL =================
+
+  String get profileImageUrl {
+    if (profileImage.isEmpty) {
+      return '';
+    }
+
+    if (profileImage.startsWith('http')) {
+      return profileImage;
+    }
+
+    return '${ApiService.baseUrl}$profileImage';
+  }
 
   // ================= BUILD =================
 
@@ -84,28 +103,40 @@ class _CustomerProfileScreenState
           : RefreshIndicator(
               onRefresh: loadProfile,
               child: SingleChildScrollView(
-                physics:
-                    const AlwaysScrollableScrollPhysics(),
+                physics: const AlwaysScrollableScrollPhysics(),
                 padding: const EdgeInsets.all(20),
                 child: Column(
                   children: [
-                    // Profile photo
+                    // ================= PROFILE PHOTO =================
+
                     CircleAvatar(
                       radius: 55,
                       backgroundColor:
-                          AppColors.primary.withValues(
-                        alpha: 0.1,
-                      ),
-                      child: const Icon(
-                        Icons.person_rounded,
-                        size: 58,
-                        color: AppColors.primary,
-                      ),
+                          AppColors.primary.withValues(alpha: 0.1),
+                      backgroundImage: profileImageUrl.isNotEmpty
+                          ? NetworkImage(profileImageUrl)
+                          : null,
+                      onBackgroundImageError:
+                          profileImageUrl.isNotEmpty
+                              ? (_, __) {
+                                  debugPrint(
+                                    'Failed to load customer profile image',
+                                  );
+                                }
+                              : null,
+                      child: profileImageUrl.isEmpty
+                          ? const Icon(
+                              Icons.person_rounded,
+                              size: 58,
+                              color: AppColors.primary,
+                            )
+                          : null,
                     ),
 
                     const SizedBox(height: 16),
 
-                    // Name
+                    // ================= NAME =================
+
                     Text(
                       name.isEmpty ? 'Customer' : name,
                       style: const TextStyle(
@@ -118,7 +149,8 @@ class _CustomerProfileScreenState
 
                     const SizedBox(height: 4),
 
-                    // Email
+                    // ================= EMAIL =================
+
                     Text(
                       email,
                       style: const TextStyle(
@@ -130,7 +162,8 @@ class _CustomerProfileScreenState
 
                     const SizedBox(height: 28),
 
-                    // Full Name
+                    // ================= FULL NAME =================
+
                     _ProfileInfoTile(
                       icon: Icons.person_rounded,
                       title: 'Full Name',
@@ -138,8 +171,9 @@ class _CustomerProfileScreenState
                           name.isEmpty ? 'Not added' : name,
                     ),
 
-                    // Email
                     const SizedBox(height: 12),
+
+                    // ================= EMAIL =================
 
                     _ProfileInfoTile(
                       icon: Icons.email_rounded,
@@ -148,8 +182,9 @@ class _CustomerProfileScreenState
                       iconColor: AppColors.secondary,
                     ),
 
-                    // Phone
                     const SizedBox(height: 12),
+
+                    // ================= PHONE =================
 
                     _ProfileInfoTile(
                       icon: Icons.phone_rounded,
@@ -161,7 +196,8 @@ class _CustomerProfileScreenState
 
                     const SizedBox(height: 20),
 
-                    // Become Provider
+                    // ================= BECOME PROVIDER =================
+
                     SizedBox(
                       width: double.infinity,
                       height: 52,
@@ -187,13 +223,15 @@ class _CustomerProfileScreenState
 
                     const SizedBox(height: 14),
 
-                    // Edit Profile
+                    // ================= EDIT PROFILE =================
+
                     SizedBox(
                       width: double.infinity,
                       height: 52,
                       child: ElevatedButton.icon(
                         onPressed: () async {
-                          final updated = await Navigator.push(
+                          final updated =
+                              await Navigator.push(
                             context,
                             MaterialPageRoute(
                               builder: (context) =>
@@ -222,7 +260,8 @@ class _CustomerProfileScreenState
 
                     const SizedBox(height: 12),
 
-                    // Logout
+                    // ================= LOGOUT =================
+
                     SizedBox(
                       width: double.infinity,
                       height: 52,
