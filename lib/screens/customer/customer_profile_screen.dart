@@ -4,6 +4,7 @@ import '../../utils/app_colors.dart';
 import '../../utils/session.dart';
 import 'customer_edit_profile_screen.dart';
 import 'become_provider_screen.dart';
+import '../change_password_screen.dart';
 
 // ==================== Customer Profile Screen ====================
 
@@ -118,7 +119,7 @@ class _CustomerProfileScreenState
                           : null,
                       onBackgroundImageError:
                           profileImageUrl.isNotEmpty
-                              ? (_, __) {
+                              ? (_, _) {
                                   debugPrint(
                                     'Failed to load customer profile image',
                                   );
@@ -254,6 +255,34 @@ class _CustomerProfileScreenState
                         label: const Text(
                           'Edit Profile',
                           style: TextStyle(fontSize: 16),
+                        ),
+                      ),
+                    ),
+
+                    const SizedBox(height: 12),
+
+                    // ================= CHANGE PASSWORD =================//
+
+                    SizedBox(
+                      width: double.infinity,
+                      height: 50,
+                      child: OutlinedButton.icon(
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) =>
+                                  const ChangePasswordScreen(),
+                            ),
+                          );
+                        },
+                        icon: const Icon(Icons.lock_reset_rounded),
+                        label: const Text(
+                          'Change Password',
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w600,
+                          ),
                         ),
                       ),
                     ),

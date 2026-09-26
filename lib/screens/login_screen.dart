@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
 import '../services/api_service.dart';
 import '../utils/app_colors.dart';
 import '../utils/session.dart';
 import 'choose_role_screen.dart';
 import 'register_screen.dart';
+
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
 
@@ -51,23 +53,28 @@ class _LoginScreenState extends State<LoginScreen> {
     });
 
     if (loginData != null) {
+      // ================= GET LOGIN DATA =================
+
       final String token =
           loginData['token'].toString();
 
       final List<dynamic> roles =
           loginData['roles'] as List<dynamic>;
 
-      // SAVE LOGIN SESSION
+      // ================= SAVE LOGIN SESSION =================
+
       Session.email =
           emailController.text.trim();
 
-      Session.roles = roles
-          .map(
-            (role) => role.toString(),
-          )
-          .toList();
+      Session.roles =
+          roles.map((role) => role.toString()).toList();
 
-      // SAVE EMAIL USING SHARED PREFERENCES
+      // IMPORTANT:
+      // Save the JWT token received from backend.
+      Session.token = token;
+
+      // ================= SAVE EMAIL =================
+
       final prefs =
           await SharedPreferences.getInstance();
 
@@ -76,21 +83,30 @@ class _LoginScreenState extends State<LoginScreen> {
         emailController.text.trim(),
       );
 
-      // DEBUG
+      // ================= DEBUG =================
+
       debugPrint('TOKEN: $token');
       debugPrint('ROLES: $roles');
+
       debugPrint(
         'SESSION EMAIL: ${Session.email}',
       );
+
       debugPrint(
         'SESSION ROLES: ${Session.roles}',
       );
+
+      debugPrint(
+        'SESSION TOKEN: ${Session.token}',
+      );
+
       debugPrint(
         'SAVED CUSTOMER EMAIL: '
         '${emailController.text.trim()}',
       );
 
-      // CHOOSE ROLE
+      // ================= CHOOSE ROLE =================
+
       if (!mounted) return;
 
       Navigator.push(
@@ -111,6 +127,8 @@ class _LoginScreenState extends State<LoginScreen> {
         ),
       );
     } else {
+      // ================= LOGIN FAILED =================
+
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text(
@@ -135,13 +153,15 @@ class _LoginScreenState extends State<LoginScreen> {
           children: [
             const SizedBox(height: 20),
 
-            // ICON
+            // ================= ICON =================
+
             Container(
               width: 84,
               height: 84,
               decoration: BoxDecoration(
-                color:
-                    AppColors.primary.withValues(alpha: 0.1),
+                color: AppColors.primary.withValues(
+                  alpha: 0.1,
+                ),
                 shape: BoxShape.circle,
               ),
               child: const Icon(
@@ -153,7 +173,8 @@ class _LoginScreenState extends State<LoginScreen> {
 
             const SizedBox(height: 24),
 
-            // TITLE
+            // ================= TITLE =================
+
             const Text(
               'Welcome Back!',
               style: TextStyle(
@@ -175,7 +196,8 @@ class _LoginScreenState extends State<LoginScreen> {
 
             const SizedBox(height: 32),
 
-            // EMAIL
+            // ================= EMAIL =================
+
             TextField(
               controller: emailController,
               keyboardType:
@@ -190,7 +212,8 @@ class _LoginScreenState extends State<LoginScreen> {
 
             const SizedBox(height: 16),
 
-            // PASSWORD
+            // ================= PASSWORD =================
+
             TextField(
               controller: passwordController,
               obscureText: true,
@@ -204,7 +227,8 @@ class _LoginScreenState extends State<LoginScreen> {
 
             const SizedBox(height: 28),
 
-            // LOGIN BUTTON
+            // ================= LOGIN BUTTON =================
+
             SizedBox(
               width: double.infinity,
               height: 55,
@@ -231,7 +255,8 @@ class _LoginScreenState extends State<LoginScreen> {
 
             const SizedBox(height: 16),
 
-            // REGISTER
+            // ================= REGISTER =================
+
             Center(
               child: TextButton(
                 onPressed: () {

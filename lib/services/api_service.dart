@@ -1,14 +1,19 @@
 import 'dart:async';
 import 'dart:convert';
-import 'package:http/http.dart' as http;
 import 'dart:io';
-import 'package:flutter/foundation.dart';
 
+import 'package:flutter/foundation.dart';
+import 'package:http/http.dart' as http;
+
+import '../utils/session.dart';
 
 class ApiService {
-  static const String baseUrl = 'http://10.0.2.2:8080';
+  static const String baseUrl =
+      'http://10.0.2.2:8080';
 
-  // ==================== TEST CONNECTION ====================
+  // ============================================================
+  // TEST CONNECTION
+  // ============================================================
 
   static Future<void> testConnection() async {
     try {
@@ -16,14 +21,23 @@ class ApiService {
         Uri.parse('$baseUrl/api/test'),
       );
 
-      debugPrint('Status Code: ${response.statusCode}');
-      debugPrint('Response: ${response.body}');
+      debugPrint(
+        'Status Code: ${response.statusCode}',
+      );
+
+      debugPrint(
+        'Response: ${response.body}',
+      );
     } catch (e) {
-      debugPrint('API Connection Error: $e');
+      debugPrint(
+        'API Connection Error: $e',
+      );
     }
   }
 
-  // ==================== REGISTER ====================
+  // ============================================================
+  // REGISTER
+  // ============================================================
 
   static Future<bool> registerUser({
     required String name,
@@ -34,7 +48,9 @@ class ApiService {
   }) async {
     try {
       final response = await http.post(
-        Uri.parse('$baseUrl/api/users/register'),
+        Uri.parse(
+          '$baseUrl/api/users/register',
+        ),
         headers: {
           'Content-Type': 'application/json',
         },
@@ -47,18 +63,28 @@ class ApiService {
         }),
       );
 
-      debugPrint('Status Code: ${response.statusCode}');
-      debugPrint('Response: ${response.body}');
+      debugPrint(
+        'Status Code: ${response.statusCode}',
+      );
+
+      debugPrint(
+        'Response: ${response.body}',
+      );
 
       return response.statusCode == 200 ||
           response.statusCode == 201;
     } catch (e) {
-      debugPrint('Registration Error: $e');
+      debugPrint(
+        'Registration Error: $e',
+      );
+
       return false;
     }
   }
 
-  // ==================== LOGIN ====================
+  // ============================================================
+  // LOGIN
+  // ============================================================
 
   static Future<Map<String, dynamic>?> loginUser({
     required String email,
@@ -66,7 +92,9 @@ class ApiService {
   }) async {
     try {
       final response = await http.post(
-        Uri.parse('$baseUrl/api/users/login'),
+        Uri.parse(
+          '$baseUrl/api/users/login',
+        ),
         headers: {
           'Content-Type': 'application/json',
         },
@@ -90,12 +118,17 @@ class ApiService {
 
       return null;
     } catch (e) {
-      debugPrint('Login Error: $e');
+      debugPrint(
+        'Login Error: $e',
+      );
+
       return null;
     }
   }
 
-  // ==================== ADD ROLE ====================
+  // ============================================================
+  // ADD ROLE
+  // ============================================================
 
   static Future<bool> addRole({
     required String email,
@@ -120,63 +153,71 @@ class ApiService {
 
       return response.statusCode == 200;
     } catch (e) {
-      debugPrint('Add Role Error: $e');
+      debugPrint(
+        'Add Role Error: $e',
+      );
+
       return false;
     }
   }
 
-  // ==================== SAVE PROVIDER PROFILE ====================
+  // ============================================================
+  // SAVE PROVIDER PROFILE
+  // ============================================================
 
-static Future<bool> saveProviderProfile({
-  required String email,
-  required String name,
-  required String phone,
-  required String location,
-  required int experience,
-  required String description,
-}) async {
-  try {
-    final response = await http.post(
-      Uri.parse(
-        '$baseUrl/api/provider-profile/save'
-        '?email=${Uri.encodeComponent(email)}',
-      ),
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: jsonEncode({
-        'location': location,
-        'experience': experience,
-        'description': description,
-
-        // User data
-        'user': {
-          'name': name,
-          'phone': phone,
+  static Future<bool> saveProviderProfile({
+    required String email,
+    required String name,
+    required String phone,
+    required String location,
+    required int experience,
+    required String description,
+  }) async {
+    try {
+      final response = await http.post(
+        Uri.parse(
+          '$baseUrl/api/provider-profile/save'
+          '?email=${Uri.encodeComponent(email)}',
+        ),
+        headers: {
+          'Content-Type': 'application/json',
         },
-      }),
-    );
+        body: jsonEncode({
+          'location': location,
+          'experience': experience,
+          'description': description,
 
-    debugPrint(
-      'Provider Profile Status Code: '
-      '${response.statusCode}',
-    );
+          // User data
+          'user': {
+            'name': name,
+            'phone': phone,
+          },
+        }),
+      );
 
-    debugPrint(
-      'Provider Profile Response: '
-      '${response.body}',
-    );
+      debugPrint(
+        'Provider Profile Status Code: '
+        '${response.statusCode}',
+      );
 
-    return response.statusCode == 200;
-  } catch (e) {
-    debugPrint(
-      'Provider Profile Error: $e',
-    );
+      debugPrint(
+        'Provider Profile Response: '
+        '${response.body}',
+      );
 
-    return false;
+      return response.statusCode == 200;
+    } catch (e) {
+      debugPrint(
+        'Provider Profile Error: $e',
+      );
+
+      return false;
+    }
   }
-}
-    // ==================== ADD SERVICE ====================
+
+  // ============================================================
+  // ADD SERVICE
+  // ============================================================
 
   static Future<bool> addService({
     required String email,
@@ -222,7 +263,9 @@ static Future<bool> saveProviderProfile({
     }
   }
 
-  // ==================== GET PROVIDER SERVICES ====================
+  // ============================================================
+  // GET PROVIDER SERVICES
+  // ============================================================
 
   static Future<List<dynamic>?> getProviderServices({
     required String email,
@@ -252,80 +295,120 @@ static Future<bool> saveProviderProfile({
       return null;
     } catch (e) {
       debugPrint(
-        'Get Services Error: '
-        '$e',
+        'Get Services Error: $e',
       );
 
       return null;
     }
   }
 
-    // ==================== UPDATE SERVICE ====================
+  // ============================================================
+  // UPDATE SERVICE
+  // ============================================================
 
-static Future<bool> updateService({
-  required int id,
-  required String email,
-  required String name,
-  required String category,
-  required String description,
-  required double price,
-}) async {
-  debugPrint('==============================');
-  debugPrint('UPDATE SERVICE START');
-
-  try {
-    final uri = Uri(
-      scheme: 'http',
-      host: '10.0.2.2',
-      port: 8080,
-      path: '/api/services/update/$id',
-      queryParameters: {
-        'email': email,
-      },
+  static Future<bool> updateService({
+    required int id,
+    required String email,
+    required String name,
+    required String category,
+    required String description,
+    required double price,
+  }) async {
+    debugPrint(
+      '==============================',
     );
 
-    debugPrint('URI: $uri');
+    debugPrint(
+      'UPDATE SERVICE START',
+    );
 
-    final body = jsonEncode({
-      'name': name,
-      'category': category,
-      'description': description,
-      'price': price,
-    });
+    try {
+      final uri = Uri(
+        scheme: 'http',
+        host: '10.0.2.2',
+        port: 8080,
+        path: '/api/services/update/$id',
+        queryParameters: {
+          'email': email,
+        },
+      );
 
-    debugPrint('BODY: $body');
-    debugPrint('SENDING PUT REQUEST...');
+      debugPrint(
+        'URI: $uri',
+      );
 
-    final response = await http
-        .put(
-          uri,
-          headers: {
-            'Content-Type': 'application/json',
-            'Accept': 'application/json',
-          },
-          body: body,
-        )
-        .timeout(
-          const Duration(seconds: 10),
-        );
+      final body = jsonEncode({
+        'name': name,
+        'category': category,
+        'description': description,
+        'price': price,
+      });
 
-    debugPrint('RESPONSE RECEIVED!');
-    debugPrint('STATUS: ${response.statusCode}');
-    debugPrint('BODY: ${response.body}');
+      debugPrint(
+        'BODY: $body',
+      );
 
-    return response.statusCode == 200;
-  } on TimeoutException catch (e) {
-    debugPrint('!!!!!!!! TIMEOUT !!!!!!!!');
-    debugPrint(e.toString());
-    return false;
-  } catch (e, stackTrace) {
-    debugPrint('!!!!!!!! UPDATE ERROR !!!!!!!!');
-    debugPrint(e.toString());
-    debugPrint(stackTrace.toString());
-    return false;
+      debugPrint(
+        'SENDING PUT REQUEST...',
+      );
+
+      final response = await http
+          .put(
+            uri,
+            headers: {
+              'Content-Type':
+                  'application/json',
+              'Accept': 'application/json',
+            },
+            body: body,
+          )
+          .timeout(
+            const Duration(seconds: 10),
+          );
+
+      debugPrint(
+        'RESPONSE RECEIVED!',
+      );
+
+      debugPrint(
+        'STATUS: ${response.statusCode}',
+      );
+
+      debugPrint(
+        'BODY: ${response.body}',
+      );
+
+      return response.statusCode == 200;
+    } on TimeoutException catch (e) {
+      debugPrint(
+        '!!!!!!!! TIMEOUT !!!!!!!!',
+      );
+
+      debugPrint(
+        e.toString(),
+      );
+
+      return false;
+    } catch (e, stackTrace) {
+      debugPrint(
+        '!!!!!!!! UPDATE ERROR !!!!!!!!',
+      );
+
+      debugPrint(
+        e.toString(),
+      );
+
+      debugPrint(
+        stackTrace.toString(),
+      );
+
+      return false;
+    }
   }
-}
-  // ==================== DELETE SERVICE ====================
+
+  // ============================================================
+  // DELETE SERVICE
+  // ============================================================
 
   static Future<bool> deleteService({
     required int id,
@@ -359,399 +442,478 @@ static Future<bool> updateService({
     }
   }
 
-  // ==================== GET PROVIDER PROFILE ====================
+  // ============================================================
+  // GET PROVIDERS
+  // ============================================================
+
   static Future<List<dynamic>> getProviders() async {
-  try {
-    final response = await http.get(
-      Uri.parse('$baseUrl/api/users/providers'),
-    );
-
-    debugPrint('Get Providers Status Code: ${response.statusCode}');
-    debugPrint('Get Providers Response: ${response.body}');
-
-    if (response.statusCode == 200) {
-      return jsonDecode(response.body);
-    }
-
-    return [];
-  } catch (e) {
-    debugPrint('Get Providers Error: $e');
-    return [];
-  }
-}
-
-//-----------------GetServicesbyCategory-----------------
-
-  static Future<List<dynamic>> getServicesByCategory(
-      String category,
-    ) async {
-      try {
-        final response = await http.get(
-          Uri.parse(
-            '$baseUrl/api/services/category/${Uri.encodeComponent(category)}',
-          ),
-        );
-
-        debugPrint(
-          'Get Services By Category Status: ${response.statusCode}',
-        );
-        debugPrint(
-          'Get Services By Category Response: ${response.body}',
-        );
-
-        if (response.statusCode == 200) {
-          return jsonDecode(response.body);
-        }
-
-        return [];
-      } catch (e) {
-        debugPrint('Get Services By Category Error: $e');
-        return [];
-      }
-    }
-
-    //---------------GetProviderProfile------------//
-    static Future<Map<String, dynamic>?> getProviderProfile(
-      String email,
-    ) async {
-      try {
-        final response = await http.get(
-          Uri.parse(
-            '$baseUrl/api/provider-profile/${Uri.encodeComponent(email)}',
-          ),
-        );
-
-        debugPrint(
-          'Get Provider Profile Status: ${response.statusCode}',
-        );
-        debugPrint(
-          'Get Provider Profile Response: ${response.body}',
-        );
-
-        if (response.statusCode == 200) {
-          return jsonDecode(response.body);
-        }
-
-        return null;
-      } catch (e) {
-        debugPrint('Get Provider Profile Error: $e');
-        return null;
-      }
-    }
-
-    //-----------------GetCustomerTequest-------------------//
-    static Future<List<dynamic>> getCustomerRequests({
-      required String email,
-    }) async {
-      try {
-        final response = await http.get(
-          Uri.parse(
-            '$baseUrl/api/service-requests/customer'
-            '?email=${Uri.encodeComponent(email)}',
-          ),
-        );
-
-        debugPrint(
-          'Get Customer Requests Status: '
-          '${response.statusCode}',
-        );
-
-        debugPrint(
-          'Get Customer Requests Response: '
-          '${response.body}',
-        );
-
-        if (response.statusCode == 200) {
-          return jsonDecode(response.body);
-        }
-
-        return [];
-      } catch (e) {
-        debugPrint(
-          'Get Customer Requests Error: '
-          '$e',
-        );
-
-        return [];
-      }
-    }
-
-    //-----------------CreateServiceRequest---------------//
-    static Future<Map<String, dynamic>?> createServiceRequest({
-      required String customerEmail,
-      required String providerEmail,
-      required int serviceId,
-      required String requestedDate,
-      required String requestedTime,
-      required String address,
-      required String description,
-    }) async {
-      try {
-        final uri = Uri.parse(
-          '$baseUrl/api/service-requests/create',
-        ).replace(
-          queryParameters: {
-            'customerEmail': customerEmail,
-            'providerEmail': providerEmail,
-            'serviceId': serviceId.toString(),
-            'requestedDate': requestedDate,
-            'requestedTime': requestedTime,
-            'address': address,
-            'description': description,
-          },
-        );
-
-        final response = await http.post(uri);
-
-        debugPrint(
-          'Create Service Request Status: '
-          '${response.statusCode}',
-        );
-
-        debugPrint(
-          'Create Service Request Response: '
-          '${response.body}',
-        );
-
-        if (response.statusCode == 200) {
-          return jsonDecode(response.body);
-        }
-
-        return null;
-      } catch (e) {
-        debugPrint(
-          'Create Service Request Error: '
-          '$e',
-        );
-
-        return null;
-      }
-    }
-
-    //--------------GetProviderRequests----------------//
-    static Future<List<dynamic>> getProviderRequests({
-      required String email,
-    }) async {
-      try {
-        final response = await http.get(
-          Uri.parse(
-            '$baseUrl/api/service-requests/provider'
-            '?email=${Uri.encodeComponent(email)}',
-          ),
-        );
-
-        debugPrint(
-          'Get Provider Requests Status: '
-          '${response.statusCode}',
-        );
-
-        debugPrint(
-          'Get Provider Requests Response: '
-          '${response.body}',
-        );
-
-        if (response.statusCode == 200) {
-          return jsonDecode(response.body);
-        }
-
-        return [];
-      } catch (e) {
-        debugPrint(
-          'Get Provider Requests Error: '
-          '$e',
-        );
-
-        return [];
-      }
-    }
-
-    //-----------------UpdateServiceRequestStatus---------//
-    static Future<bool> updateServiceRequestStatus({
-      required int requestId,
-      required String email,
-      required String status,
-    }) async {
-      try {
-        final uri = Uri.parse(
-          '$baseUrl/api/service-requests/update-status/$requestId',
-        ).replace(
-          queryParameters: {
-            'email': email,
-            'status': status,
-          },
-        );
-
-        final response = await http.put(uri);
-
-        debugPrint(
-          'Update Request Status Code: '
-          '${response.statusCode}',
-        );
-
-        debugPrint(
-          'Update Request Response: '
-          '${response.body}',
-        );
-
-        return response.statusCode == 200;
-      } catch (e) {
-        debugPrint(
-          'Update Request Status Error: '
-          '$e',
-        );
-
-        return false;
-      }
-    }
-
-    //-----------------GetProviderBookinga----------------//
-    static Future<List<dynamic>> getProviderBookings({
-      required String email,
-    }) async {
-      try {
-        final response = await http.get(
-          Uri.parse(
-            '$baseUrl/api/service-requests/provider/bookings'
-            '?email=${Uri.encodeComponent(email)}',
-          ),
-        );
-
-        debugPrint(
-          'Get Provider Bookings Status: '
-          '${response.statusCode}',
-        );
-
-        debugPrint(
-          'Get Provider Bookings Response: '
-          '${response.body}',
-        );
-
-        if (response.statusCode == 200) {
-          return jsonDecode(response.body);
-        }
-
-        return [];
-      } catch (e) {
-        debugPrint(
-          'Get Provider Bookings Error: '
-          '$e',
-        );
-
-        return [];
-      }
-    }
-
-    //-------------------AddReview-----------------//
-    static Future<bool> addReview({
-      required String customerEmail,
-      required int serviceRequestId,
-      required int rating,
-      required String comment,
-    }) async {
-      try {
-        final uri = Uri.parse(
-          '$baseUrl/api/reviews/add',
-        ).replace(
-          queryParameters: {
-            'customerEmail': customerEmail,
-            'serviceRequestId':
-                serviceRequestId.toString(),
-            'rating': rating.toString(),
-            'comment': comment,
-          },
-        );
-
-        final response = await http.post(uri);
-
-        debugPrint(
-          'Add Review Status Code: '
-          '${response.statusCode}',
-        );
-
-        debugPrint(
-          'Add Review Response: '
-          '${response.body}',
-        );
-
-        return response.statusCode == 200;
-      } catch (e) {
-        debugPrint(
-          'Add Review Error: '
-          '$e',
-        );
-
-        return false;
-      }
-    }
-
-    //-------------------GetProviderReviews-----------------//
-    static Future<List<dynamic>> getProviderReviews(String email) async {
+    try {
       final response = await http.get(
-        Uri.parse('$baseUrl/api/reviews/provider?email=$email'),
+        Uri.parse(
+          '$baseUrl/api/users/providers',
+        ),
+      );
+
+      debugPrint(
+        'Get Providers Status Code: '
+        '${response.statusCode}',
+      );
+
+      debugPrint(
+        'Get Providers Response: '
+        '${response.body}',
       );
 
       if (response.statusCode == 200) {
         return jsonDecode(response.body);
-      } else {
-        throw Exception('Failed to load provider reviews');
       }
+
+      return [];
+    } catch (e) {
+      debugPrint(
+        'Get Providers Error: $e',
+      );
+
+      return [];
     }
+  }
 
-    //-------------------UploadProviderProfileImage---------------//
-    static Future<String?> uploadProviderProfileImage({
-      required String email,
-      required File image,
-    }) async {
-      try {
-        final request = http.MultipartRequest(
-          'POST',
-          Uri.parse(
-            '$baseUrl/api/provider-profile/upload-image',
-          ),
-        );
+  // ============================================================
+  // GET SERVICES BY CATEGORY
+  // ============================================================
 
-        request.fields['email'] = email;
+  static Future<List<dynamic>> getServicesByCategory(
+    String category,
+  ) async {
+    try {
+      final response = await http.get(
+        Uri.parse(
+          '$baseUrl/api/services/category/'
+          '${Uri.encodeComponent(category)}',
+        ),
+      );
 
-        request.files.add(
-          await http.MultipartFile.fromPath(
-            'image',
-            image.path,
-          ),
-        );
+      debugPrint(
+        'Get Services By Category Status: '
+        '${response.statusCode}',
+      );
 
-        final streamedResponse = await request.send();
+      debugPrint(
+        'Get Services By Category Response: '
+        '${response.body}',
+      );
 
-        final response =
-            await http.Response.fromStream(
-          streamedResponse,
-        );
-
-        debugPrint(
-          'Upload Profile Image Status: '
-          '${response.statusCode}',
-        );
-
-        debugPrint(
-          'Upload Profile Image Response: '
-          '${response.body}',
-        );
-
-        if (response.statusCode == 200) {
-          return response.body;
-        }
-
-        return null;
-      } catch (e) {
-        debugPrint(
-          'Upload Profile Image Error: $e',
-        );
-
-        return null;
+      if (response.statusCode == 200) {
+        return jsonDecode(response.body);
       }
-    }
-    // ================= GET USER PROFILE =================
 
-static Future<Map<String, dynamic>?> getUserProfile({
+      return [];
+    } catch (e) {
+      debugPrint(
+        'Get Services By Category Error: $e',
+      );
+
+      return [];
+    }
+  }
+
+  // ============================================================
+  // GET PROVIDER PROFILE
+  // ============================================================
+
+  static Future<Map<String, dynamic>?>
+      getProviderProfile(
+    String email,
+  ) async {
+    try {
+      final response = await http.get(
+        Uri.parse(
+          '$baseUrl/api/provider-profile/'
+          '${Uri.encodeComponent(email)}',
+        ),
+      );
+
+      debugPrint(
+        'Get Provider Profile Status: '
+        '${response.statusCode}',
+      );
+
+      debugPrint(
+        'Get Provider Profile Response: '
+        '${response.body}',
+      );
+
+      if (response.statusCode == 200) {
+        return jsonDecode(response.body);
+      }
+
+      return null;
+    } catch (e) {
+      debugPrint(
+        'Get Provider Profile Error: $e',
+      );
+
+      return null;
+    }
+  }
+
+  // ============================================================
+  // GET CUSTOMER REQUESTS
+  // ============================================================
+
+  static Future<List<dynamic>> getCustomerRequests({
+    required String email,
+  }) async {
+    try {
+      final response = await http.get(
+        Uri.parse(
+          '$baseUrl/api/service-requests/customer'
+          '?email=${Uri.encodeComponent(email)}',
+        ),
+      );
+
+      debugPrint(
+        'Get Customer Requests Status: '
+        '${response.statusCode}',
+      );
+
+      debugPrint(
+        'Get Customer Requests Response: '
+        '${response.body}',
+      );
+
+      if (response.statusCode == 200) {
+        return jsonDecode(response.body);
+      }
+
+      return [];
+    } catch (e) {
+      debugPrint(
+        'Get Customer Requests Error: '
+        '$e',
+      );
+
+      return [];
+    }
+  }
+
+  // ============================================================
+  // CREATE SERVICE REQUEST
+  // ============================================================
+
+  static Future<Map<String, dynamic>?>
+      createServiceRequest({
+    required String customerEmail,
+    required String providerEmail,
+    required int serviceId,
+    required String requestedDate,
+    required String requestedTime,
+    required String address,
+    required String description,
+  }) async {
+    try {
+      final uri = Uri.parse(
+        '$baseUrl/api/service-requests/create',
+      ).replace(
+        queryParameters: {
+          'customerEmail': customerEmail,
+          'providerEmail': providerEmail,
+          'serviceId': serviceId.toString(),
+          'requestedDate': requestedDate,
+          'requestedTime': requestedTime,
+          'address': address,
+          'description': description,
+        },
+      );
+
+      final response = await http.post(uri);
+
+      debugPrint(
+        'Create Service Request Status: '
+        '${response.statusCode}',
+      );
+
+      debugPrint(
+        'Create Service Request Response: '
+        '${response.body}',
+      );
+
+      if (response.statusCode == 200) {
+        return jsonDecode(response.body);
+      }
+
+      return null;
+    } catch (e) {
+      debugPrint(
+        'Create Service Request Error: '
+        '$e',
+      );
+
+      return null;
+    }
+  }
+
+  // ============================================================
+  // GET PROVIDER REQUESTS
+  // ============================================================
+
+  static Future<List<dynamic>> getProviderRequests({
+    required String email,
+  }) async {
+    try {
+      final response = await http.get(
+        Uri.parse(
+          '$baseUrl/api/service-requests/provider'
+          '?email=${Uri.encodeComponent(email)}',
+        ),
+      );
+
+      debugPrint(
+        'Get Provider Requests Status: '
+        '${response.statusCode}',
+      );
+
+      debugPrint(
+        'Get Provider Requests Response: '
+        '${response.body}',
+      );
+
+      if (response.statusCode == 200) {
+        return jsonDecode(response.body);
+      }
+
+      return [];
+    } catch (e) {
+      debugPrint(
+        'Get Provider Requests Error: '
+        '$e',
+      );
+
+      return [];
+    }
+  }
+
+  // ============================================================
+  // UPDATE SERVICE REQUEST STATUS
+  // ============================================================
+
+  static Future<bool>
+      updateServiceRequestStatus({
+    required int requestId,
+    required String email,
+    required String status,
+  }) async {
+    try {
+      final uri = Uri.parse(
+        '$baseUrl/api/service-requests/'
+        'update-status/$requestId',
+      ).replace(
+        queryParameters: {
+          'email': email,
+          'status': status,
+        },
+      );
+
+      final response = await http.put(uri);
+
+      debugPrint(
+        'Update Request Status Code: '
+        '${response.statusCode}',
+      );
+
+      debugPrint(
+        'Update Request Response: '
+        '${response.body}',
+      );
+
+      return response.statusCode == 200;
+    } catch (e) {
+      debugPrint(
+        'Update Request Status Error: '
+        '$e',
+      );
+
+      return false;
+    }
+  }
+
+  // ============================================================
+  // GET PROVIDER BOOKINGS
+  // ============================================================
+
+  static Future<List<dynamic>>
+      getProviderBookings({
+    required String email,
+  }) async {
+    try {
+      final response = await http.get(
+        Uri.parse(
+          '$baseUrl/api/service-requests/'
+          'provider/bookings'
+          '?email=${Uri.encodeComponent(email)}',
+        ),
+      );
+
+      debugPrint(
+        'Get Provider Bookings Status: '
+        '${response.statusCode}',
+      );
+
+      debugPrint(
+        'Get Provider Bookings Response: '
+        '${response.body}',
+      );
+
+      if (response.statusCode == 200) {
+        return jsonDecode(response.body);
+      }
+
+      return [];
+    } catch (e) {
+      debugPrint(
+        'Get Provider Bookings Error: '
+        '$e',
+      );
+
+      return [];
+    }
+  }
+
+  // ============================================================
+  // ADD REVIEW
+  // ============================================================
+
+  static Future<bool> addReview({
+    required String customerEmail,
+    required int serviceRequestId,
+    required int rating,
+    required String comment,
+  }) async {
+    try {
+      final uri = Uri.parse(
+        '$baseUrl/api/reviews/add',
+      ).replace(
+        queryParameters: {
+          'customerEmail': customerEmail,
+          'serviceRequestId':
+              serviceRequestId.toString(),
+          'rating': rating.toString(),
+          'comment': comment,
+        },
+      );
+
+      final response = await http.post(uri);
+
+      debugPrint(
+        'Add Review Status Code: '
+        '${response.statusCode}',
+      );
+
+      debugPrint(
+        'Add Review Response: '
+        '${response.body}',
+      );
+
+      return response.statusCode == 200;
+    } catch (e) {
+      debugPrint(
+        'Add Review Error: '
+        '$e',
+      );
+
+      return false;
+    }
+  }
+
+  // ============================================================
+  // GET PROVIDER REVIEWS
+  // ============================================================
+
+  static Future<List<dynamic>>
+      getProviderReviews(
+    String email,
+  ) async {
+    final response = await http.get(
+      Uri.parse(
+        '$baseUrl/api/reviews/provider'
+        '?email=${Uri.encodeComponent(email)}',
+      ),
+    );
+
+    if (response.statusCode == 200) {
+      return jsonDecode(response.body);
+    } else {
+      throw Exception(
+        'Failed to load provider reviews',
+      );
+    }
+  }
+
+  // ============================================================
+  // UPLOAD PROVIDER PROFILE IMAGE
+  // ============================================================
+
+  static Future<String?>
+      uploadProviderProfileImage({
+    required String email,
+    required File image,
+  }) async {
+    try {
+      final request = http.MultipartRequest(
+        'POST',
+        Uri.parse(
+          '$baseUrl/api/provider-profile/'
+          'upload-image',
+        ),
+      );
+
+      request.fields['email'] = email;
+
+      request.files.add(
+        await http.MultipartFile.fromPath(
+          'image',
+          image.path,
+        ),
+      );
+
+      final streamedResponse =
+          await request.send();
+
+      final response =
+          await http.Response.fromStream(
+        streamedResponse,
+      );
+
+      debugPrint(
+        'Upload Profile Image Status: '
+        '${response.statusCode}',
+      );
+
+      debugPrint(
+        'Upload Profile Image Response: '
+        '${response.body}',
+      );
+
+      if (response.statusCode == 200) {
+        return response.body;
+      }
+
+      return null;
+    } catch (e) {
+      debugPrint(
+        'Upload Profile Image Error: $e',
+      );
+
+      return null;
+    }
+  }
+
+  // ============================================================
+  // GET USER PROFILE
+  // ============================================================
+
+  static Future<Map<String, dynamic>?>
+      getUserProfile({
     required String email,
   }) async {
     try {
@@ -763,11 +925,13 @@ static Future<Map<String, dynamic>?> getUserProfile({
       );
 
       debugPrint(
-        'Get User Profile Status: ${response.statusCode}',
+        'Get User Profile Status: '
+        '${response.statusCode}',
       );
 
       debugPrint(
-        'Get User Profile Response: ${response.body}',
+        'Get User Profile Response: '
+        '${response.body}',
       );
 
       if (response.statusCode == 200) {
@@ -776,12 +940,17 @@ static Future<Map<String, dynamic>?> getUserProfile({
 
       return null;
     } catch (e) {
-      debugPrint('Get User Profile Error: $e');
+      debugPrint(
+        'Get User Profile Error: $e',
+      );
+
       return null;
     }
   }
 
-  // ================= UPDATE USER PROFILE =================
+  // ============================================================
+  // UPDATE USER PROFILE
+  // ============================================================
 
   static Future<bool> updateUserProfile({
     required String email,
@@ -804,70 +973,127 @@ static Future<Map<String, dynamic>?> getUserProfile({
       );
 
       debugPrint(
-        'Update User Profile Status: ${response.statusCode}',
+        'Update User Profile Status: '
+        '${response.statusCode}',
       );
 
       debugPrint(
-        'Update User Profile Response: ${response.body}',
+        'Update User Profile Response: '
+        '${response.body}',
       );
 
       return response.statusCode == 200;
     } catch (e) {
-      debugPrint('Update User Profile Error: $e');
+      debugPrint(
+        'Update User Profile Error: $e',
+      );
+
       return false;
     }
   }
-      // ================= UPLOAD CUSTOMER PROFILE IMAGE =================
 
-    static Future<String?> uploadCustomerProfileImage({
-      required String email,
-      required File image,
-    }) async {
-      try {
-        final request = http.MultipartRequest(
-          'POST',
-          Uri.parse(
-            '$baseUrl/api/customer-profile/upload-image',
-          ),
-        );
+  // ============================================================
+  // UPLOAD CUSTOMER PROFILE IMAGE
+  // ============================================================
 
-        request.fields['email'] = email;
+  static Future<String?>
+      uploadCustomerProfileImage({
+    required String email,
+    required File image,
+  }) async {
+    try {
+      final request = http.MultipartRequest(
+        'POST',
+        Uri.parse(
+          '$baseUrl/api/customer-profile/'
+          'upload-image',
+        ),
+      );
 
-        request.files.add(
-          await http.MultipartFile.fromPath(
-            'image',
-            image.path,
-          ),
-        );
+      request.fields['email'] = email;
 
-        final streamedResponse = await request.send();
+      request.files.add(
+        await http.MultipartFile.fromPath(
+          'image',
+          image.path,
+        ),
+      );
 
-        final response =
-            await http.Response.fromStream(
-          streamedResponse,
-        );
+      final streamedResponse =
+          await request.send();
 
-        debugPrint(
-          'Upload Customer Profile Image Status: '
-          '${response.statusCode}',
-        );
+      final response =
+          await http.Response.fromStream(
+        streamedResponse,
+      );
 
-        debugPrint(
-          'Upload Customer Profile Image Response: '
-          '${response.body}',
-        );
+      debugPrint(
+        'Upload Customer Profile Image Status: '
+        '${response.statusCode}',
+      );
 
-        if (response.statusCode == 200) {
-          return response.body;
-        }
+      debugPrint(
+        'Upload Customer Profile Image Response: '
+        '${response.body}',
+      );
 
-        return null;
-      } catch (e) {
-        debugPrint(
-          'Upload Customer Profile Image Error: $e',
-        );
-
-        return null;
+      if (response.statusCode == 200) {
+        return response.body;
       }
+
+      return null;
+    } catch (e) {
+      debugPrint(
+        'Upload Customer Profile Image Error: $e',
+      );
+
+      return null;
     }
+  }
+
+  // ============================================================
+  // CHANGE PASSWORD
+  // ============================================================
+
+  static Future<bool> changePassword({
+    required String currentPassword,
+    required String newPassword,
+  }) async {
+    try {
+      final response = await http.put(
+        Uri.parse(
+          '$baseUrl/api/users/change-password',
+        ),
+        headers: {
+          'Content-Type': 'application/json',
+
+          // JWT TOKEN
+          'Authorization':
+              'Bearer ${Session.token}',
+        },
+        body: jsonEncode({
+          'currentPassword': currentPassword,
+          'newPassword': newPassword,
+        }),
+      );
+
+      debugPrint(
+        'Change Password Status: '
+        '${response.statusCode}',
+      );
+
+      debugPrint(
+        'Change Password Response: '
+        '${response.body}',
+      );
+
+      return response.statusCode == 200;
+    } catch (e) {
+      debugPrint(
+        'Change Password Error: $e',
+      );
+
+      return false;
+    }
+  }
 }
