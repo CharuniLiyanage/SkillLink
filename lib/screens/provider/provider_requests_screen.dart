@@ -75,7 +75,9 @@ class _ProviderRequestsScreenState
           content: Text(
             status == 'ACCEPTED'
                 ? 'Service request accepted.'
-                : 'Service request rejected.',
+                : status == 'COMPLETED'
+                    ? 'Service request completed.'
+                    : 'Service request rejected.',
           ),
           backgroundColor: status == 'ACCEPTED'
           ? AppColors.success
@@ -379,6 +381,36 @@ class _ProviderRequestsScreenState
                                     ),
                                   ],
                                 ),
+                                if (status == 'ACCEPTED')
+                                  SizedBox(
+                                    width: double.infinity,
+                                    height: 48,
+                                    child: ElevatedButton.icon(
+                                      onPressed: requestId == null
+                                          ? null
+                                          : () {
+                                              updateStatus(
+                                                requestId,
+                                                'COMPLETED',
+                                              );
+                                            },
+                                      icon: const Icon(
+                                        Icons.check_circle_outline_rounded,
+                                        size: 19,
+                                      ),
+                                      label: const Text(
+                                        'Mark as Completed',
+                                        style: TextStyle(
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.w600,
+                                        ),
+                                      ),
+                                      style: ElevatedButton.styleFrom(
+                                        backgroundColor: AppColors.success,
+                                        foregroundColor: Colors.white,
+                                      ),
+                                    ),
+                                  ),
                             ],
                           ),
                         ),
