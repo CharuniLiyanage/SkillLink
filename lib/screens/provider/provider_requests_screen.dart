@@ -1,12 +1,17 @@
 import 'package:flutter/material.dart';
+
 import '../../services/api_service.dart';
 import '../../utils/app_colors.dart';
 import '../../utils/session.dart';
 import '../../widgets/status_badge.dart';
+import '../customer/chat_screen.dart';
 
-//-----------ProvideRequestsScreen----------------//
+// ==================== Provider Requests Screen ====================
+
 class ProviderRequestsScreen extends StatefulWidget {
-  const ProviderRequestsScreen({super.key});
+  const ProviderRequestsScreen({
+    super.key,
+  });
 
   @override
   State<ProviderRequestsScreen> createState() =>
@@ -24,13 +29,18 @@ class _ProviderRequestsScreenState
     loadRequests();
   }
 
+  // ==================== Load Requests ====================
+
   Future<void> loadRequests() async {
     final email = Session.email;
 
     if (email.isEmpty) {
+      if (!mounted) return;
+
       setState(() {
         isLoading = false;
       });
+
       return;
     }
 
@@ -48,13 +58,15 @@ class _ProviderRequestsScreenState
     });
   }
 
+  // ==================== Update Status ====================
+
   Future<void> updateStatus(
     int requestId,
     String status,
   ) async {
     final email = Session.email;
 
-    if(email.isEmpty) {
+    if (email.isEmpty) {
       return;
     }
 
@@ -80,8 +92,8 @@ class _ProviderRequestsScreenState
                     : 'Service request rejected.',
           ),
           backgroundColor: status == 'ACCEPTED'
-          ? AppColors.success
-          : Colors.red,
+              ? AppColors.success
+              : Colors.red,
         ),
       );
 
@@ -97,6 +109,8 @@ class _ProviderRequestsScreenState
     }
   }
 
+  // ==================== Format Date ====================
+
   String formatDate(String date) {
     final parts = date.split('-');
 
@@ -106,6 +120,8 @@ class _ProviderRequestsScreenState
 
     return date;
   }
+
+  // ==================== Format Time ====================
 
   String formatTime(String time) {
     try {
@@ -128,11 +144,15 @@ class _ProviderRequestsScreenState
     }
   }
 
+  // ==================== Build ====================
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Service Requests'),
+        title: const Text(
+          'Service Requests',
+        ),
       ),
       body: isLoading
           ? const Center(
@@ -167,6 +187,10 @@ class _ProviderRequestsScreenState
                       final customerName =
                           customer?['name']?.toString() ??
                               'Unknown Customer';
+
+                      final customerEmail =
+                          customer?['email']?.toString() ??
+                              '';
 
                       final serviceName =
                           service?['name']?.toString() ??
@@ -216,13 +240,17 @@ class _ProviderRequestsScreenState
                             crossAxisAlignment:
                                 CrossAxisAlignment.start,
                             children: [
+                              // ==================== Customer Header ====================
+
                               Row(
                                 children: [
                                   CircleAvatar(
                                     radius: 25,
                                     backgroundColor:
                                         AppColors.primary
-                                            .withValues(alpha: 0.1),
+                                            .withValues(
+                                      alpha: 0.1,
+                                    ),
                                     child: const Icon(
                                       Icons
                                           .person_rounded,
@@ -231,7 +259,8 @@ class _ProviderRequestsScreenState
                                     ),
                                   ),
                                   const SizedBox(
-                                      width: 12),
+                                    width: 12,
+                                  ),
                                   Expanded(
                                     child: Text(
                                       customerName,
@@ -256,6 +285,8 @@ class _ProviderRequestsScreenState
                                 height: 28,
                               ),
 
+                              // ==================== Service ====================
+
                               Text(
                                 serviceName,
                                 style:
@@ -269,7 +300,10 @@ class _ProviderRequestsScreenState
                               ),
 
                               const SizedBox(
-                                  height: 12),
+                                height: 12,
+                              ),
+
+                              // ==================== Date ====================
 
                               _iconRow(
                                 Icons
@@ -278,7 +312,10 @@ class _ProviderRequestsScreenState
                               ),
 
                               const SizedBox(
-                                  height: 8),
+                                height: 8,
+                              ),
+
+                              // ==================== Time ====================
 
                               _iconRow(
                                 Icons
@@ -287,7 +324,10 @@ class _ProviderRequestsScreenState
                               ),
 
                               const SizedBox(
-                                  height: 8),
+                                height: 8,
+                              ),
+
+                              // ==================== Address ====================
 
                               _iconRow(
                                 Icons
@@ -296,7 +336,10 @@ class _ProviderRequestsScreenState
                               ),
 
                               const SizedBox(
-                                  height: 12),
+                                height: 12,
+                              ),
+
+                              // ==================== Description ====================
 
                               Text(
                                 description,
@@ -309,14 +352,65 @@ class _ProviderRequestsScreenState
                               ),
 
                               const SizedBox(
-                                  height: 18),
+                                height: 18,
+                              ),
 
-                              if (status == 'PENDING')
+                              // ==================== Chat Customer ====================
+
+                              if (customerEmail
+                                  .isNotEmpty)
+                                SizedBox(
+                                  width:
+                                      double.infinity,
+                                  height: 46,
+                                  child:
+                                      OutlinedButton
+                                          .icon(
+                                    onPressed: () {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder:
+                                              (context) =>
+                                                  ChatScreen(
+                                            otherUserEmail:
+                                                customerEmail,
+                                            otherUserName:
+                                                customerName,
+                                          ),
+                                        ),
+                                      );
+                                    },
+                                    icon: const Icon(
+                                      Icons
+                                          .chat_bubble_outline_rounded,
+                                      size: 19,
+                                    ),
+                                    label:
+                                        const Text(
+                                      'Chat with Customer',
+                                      style:
+                                          TextStyle(
+                                        fontWeight:
+                                            FontWeight
+                                                .w600,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+
+                              // ==================== Pending Actions ====================
+
+                              if (status == 'PENDING') ...[
+                                const SizedBox(
+                                  height: 12,
+                                ),
                                 Row(
                                   children: [
                                     Expanded(
                                       child:
-                                          OutlinedButton.icon(
+                                          OutlinedButton
+                                              .icon(
                                         onPressed:
                                             requestId ==
                                                     null
@@ -327,7 +421,8 @@ class _ProviderRequestsScreenState
                                                       'REJECTED',
                                                     );
                                                   },
-                                        icon: const Icon(
+                                        icon:
+                                            const Icon(
                                           Icons
                                               .close_rounded,
                                         ),
@@ -336,16 +431,21 @@ class _ProviderRequestsScreenState
                                           'Reject',
                                         ),
                                         style:
-                                            OutlinedButton.styleFrom(
-                                          foregroundColor: Colors.red,
-                                          side: const BorderSide(
-                                            color: Colors.red,
+                                            OutlinedButton
+                                                .styleFrom(
+                                          foregroundColor:
+                                              Colors.red,
+                                          side:
+                                              const BorderSide(
+                                            color:
+                                                Colors.red,
                                           ),
-                                        ),      
+                                        ),
                                       ),
                                     ),
                                     const SizedBox(
-                                        width: 12),
+                                      width: 12,
+                                    ),
                                     Expanded(
                                       child:
                                           ElevatedButton
@@ -360,7 +460,8 @@ class _ProviderRequestsScreenState
                                                       'ACCEPTED',
                                                     );
                                                   },
-                                        icon: const Icon(
+                                        icon:
+                                            const Icon(
                                           Icons
                                               .check_rounded,
                                         ),
@@ -381,36 +482,58 @@ class _ProviderRequestsScreenState
                                     ),
                                   ],
                                 ),
-                                if (status == 'ACCEPTED')
-                                  SizedBox(
-                                    width: double.infinity,
-                                    height: 48,
-                                    child: ElevatedButton.icon(
-                                      onPressed: requestId == null
-                                          ? null
-                                          : () {
-                                              updateStatus(
-                                                requestId,
-                                                'COMPLETED',
-                                              );
-                                            },
-                                      icon: const Icon(
-                                        Icons.check_circle_outline_rounded,
-                                        size: 19,
-                                      ),
-                                      label: const Text(
-                                        'Mark as Completed',
-                                        style: TextStyle(
-                                          fontSize: 16,
-                                          fontWeight: FontWeight.w600,
-                                        ),
-                                      ),
-                                      style: ElevatedButton.styleFrom(
-                                        backgroundColor: AppColors.success,
-                                        foregroundColor: Colors.white,
+                              ],
+
+                              // ==================== Accepted ====================
+
+                              if (status == 'ACCEPTED') ...[
+                                const SizedBox(
+                                  height: 12,
+                                ),
+                                SizedBox(
+                                  width:
+                                      double.infinity,
+                                  height: 48,
+                                  child:
+                                      ElevatedButton
+                                          .icon(
+                                    onPressed:
+                                        requestId ==
+                                                null
+                                            ? null
+                                            : () {
+                                                updateStatus(
+                                                  requestId,
+                                                  'COMPLETED',
+                                                );
+                                              },
+                                    icon: const Icon(
+                                      Icons
+                                          .check_circle_outline_rounded,
+                                      size: 19,
+                                    ),
+                                    label: const Text(
+                                      'Mark as Completed',
+                                      style:
+                                          TextStyle(
+                                        fontSize: 16,
+                                        fontWeight:
+                                            FontWeight
+                                                .w600,
                                       ),
                                     ),
+                                    style:
+                                        ElevatedButton
+                                            .styleFrom(
+                                      backgroundColor:
+                                          AppColors
+                                              .success,
+                                      foregroundColor:
+                                          Colors.white,
+                                    ),
                                   ),
+                                ),
+                              ],
                             ],
                           ),
                         ),
@@ -420,6 +543,8 @@ class _ProviderRequestsScreenState
                 ),
     );
   }
+
+  // ==================== Icon Row ====================
 
   Widget _iconRow(
     IconData icon,
@@ -434,7 +559,9 @@ class _ProviderRequestsScreenState
           size: 17,
           color: AppColors.textSecondary,
         ),
-        const SizedBox(width: 8),
+        const SizedBox(
+          width: 8,
+        ),
         Expanded(
           child: Text(
             text,
@@ -447,5 +574,4 @@ class _ProviderRequestsScreenState
       ],
     );
   }
-  
 }

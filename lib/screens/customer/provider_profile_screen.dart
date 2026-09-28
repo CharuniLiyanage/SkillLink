@@ -6,6 +6,10 @@ import '../../utils/session.dart';
 import '../../widgets/info_tile.dart';
 import 'request_service_screen.dart';
 import 'reviews_screen.dart';
+import 'chat_screen.dart';
+
+
+
 
 //==================== Provider Profile Screen ====================
 
@@ -462,6 +466,39 @@ class _ProviderProfileScreenState
             ),
 
             const SizedBox(height: 12),
+
+            // ==================== CHAT WITH PROVIDER ====================
+
+            SizedBox(
+              width: double.infinity,
+              height: 54,
+              child: OutlinedButton.icon(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => ChatScreen(
+                        otherUserEmail: widget.email,
+                        otherUserName: widget.name,
+                      ),
+                    ),
+                  );
+                },
+                icon: const Icon(
+                  Icons.chat_bubble_outline_rounded,
+                ),
+                label: const Text(
+                  'Chat with Provider',
+                  style: TextStyle(
+                    fontSize: 17,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ),
+            ),
+
+            const SizedBox(height: 12),
+
 
             // ==================== REQUEST SERVICE ====================
 

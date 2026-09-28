@@ -1129,4 +1129,92 @@ class ApiService {
       return false;
     }
   }
+
+  // ==================== Send Chat Message ====================
+
+  static Future<Map<String, dynamic>?> sendChatMessage({
+    required String receiverEmail,
+    required String message,
+  }) async {
+    try {
+      final uri = Uri.parse(
+        '$baseUrl/api/chat/send',
+      ).replace(
+        queryParameters: {
+          'receiverEmail': receiverEmail,
+          'message': message,
+        },
+      );
+
+      final response = await http.post(
+        uri,
+        headers: {
+          'Authorization': 'Bearer ${Session.token}',
+        },
+      );
+
+      debugPrint(
+        'Send Chat Status: ${response.statusCode}',
+      );
+
+      debugPrint(
+        'Send Chat Response: ${response.body}',
+      );
+
+      if (response.statusCode == 200) {
+        return jsonDecode(response.body);
+      }
+
+      return null;
+    } catch (e) {
+      debugPrint(
+        'Send Chat Error: $e',
+      );
+
+      return null;
+    }
+  }
+
+  // ==================== Get Conversation ====================
+
+  static Future<List<dynamic>> getChatConversation({
+    required String otherUserEmail,
+  }) async {
+    try {
+      final uri = Uri.parse(
+        '$baseUrl/api/chat/conversation',
+      ).replace(
+        queryParameters: {
+          'otherUserEmail': otherUserEmail,
+        },
+      );
+
+      final response = await http.get(
+        uri,
+        headers: {
+          'Authorization': 'Bearer ${Session.token}',
+        },
+      );
+
+      debugPrint(
+        'Get Chat Status: ${response.statusCode}',
+      );
+
+      debugPrint(
+        'Get Chat Response: ${response.body}',
+      );
+
+      if (response.statusCode == 200) {
+        return jsonDecode(response.body);
+      }
+
+      return [];
+    } catch (e) {
+      debugPrint(
+        'Get Chat Error: $e',
+      );
+
+      return [];
+    }
+  }
 }
