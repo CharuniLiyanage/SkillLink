@@ -825,6 +825,39 @@ class ApiService {
     }
   }
 
+  static Future<bool> hasReview(
+  int serviceRequestId,
+) async {
+  try {
+    final response = await http.get(
+      Uri.parse(
+        '$baseUrl/api/reviews/check'
+        '?serviceRequestId=$serviceRequestId',
+      ),
+    );
+
+    debugPrint(
+      'Check Review Status: ${response.statusCode}',
+    );
+
+    debugPrint(
+      'Check Review Response: ${response.body}',
+    );
+
+    if (response.statusCode == 200) {
+      return jsonDecode(response.body) == true;
+    }
+
+    return false;
+  } catch (e) {
+    debugPrint(
+      'Check Review Error: $e',
+    );
+
+    return false;
+  }
+}
+
   // ============================================================
   // GET PROVIDER REVIEWS
   // ============================================================

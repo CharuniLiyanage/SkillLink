@@ -19,6 +19,7 @@ class _CustomerBookingsScreenState
     extends State<CustomerBookingsScreen> {
 
   List<dynamic> bookings = [];
+  Map<int, bool> reviewedBookings = {};
   bool isLoading = true;
 
   @override
@@ -26,7 +27,6 @@ class _CustomerBookingsScreenState
     super.initState();
     loadBookings();
   }
-
   Future<void> loadBookings() async {
     final email = Session.email;
 
@@ -45,8 +45,29 @@ class _CustomerBookingsScreenState
       return;
     }
 
+    Map<int, bool> reviewStatus = {};
+
+    for (final booking in result) {
+      final status =
+          booking['status']?.toString() ?? '';
+
+      final requestId =
+          int.tryParse(booking['id'].toString());
+
+      if (status == 'COMPLETED' &&
+          requestId != null) {
+        reviewStatus[requestId] =
+            await ApiService.hasReview(requestId);
+      }
+    }
+
+    if (!mounted) {
+      return;
+    }
+
     setState(() {
       bookings = result;
+      reviewedBookings = reviewStatus;
       isLoading = false;
     });
   }
@@ -269,52 +290,59 @@ class _CustomerBookingsScreenState
                                   ),
                                 ),
 
-                              if (status == 'COMPLETED')
-                                SizedBox(
-                                  width:
-                                      double.infinity,
-                                  height: 46,
-                                  child:
-                                      OutlinedButton.icon(
-                                    style:
-                                        OutlinedButton
-                                            .styleFrom(
-                                      foregroundColor:
-                                          AppColors
-                                              .warning,
-                                      side:
-                                          const BorderSide(
-                                        color: AppColors
-                                            .warning,
-                                      ),
-                                    ),
-                                    onPressed: requestId == null
-                                      ? null
-                                      : () {
-                                          Navigator.push(
-                                            context,
-                                            MaterialPageRoute(
-                                              builder: (context) =>
-                                                  RateProviderScreen(
-                                                serviceRequestId: requestId,
-                                                providerName: providerName,
-                                              ),
+                              if (status == 'COMPLETED' && requestId != null)
+                                reviewedBookings[requestId] == true
+                                    ? SizedBox(
+                                        width: double.infinity,
+                                        height: 46,
+                                        child: OutlinedButton.icon(
+                                          onPressed: null,
+                                          icon: const Icon(
+                                            Icons.check_circle_rounded,
+                                            size: 18,
+                                          ),
+                                          label: const Text(
+                                            'Rated',
+                                            style: TextStyle(
+                                              fontWeight: FontWeight.w600,
                                             ),
-                                          ).then((_) {
-                                            loadBookings();
-                                          });
-                                        },
-                                    
-                                    icon: const Icon(
-                                      Icons
-                                          .star_rounded,
-                                      size: 18,
-                                    ),
-                                    label: const Text(
-                                      'Rate Provider',
-                                    ),
-                                  ),
-                                ),
+                                          ),
+                                        ),
+                                      )
+                                    : SizedBox(
+                                        width: double.infinity,
+                                        height: 46,
+                                        child: OutlinedButton.icon(
+                                          style: OutlinedButton.styleFrom(
+                                            foregroundColor: AppColors.warning,
+                                            side: const BorderSide(
+                                              color: AppColors.warning,
+                                            ),
+                                          ),
+                                          onPressed: () {
+                                            Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                builder: (context) =>
+                                                    RateProviderScreen(
+                                                  serviceRequestId: requestId,
+                                                  providerName: providerName,
+                                                ),
+                                              ),
+                                            ).then((_) {
+                                              loadBookings();
+                                            });
+                                          },
+                                          icon: const Icon(
+                                            Icons.star_rounded,
+                                            size: 18,
+                                          ),
+                                          label: const Text(
+                                            'Rate Provider',
+                                          ),
+                                        ),
+                                      ),
+                                
                             ],
                           ),
                         ),

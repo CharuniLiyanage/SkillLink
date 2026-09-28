@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+
 import '../../services/api_service.dart';
 import '../../utils/app_colors.dart';
 import '../../utils/session.dart';
 import '../../widgets/info_tile.dart';
 import 'request_service_screen.dart';
+import 'reviews_screen.dart';
 
 //==================== Provider Profile Screen ====================
 
@@ -34,7 +36,6 @@ class ProviderProfileScreen extends StatefulWidget {
 
 class _ProviderProfileScreenState
     extends State<ProviderProfileScreen> {
-
   List<dynamic> services = [];
   List<dynamic> reviews = [];
 
@@ -116,7 +117,9 @@ class _ProviderProfileScreenState
       }
 
       debugPrint('TOTAL RATING: $totalRating');
-      debugPrint('AVERAGE RATING: $calculatedAverage');
+      debugPrint(
+        'AVERAGE RATING: $calculatedAverage',
+      );
 
       if (!mounted) return;
 
@@ -126,8 +129,9 @@ class _ProviderProfileScreenState
         isLoadingReviews = false;
       });
 
-      debugPrint('FINAL AVERAGE RATING: $averageRating');
-
+      debugPrint(
+        'FINAL AVERAGE RATING: $averageRating',
+      );
     } catch (e) {
       debugPrint('================================');
       debugPrint('REVIEWS ERROR');
@@ -150,20 +154,16 @@ class _ProviderProfileScreenState
       appBar: AppBar(
         title: const Text('Provider Profile'),
       ),
-
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(20),
-
         child: Column(
           children: [
-
             // ==================== PROFILE ICON ====================
 
             CircleAvatar(
               radius: 55,
               backgroundColor:
                   AppColors.primary.withValues(alpha: 0.1),
-
               child: const Icon(
                 Icons.person_rounded,
                 size: 58,
@@ -193,14 +193,12 @@ class _ProviderProfileScreenState
                 horizontal: 14,
                 vertical: 6,
               ),
-
               decoration: BoxDecoration(
                 color:
                     AppColors.primary.withValues(alpha: 0.1),
                 borderRadius:
                     BorderRadius.circular(20),
               ),
-
               child: Text(
                 widget.serviceName,
                 style: const TextStyle(
@@ -224,45 +222,72 @@ class _ProviderProfileScreenState
                 ),
               )
             else
-              Row(
-                mainAxisAlignment:
-                    MainAxisAlignment.center,
-
+              Column(
                 children: [
-
-                  const Icon(
-                    Icons.star_rounded,
-                    color: AppColors.warning,
-                    size: 24,
+                  Row(
+                    mainAxisAlignment:
+                        MainAxisAlignment.center,
+                    children: [
+                      const Icon(
+                        Icons.star_rounded,
+                        color: AppColors.warning,
+                        size: 24,
+                      ),
+                      const SizedBox(width: 6),
+                      Text(
+                        averageRating > 0
+                            ? averageRating
+                                .toStringAsFixed(1)
+                            : 'No ratings',
+                        style: const TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.w700,
+                          color:
+                              AppColors.textPrimary,
+                        ),
+                      ),
+                      if (reviews.isNotEmpty) ...[
+                        const SizedBox(width: 6),
+                        Text(
+                          '(${reviews.length})',
+                          style: const TextStyle(
+                            fontSize: 14,
+                            color:
+                                AppColors.textSecondary,
+                          ),
+                        ),
+                      ],
+                    ],
                   ),
 
-                  const SizedBox(width: 6),
+                  const SizedBox(height: 8),
 
-                  Text(
-                    averageRating > 0
-                        ? averageRating.toStringAsFixed(1)
-                        : 'No ratings',
+                  // ==================== VIEW REVIEWS ====================
 
-                    style: const TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.w700,
-                      color: AppColors.textPrimary,
+                  TextButton.icon(
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) =>
+                              ReviewsScreen(
+                            providerEmail:
+                                widget.email,
+                          ),
+                        ),
+                      );
+                    },
+                    icon: const Icon(
+                      Icons.rate_review_outlined,
+                      size: 18,
                     ),
-                  ),
-
-                  if (reviews.isNotEmpty) ...[
-                    const SizedBox(width: 6),
-
-                    Text(
-                      '(${reviews.length})',
-
-                      style: const TextStyle(
-                        fontSize: 14,
-                        color:
-                            AppColors.textSecondary,
+                    label: const Text(
+                      'View Reviews',
+                      style: TextStyle(
+                        fontWeight: FontWeight.w600,
                       ),
                     ),
-                  ],
+                  ),
                 ],
               ),
 
@@ -300,11 +325,9 @@ class _ProviderProfileScreenState
 
             Align(
               alignment: Alignment.centerLeft,
-
-              child: Text(
+              child: const Text(
                 'Services Offered',
-
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: 20,
                   fontWeight: FontWeight.w800,
                   color: AppColors.textPrimary,
@@ -315,33 +338,24 @@ class _ProviderProfileScreenState
             const SizedBox(height: 12),
 
             if (isLoadingServices)
-
               const Padding(
                 padding: EdgeInsets.all(20),
-
                 child: CircularProgressIndicator(),
               )
-
             else if (services.isEmpty)
-
               const Padding(
                 padding: EdgeInsets.all(20),
-
                 child: Text(
                   'No services available.',
                   style: TextStyle(
-                    color:
-                        AppColors.textSecondary,
+                    color: AppColors.textSecondary,
                   ),
                 ),
               )
-
             else
-
               Column(
                 children:
                     services.map((service) {
-
                   final serviceName =
                       service['name']?.toString() ??
                           'Service';
@@ -351,7 +365,8 @@ class _ProviderProfileScreenState
                           '';
 
                   final description =
-                      service['description']?.toString() ??
+                      service['description']
+                              ?.toString() ??
                           '';
 
                   final price =
@@ -363,26 +378,23 @@ class _ProviderProfileScreenState
                         const EdgeInsets.only(
                       bottom: 12,
                     ),
-
                     child: Padding(
                       padding:
                           const EdgeInsets.all(16),
-
                       child: Column(
                         crossAxisAlignment:
                             CrossAxisAlignment.start,
-
                         children: [
-
                           Text(
                             serviceName,
-
-                            style: const TextStyle(
+                            style:
+                                const TextStyle(
                               fontSize: 17,
                               fontWeight:
                                   FontWeight.w700,
                               color:
-                                  AppColors.textPrimary,
+                                  AppColors
+                                      .textPrimary,
                             ),
                           ),
 
@@ -391,26 +403,28 @@ class _ProviderProfileScreenState
                           if (category.isNotEmpty)
                             Text(
                               category,
-
                               style:
                                   const TextStyle(
                                 fontSize: 13,
                                 color:
-                                    AppColors.secondary,
+                                    AppColors
+                                        .secondary,
                               ),
                             ),
 
-                          if (description.isNotEmpty) ...[
-                            const SizedBox(height: 8),
-
+                          if (description
+                              .isNotEmpty) ...[
+                            const SizedBox(
+                              height: 8,
+                            ),
                             Text(
                               description,
-
                               style:
                                   const TextStyle(
                                 fontSize: 13.5,
                                 color:
-                                    AppColors.textSecondary,
+                                    AppColors
+                                        .textSecondary,
                               ),
                             ),
                           ],
@@ -419,7 +433,6 @@ class _ProviderProfileScreenState
 
                           Text(
                             'Rs. $price',
-
                             style:
                                 const TextStyle(
                               fontSize: 16,
@@ -455,28 +468,26 @@ class _ProviderProfileScreenState
             SizedBox(
               width: double.infinity,
               height: 54,
-
               child: ElevatedButton(
                 onPressed: () {
-
                   Navigator.push(
                     context,
-
                     MaterialPageRoute(
                       builder: (context) =>
                           RequestServiceScreen(
                         providerName: widget.name,
-                        serviceName: widget.serviceName,
-                        customerEmail: Session.email,
-                        providerEmail: widget.email,
+                        serviceName:
+                            widget.serviceName,
+                        customerEmail:
+                            Session.email,
+                        providerEmail:
+                            widget.email,
                       ),
                     ),
                   );
                 },
-
                 child: const Text(
                   'Request Service',
-
                   style: TextStyle(
                     fontSize: 17,
                   ),

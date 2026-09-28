@@ -5,13 +5,12 @@ import '../../utils/app_colors.dart';
 import '../../utils/session.dart';
 import '../../widgets/section_header.dart';
 
-
 import '../customer/customer_home_screen.dart';
+import '../customer/reviews_screen.dart';
 import 'provider_profile_edit_screen.dart';
 import 'my_services_screen.dart';
 import 'provider_requests_screen.dart';
 import 'provider_bookings_screen.dart';
-
 
 // ==================== Provider Dashboard Screen ====================
 
@@ -25,7 +24,6 @@ class ProviderDashboardScreen extends StatefulWidget {
 
 class _ProviderDashboardScreenState
     extends State<ProviderDashboardScreen> {
-
   // ==================== Rating ====================
 
   double averageRating = 0.0;
@@ -40,12 +38,13 @@ class _ProviderDashboardScreenState
   // ==================== Init ====================
 
   @override
-    void initState() {
-      super.initState();
+  void initState() {
+    super.initState();
 
-      loadProviderRating();
-      loadDashboardStats();
-    }
+    loadProviderRating();
+    loadDashboardStats();
+  }
+
   // ==================== Load Provider Rating ====================
 
   Future<void> loadProviderRating() async {
@@ -86,7 +85,9 @@ class _ProviderDashboardScreenState
                 ) ??
                 0.0;
 
-        debugPrint('DASHBOARD REVIEW RATING: $rating');
+        debugPrint(
+          'DASHBOARD REVIEW RATING: $rating',
+        );
 
         totalRating += rating;
       }
@@ -114,7 +115,9 @@ class _ProviderDashboardScreenState
       });
     } catch (e) {
       debugPrint('================================');
-      debugPrint('DASHBOARD RATING ERROR: $e');
+      debugPrint(
+        'DASHBOARD RATING ERROR: $e',
+      );
       debugPrint('================================');
 
       if (!mounted) return;
@@ -127,9 +130,10 @@ class _ProviderDashboardScreenState
     }
   }
 
-  //--------------Load Dashboard Stats-----------------//
+  // ==================== Load Dashboard Stats ====================
+
   Future<void> loadDashboardStats() async {
-   final email = Session.email;
+    final email = Session.email;
 
     debugPrint('================================');
     debugPrint('LOADING PROVIDER DASHBOARD STATS');
@@ -150,11 +154,15 @@ class _ProviderDashboardScreenState
     }
 
     try {
-      final result = await ApiService.getProviderRequests(
+      final result =
+          await ApiService.getProviderRequests(
         email: email,
       );
 
-      debugPrint('DASHBOARD REQUESTS: $result');
+      debugPrint(
+        'DASHBOARD REQUESTS: $result',
+      );
+
       debugPrint(
         'DASHBOARD REQUEST COUNT: ${result.length}',
       );
@@ -166,9 +174,14 @@ class _ProviderDashboardScreenState
 
       for (final request in result) {
         final status =
-            request['status']?.toString().toUpperCase() ?? '';
+            request['status']
+                    ?.toString()
+                    .toUpperCase() ??
+                '';
 
-        debugPrint('REQUEST STATUS: $status');
+        debugPrint(
+          'REQUEST STATUS: $status',
+        );
 
         if (status == 'PENDING') {
           pending++;
@@ -197,9 +210,17 @@ class _ProviderDashboardScreenState
         }
       }
 
-      debugPrint('PENDING REQUESTS: $pending');
-      debugPrint('COMPLETED REQUESTS: $completed');
-      debugPrint('UNIQUE CUSTOMERS: ${customerIds.length}');
+      debugPrint(
+        'PENDING REQUESTS: $pending',
+      );
+
+      debugPrint(
+        'COMPLETED REQUESTS: $completed',
+      );
+
+      debugPrint(
+        'UNIQUE CUSTOMERS: ${customerIds.length}',
+      );
 
       if (!mounted) return;
 
@@ -211,7 +232,9 @@ class _ProviderDashboardScreenState
       });
     } catch (e) {
       debugPrint('================================');
-      debugPrint('DASHBOARD STATS ERROR: $e');
+      debugPrint(
+        'DASHBOARD STATS ERROR: $e',
+      );
       debugPrint('================================');
 
       if (!mounted) return;
@@ -232,7 +255,6 @@ class _ProviderDashboardScreenState
   ) async {
     final email = Session.email;
 
-    // Check session
     if (email.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
@@ -245,7 +267,6 @@ class _ProviderDashboardScreenState
       return;
     }
 
-    // Customer role already exists
     if (Session.roles.contains('CUSTOMER')) {
       Navigator.push(
         context,
@@ -258,7 +279,6 @@ class _ProviderDashboardScreenState
       return;
     }
 
-    // Add CUSTOMER role
     final success = await ApiService.addRole(
       email: email,
       role: 'CUSTOMER',
@@ -267,7 +287,6 @@ class _ProviderDashboardScreenState
     if (!context.mounted) return;
 
     if (success) {
-      // Update current session
       Session.roles.add('CUSTOMER');
 
       ScaffoldMessenger.of(context).showSnackBar(
@@ -278,7 +297,6 @@ class _ProviderDashboardScreenState
         ),
       );
 
-      // Go to Customer Home
       Navigator.push(
         context,
         MaterialPageRoute(
@@ -306,34 +324,26 @@ class _ProviderDashboardScreenState
         title: const Text(
           'Provider Dashboard',
         ),
-
         actions: [
           IconButton(
             onPressed: () {},
-
             icon: const Icon(
               Icons.notifications_outlined,
             ),
           ),
-
           const SizedBox(width: 8),
         ],
       ),
-
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(20),
-
         child: Column(
           crossAxisAlignment:
               CrossAxisAlignment.start,
-
           children: [
-
             // ==================== Welcome ====================
 
             const Text(
               'Welcome, Service Provider!',
-
               style: TextStyle(
                 fontSize: 24,
                 fontWeight: FontWeight.w800,
@@ -345,7 +355,6 @@ class _ProviderDashboardScreenState
 
             const Text(
               'Manage your services and customer requests.',
-
               style: TextStyle(
                 fontSize: 14,
                 color: AppColors.textSecondary,
@@ -358,20 +367,14 @@ class _ProviderDashboardScreenState
 
             _dashboardTile(
               context,
-
               icon: Icons.person_rounded,
-
               color: AppColors.primary,
-
               title: 'My Profile',
-
               subtitle:
                   'View and edit your provider profile',
-
               onTap: () {
                 Navigator.push(
                   context,
-
                   MaterialPageRoute(
                     builder: (context) =>
                         const ProviderProfileEditScreen(),
@@ -386,20 +389,14 @@ class _ProviderDashboardScreenState
 
             _dashboardTile(
               context,
-
               icon: Icons.build_rounded,
-
               color: AppColors.secondary,
-
               title: 'My Services',
-
               subtitle:
                   'Manage the services you provide',
-
               onTap: () {
                 Navigator.push(
                   context,
-
                   MaterialPageRoute(
                     builder: (context) =>
                         const MyServicesScreen(),
@@ -414,20 +411,14 @@ class _ProviderDashboardScreenState
 
             _dashboardTile(
               context,
-
               icon: Icons.assignment_rounded,
-
               color: AppColors.warning,
-
               title: 'Service Requests',
-
               subtitle:
                   'View customer service requests',
-
               onTap: () {
                 Navigator.push(
                   context,
-
                   MaterialPageRoute(
                     builder: (context) =>
                         const ProviderRequestsScreen(),
@@ -442,20 +433,14 @@ class _ProviderDashboardScreenState
 
             _dashboardTile(
               context,
-
               icon: Icons.calendar_month_rounded,
-
               color: AppColors.success,
-
               title: 'My Bookings',
-
               subtitle:
                   'View accepted and completed bookings',
-
               onTap: () {
                 Navigator.push(
                   context,
-
                   MaterialPageRoute(
                     builder: (context) =>
                         const ProviderBookingsScreen(),
@@ -470,16 +455,11 @@ class _ProviderDashboardScreenState
 
             _dashboardTile(
               context,
-
               icon: Icons.person_search_rounded,
-
               color: AppColors.primary,
-
               title: 'Switch to Customer',
-
               subtitle:
                   'Find and book services from other providers',
-
               onTap: () {
                 switchToCustomer(context);
               },
@@ -495,7 +475,7 @@ class _ProviderDashboardScreenState
 
             const SizedBox(height: 16),
 
-             // ==================== Requests / Completed ====================
+            // ==================== Requests / Completed ====================
 
             Row(
               children: [
@@ -531,24 +511,17 @@ class _ProviderDashboardScreenState
 
             Row(
               children: [
-
                 // ==================== RATING ====================
 
                 Expanded(
                   child: _statCard(
-                    icon:
-                        Icons.star_rounded,
-
+                    icon: Icons.star_rounded,
                     title: 'Rating',
-
-                    value:
-                        isLoadingRating
-                            ? '...'
-                            : averageRating
-                                .toStringAsFixed(1),
-
-                    color:
-                        AppColors.secondary,
+                    value: isLoadingRating
+                        ? '...'
+                        : averageRating
+                            .toStringAsFixed(1),
+                    color: AppColors.secondary,
                   ),
                 ),
 
@@ -558,40 +531,49 @@ class _ProviderDashboardScreenState
 
                 Expanded(
                   child: _statCard(
-                    icon:
-                        Icons.people_rounded,
-
+                    icon: Icons.people_rounded,
                     title: 'Customers',
-
                     value: isLoadingStats
-                      ? '...'
-                      : totalCustomers.toString(),
-
-                    color:
-                        AppColors.primary,
+                        ? '...'
+                        : totalCustomers.toString(),
+                    color: AppColors.primary,
                   ),
                 ),
               ],
             ),
 
-            // Optional review count
-            if (!isLoadingRating &&
-                reviewCount > 0) ...[
+            const SizedBox(height: 8),
 
-              const SizedBox(height: 8),
+            // ==================== VIEW REVIEWS ====================
 
-              Center(
-                child: Text(
-                  '$reviewCount reviews',
-
+            Center(
+              child: TextButton.icon(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) =>
+                          ReviewsScreen(
+                        providerEmail:
+                            Session.email,
+                      ),
+                    ),
+                  );
+                },
+                icon: const Icon(
+                  Icons.rate_review_outlined,
+                  size: 18,
+                ),
+                label: Text(
+                  reviewCount > 0
+                      ? 'View Reviews ($reviewCount)'
+                      : 'View Reviews',
                   style: const TextStyle(
-                    fontSize: 12,
-                    color:
-                        AppColors.textSecondary,
+                    fontWeight: FontWeight.w600,
                   ),
                 ),
               ),
-            ],
+            ),
           ],
         ),
       ),
@@ -612,34 +594,25 @@ class _ProviderDashboardScreenState
       child: InkWell(
         borderRadius:
             BorderRadius.circular(16),
-
         onTap: onTap,
-
         child: Padding(
           padding:
               const EdgeInsets.all(16),
-
           child: Row(
             children: [
-
               Container(
                 width: 50,
                 height: 50,
-
                 decoration:
                     BoxDecoration(
                   color:
                       color.withValues(alpha: 0.12),
-
                   borderRadius:
                       BorderRadius.circular(12),
                 ),
-
                 child: Icon(
                   icon,
-
                   color: color,
-
                   size: 26,
                 ),
               ),
@@ -650,19 +623,14 @@ class _ProviderDashboardScreenState
                 child: Column(
                   crossAxisAlignment:
                       CrossAxisAlignment.start,
-
                   children: [
-
                     Text(
                       title,
-
                       style:
                           const TextStyle(
                         fontWeight:
                             FontWeight.w700,
-
                         fontSize: 16,
-
                         color:
                             AppColors.textPrimary,
                       ),
@@ -672,11 +640,9 @@ class _ProviderDashboardScreenState
 
                     Text(
                       subtitle,
-
                       style:
                           const TextStyle(
                         fontSize: 12.5,
-
                         color:
                             AppColors.textSecondary,
                       ),
@@ -687,9 +653,7 @@ class _ProviderDashboardScreenState
 
               const Icon(
                 Icons.arrow_forward_ios_rounded,
-
                 size: 16,
-
                 color:
                     AppColors.textSecondary,
               ),
@@ -700,8 +664,7 @@ class _ProviderDashboardScreenState
     );
   }
 
-
-// ==================== Stat Card ====================
+  // ==================== Stat Card ====================
 
   Widget _statCard({
     required IconData icon,
@@ -711,20 +674,20 @@ class _ProviderDashboardScreenState
   }) {
     return Card(
       child: Padding(
-        padding: const EdgeInsets.all(16),
-
+        padding:
+            const EdgeInsets.all(16),
         child: Column(
           children: [
             Container(
               width: 44,
               height: 44,
-
-              decoration: BoxDecoration(
-                color: color.withValues(alpha: 0.12),
+              decoration:
+                  BoxDecoration(
+                color:
+                    color.withValues(alpha: 0.12),
                 borderRadius:
                     BorderRadius.circular(12),
               ),
-
               child: Icon(
                 icon,
                 size: 22,
@@ -739,7 +702,8 @@ class _ProviderDashboardScreenState
               style: const TextStyle(
                 fontSize: 22,
                 fontWeight: FontWeight.w800,
-                color: AppColors.textPrimary,
+                color:
+                    AppColors.textPrimary,
               ),
             ),
 
@@ -749,7 +713,8 @@ class _ProviderDashboardScreenState
               title,
               style: const TextStyle(
                 fontSize: 12.5,
-                color: AppColors.textSecondary,
+                color:
+                    AppColors.textSecondary,
               ),
             ),
           ],
