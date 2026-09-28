@@ -1,16 +1,62 @@
 import 'package:flutter/material.dart';
 
+import '../../services/api_service.dart';
 import '../../utils/app_colors.dart';
+import '../../widgets/section_header.dart';
 import 'become_provider_screen.dart';
 import 'provider_list_screen.dart';
 import 'customer_bookings_screen.dart';
 import 'customer_profile_screen.dart';
-import '../../widgets/section_header.dart';
+import 'notifications_screen.dart';
 
 // ==================== Customer Home Screen ====================
 
-class CustomerHomeScreen extends StatelessWidget {
+class CustomerHomeScreen extends StatefulWidget {
   const CustomerHomeScreen({super.key});
+
+  @override
+  State<CustomerHomeScreen> createState() =>
+      _CustomerHomeScreenState();
+}
+
+class _CustomerHomeScreenState
+    extends State<CustomerHomeScreen> {
+
+  int unreadNotificationCount = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    loadUnreadNotificationCount();
+  }
+
+  // ==================== Load Notification Count ====================
+
+  Future<void> loadUnreadNotificationCount() async {
+    final count =
+        await ApiService.getUnreadNotificationCount();
+
+    if (!mounted) return;
+
+    setState(() {
+      unreadNotificationCount = count;
+    });
+  }
+
+  // ==================== Open Notifications ====================
+
+  Future<void> openNotifications() async {
+    await Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) =>
+            const NotificationsScreen(),
+      ),
+    );
+
+    // Refresh count after returning
+    await loadUnreadNotificationCount();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -65,16 +111,71 @@ class CustomerHomeScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text('SkillLink'),
+
         actions: [
-          IconButton(
-            onPressed: () {},
-            icon: const Icon(
-              Icons.notifications_outlined,
-            ),
+          // ==================== Notification Icon ====================
+
+          Stack(
+            clipBehavior: Clip.none,
+            children: [
+              IconButton(
+                onPressed: openNotifications,
+                icon: const Icon(
+                  Icons.notifications_outlined,
+                ),
+                tooltip: 'Notifications',
+              ),
+
+              // ==================== Unread Badge ====================
+
+              if (unreadNotificationCount > 0)
+                Positioned(
+                  right: 5,
+                  top: 5,
+                  child: Container(
+                    constraints:
+                        const BoxConstraints(
+                      minWidth: 18,
+                      minHeight: 18,
+                    ),
+                    padding:
+                        const EdgeInsets.symmetric(
+                      horizontal: 5,
+                      vertical: 2,
+                    ),
+                    decoration:
+                        BoxDecoration(
+                      color: Colors.red,
+                      borderRadius:
+                          BorderRadius.circular(10),
+                      border: Border.all(
+                        color: Colors.white,
+                        width: 1.5,
+                      ),
+                    ),
+                    child: Text(
+                      unreadNotificationCount > 99
+                          ? '99+'
+                          : unreadNotificationCount
+                              .toString(),
+                      textAlign: TextAlign.center,
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 10,
+                        fontWeight:
+                            FontWeight.w800,
+                      ),
+                    ),
+                  ),
+                ),
+            ],
           ),
+
           const SizedBox(width: 8),
         ],
       ),
+
+      // ==================== BODY ====================
 
       body: SingleChildScrollView(
         padding: const EdgeInsets.fromLTRB(
@@ -84,7 +185,8 @@ class CustomerHomeScreen extends StatelessWidget {
           24,
         ),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+          crossAxisAlignment:
+              CrossAxisAlignment.start,
           children: [
             const Text(
               'Hello! 👋',
@@ -108,8 +210,10 @@ class CustomerHomeScreen extends StatelessWidget {
             const SizedBox(height: 20),
 
             TextField(
-              decoration: const InputDecoration(
-                hintText: 'Search for a service...',
+              decoration:
+                  const InputDecoration(
+                hintText:
+                    'Search for a service...',
                 prefixIcon: Icon(
                   Icons.search_rounded,
                 ),
@@ -124,7 +228,8 @@ class CustomerHomeScreen extends StatelessWidget {
               elevation: 0,
               color: AppColors.primary,
               child: InkWell(
-                borderRadius: BorderRadius.circular(16),
+                borderRadius:
+                    BorderRadius.circular(16),
                 onTap: () {
                   Navigator.push(
                     context,
@@ -135,16 +240,23 @@ class CustomerHomeScreen extends StatelessWidget {
                   );
                 },
                 child: Padding(
-                  padding: const EdgeInsets.all(18),
+                  padding:
+                      const EdgeInsets.all(18),
                   child: Row(
                     children: [
                       Container(
                         width: 52,
                         height: 52,
-                        decoration: BoxDecoration(
-                          color: Colors.white.withValues(alpha: 0.15),
+                        decoration:
+                            BoxDecoration(
+                          color: Colors.white
+                              .withValues(
+                            alpha: 0.15,
+                          ),
                           borderRadius:
-                              BorderRadius.circular(14),
+                              BorderRadius.circular(
+                            14,
+                          ),
                         ),
                         child: const Icon(
                           Icons.handyman_rounded,
@@ -158,21 +270,26 @@ class CustomerHomeScreen extends StatelessWidget {
                       const Expanded(
                         child: Column(
                           crossAxisAlignment:
-                              CrossAxisAlignment.start,
+                              CrossAxisAlignment
+                                  .start,
                           children: [
                             Text(
                               'Become a Service Provider',
                               style: TextStyle(
                                 color: Colors.white,
                                 fontSize: 16,
-                                fontWeight: FontWeight.w800,
+                                fontWeight:
+                                    FontWeight.w800,
                               ),
                             ),
+
                             SizedBox(height: 4),
+
                             Text(
                               'Offer your skills and earn through SkillLink',
                               style: TextStyle(
-                                color: Colors.white70,
+                                color:
+                                    Colors.white70,
                                 fontSize: 12.5,
                               ),
                             ),
@@ -181,7 +298,8 @@ class CustomerHomeScreen extends StatelessWidget {
                       ),
 
                       const Icon(
-                        Icons.arrow_forward_ios_rounded,
+                        Icons
+                            .arrow_forward_ios_rounded,
                         color: Colors.white,
                         size: 17,
                       ),
@@ -212,7 +330,8 @@ class CustomerHomeScreen extends StatelessWidget {
                 childAspectRatio: 0.85,
               ),
               itemBuilder: (context, index) {
-                final service = services[index];
+                final service =
+                    services[index];
 
                 final color =
                     service['color'] as Color;
@@ -228,47 +347,62 @@ class CustomerHomeScreen extends StatelessWidget {
                           builder: (context) =>
                               ProviderListScreen(
                             serviceName:
-                                service['name'] as String,
+                                service['name']
+                                    as String,
                           ),
                         ),
                       );
                     },
                     child: Padding(
                       padding:
-                          const EdgeInsets.symmetric(
+                          const EdgeInsets
+                              .symmetric(
                         horizontal: 8,
                       ),
                       child: Column(
                         mainAxisAlignment:
-                            MainAxisAlignment.center,
+                            MainAxisAlignment
+                                .center,
                         children: [
                           Container(
                             width: 48,
                             height: 48,
-                            decoration: BoxDecoration(
-                              color:
-                                  color.withValues(alpha: 0.12),
+                            decoration:
+                                BoxDecoration(
+                              color: color
+                                  .withValues(
+                                alpha: 0.12,
+                              ),
                               borderRadius:
-                                  BorderRadius.circular(12),
+                                  BorderRadius
+                                      .circular(
+                                12,
+                              ),
                             ),
                             child: Icon(
-                              service['icon'] as IconData,
+                              service['icon']
+                                  as IconData,
                               size: 26,
                               color: color,
                             ),
                           ),
 
-                          const SizedBox(height: 10),
+                          const SizedBox(
+                            height: 10,
+                          ),
 
                           Text(
-                            service['name'] as String,
-                            textAlign: TextAlign.center,
-                            style: const TextStyle(
+                            service['name']
+                                as String,
+                            textAlign:
+                                TextAlign.center,
+                            style:
+                                const TextStyle(
                               fontWeight:
                                   FontWeight.w600,
                               fontSize: 12.5,
-                              color:
-                                  AppColors.textPrimary,
+                              color: AppColors
+                                  .textPrimary,
                             ),
                           ),
                         ],
@@ -284,8 +418,10 @@ class CustomerHomeScreen extends StatelessWidget {
 
       // ==================== Bottom Navigation ====================
 
-      bottomNavigationBar: BottomNavigationBar(
+      bottomNavigationBar:
+          BottomNavigationBar(
         currentIndex: 0,
+
         onTap: (index) {
           if (index == 1) {
             Navigator.push(
@@ -307,24 +443,35 @@ class CustomerHomeScreen extends StatelessWidget {
             );
           }
         },
+
         items: const [
           BottomNavigationBarItem(
-            icon: Icon(Icons.home_outlined),
-            activeIcon:
-                Icon(Icons.home_rounded),
+            icon: Icon(
+              Icons.home_outlined,
+            ),
+            activeIcon: Icon(
+              Icons.home_rounded,
+            ),
             label: 'Home',
           ),
+
           BottomNavigationBarItem(
-            icon:
-                Icon(Icons.calendar_month_outlined),
-            activeIcon:
-                Icon(Icons.calendar_month_rounded),
+            icon: Icon(
+              Icons.calendar_month_outlined,
+            ),
+            activeIcon: Icon(
+              Icons.calendar_month_rounded,
+            ),
             label: 'Bookings',
           ),
+
           BottomNavigationBarItem(
-            icon: Icon(Icons.person_outline),
-            activeIcon:
-                Icon(Icons.person_rounded),
+            icon: Icon(
+              Icons.person_outline,
+            ),
+            activeIcon: Icon(
+              Icons.person_rounded,
+            ),
             label: 'Profile',
           ),
         ],

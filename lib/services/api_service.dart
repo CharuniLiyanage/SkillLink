@@ -1217,4 +1217,110 @@ class ApiService {
       return [];
     }
   }
+
+  // ==================== Get Notifications ====================
+
+  static Future<List<dynamic>> getNotifications() async {
+    try {
+      final response = await http.get(
+        Uri.parse('$baseUrl/api/notifications'),
+        headers: {
+          'Authorization': 'Bearer ${Session.token}',
+        },
+      );
+
+      debugPrint(
+        'Get Notifications Status: ${response.statusCode}',
+      );
+
+      debugPrint(
+        'Get Notifications Response: ${response.body}',
+      );
+
+      if (response.statusCode == 200) {
+        return jsonDecode(response.body);
+      }
+
+      return [];
+    } catch (e) {
+      debugPrint(
+        'Get Notifications Error: $e',
+      );
+
+      return [];
+    }
+  }
+
+  // ==================== Get Unread Notification Count ====================
+
+  static Future<int> getUnreadNotificationCount() async {
+    try {
+      final response = await http.get(
+        Uri.parse(
+          '$baseUrl/api/notifications/unread-count',
+        ),
+        headers: {
+          'Authorization': 'Bearer ${Session.token}',
+        },
+      );
+
+      debugPrint(
+        'Unread Notification Status: ${response.statusCode}',
+      );
+
+      debugPrint(
+        'Unread Notification Response: ${response.body}',
+      );
+
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body);
+
+        return int.tryParse(
+              data['count'].toString(),
+            ) ??
+            0;
+      }
+
+      return 0;
+    } catch (e) {
+      debugPrint(
+        'Unread Notification Error: $e',
+      );
+
+      return 0;
+    }
+  }
+
+  // ==================== Mark Notification as Read ====================
+
+  static Future<bool> markNotificationAsRead(
+    int notificationId,
+  ) async {
+    try {
+      final response = await http.put(
+        Uri.parse(
+          '$baseUrl/api/notifications/$notificationId/read',
+        ),
+        headers: {
+          'Authorization': 'Bearer ${Session.token}',
+        },
+      );
+
+      debugPrint(
+        'Mark Notification Read Status: ${response.statusCode}',
+      );
+
+      debugPrint(
+        'Mark Notification Read Response: ${response.body}',
+      );
+
+      return response.statusCode == 200;
+    } catch (e) {
+      debugPrint(
+        'Mark Notification Read Error: $e',
+      );
+
+      return false;
+    }
+  }
 }
