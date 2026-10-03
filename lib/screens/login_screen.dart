@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 
 import '../services/api_service.dart';
 import '../utils/app_colors.dart';
@@ -82,6 +83,30 @@ class _LoginScreenState extends State<LoginScreen> {
         'customerEmail',
         emailController.text.trim(),
       );
+
+      // ================= SAVE FCM TOKEN =================
+
+      try {
+        final String? fcmToken =
+            await FirebaseMessaging.instance.getToken();
+
+        if (fcmToken != null && fcmToken.isNotEmpty) {
+          final bool saved =
+              await ApiService.saveFcmToken(fcmToken);
+
+          debugPrint(
+            'FCM TOKEN SAVED TO BACKEND: $saved',
+          );
+        } else {
+          debugPrint(
+            'FCM TOKEN IS NULL',
+          );
+        }
+      } catch (e) {
+        debugPrint(
+          'FCM TOKEN SAVE ERROR: $e',
+        );
+      }
 
       // ================= DEBUG =================
 

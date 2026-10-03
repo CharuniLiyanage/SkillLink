@@ -1323,4 +1323,44 @@ class ApiService {
       return false;
     }
   }
+
+    // ==================== Save FCM Token ====================
+
+  static Future<bool> saveFcmToken(
+    String fcmToken,
+  ) async {
+    try {
+      final response = await http.put(
+        Uri.parse(
+          '$baseUrl/api/users/fcm-token',
+        ),
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization':
+              'Bearer ${Session.token}',
+        },
+        body: jsonEncode({
+          'fcmToken': fcmToken,
+        }),
+      );
+
+      debugPrint(
+        'Save FCM Token Status: '
+        '${response.statusCode}',
+      );
+
+      debugPrint(
+        'Save FCM Token Response: '
+        '${response.body}',
+      );
+
+      return response.statusCode == 200;
+    } catch (e) {
+      debugPrint(
+        'Save FCM Token Error: $e',
+      );
+
+      return false;
+    }
+  }
 }
